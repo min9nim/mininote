@@ -1,0 +1,2 @@
+# mininote
+mininote project
