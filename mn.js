@@ -74,8 +74,8 @@ function getNoteHtml(key, noteData){
     var color = randomColor({hue: userInfo.data.iconColor, luminosity: 'dark'});  // https://randomcolor.llllll.li/
 
     var liChild = `<i class='createDate'>${createDate}</i><i class='btnContext'><<</i>
-                <div class='title'>${title}</div>
-                <div class='content'>${content}</div></p>${removeBtn}${editBtn}`;
+                <div class='title' onclick="viewNote('${key}')">${title}</div>
+                <div class='content' onclick="viewNote('${key}')">${content}</div></p>${removeBtn}${editBtn}`;
 
     var li = `<li id="${key}" class="collection-item avatar">${liChild}</li>`;
     var html = {};
@@ -111,6 +111,12 @@ function saveNote() {
     var key = $("#noteContent").attr("key");
     //var title = $("#noteTitle").val();
     var txt = $("#noteContent").html().replace(/(<div><br><\/div>)+$/ig, ""); // 끝에 공백제거
+
+    var idx = txt.indexOf("<div>");
+    var title = txt.substr(0,idx);
+    var content = txt.substr(idx);
+    txt = "<div class='title'>" + title + "</div>" + content;
+
 /*
     if (title === '') {
         alert("제목을 입력해 주세요");
@@ -165,7 +171,16 @@ function editNote(key) {
     var noteRef = firebase.database().ref('notes/' + userInfo.uid + '/' + key).once('value').then(function(snapshot){
       $(".dialog").css("display", "block");
       $("#noteContent").attr("key", key);
-      $("#noteContent").html(snapshot.val().txt);
+
+      var txt = snapshot.val().txt;
+      $("#noteContent").html(txt);
+      /*
+      var idx = txt.indexOf("<div>");
+      var title = txt.substr(0,idx);
+      var content = txt.substr(idx);
+      $("#noteContent").html("<div class='title'>" + title + "</div>" + content);
+*/
+
       $("#noteContent").focus();
       $("#addBtn").html("저장");
       $("#topNavi").removeClass("navi");
@@ -176,6 +191,25 @@ function editNote(key) {
   }else{
     alert("로그인이 필요합니다");
   }
+}
+
+
+function viewNote(key) {
+    var noteRef = firebase.database().ref('notes/' + userInfo.uid + '/' + key).once('value').then(function(snapshot){
+      $(".dialog").css("display", "block");
+      $("#noteContent").attr("key", key);
+      var txt = snapshot.val().txt;
+      var idx = txt.indexOf("<div>");
+      var title = txt.substr(0,idx);
+      var content = txt.substr(idx);
+      $("#noteContent").html("<div class='title'>" + title + "</div>" + content);
+      $("#addBtn").html("저장");
+      $("#topNavi").removeClass("navi");
+      $("#topNavi").addClass("list");
+      $("#topNavi").html("목록");
+      $("body").css("overflow", "hidden");
+      $(window).scrollTop(0);
+    });
 }
 
 
@@ -260,6 +294,29 @@ function cancelSearch() {
 
 function keydownCheck(event){
   var keycode = (event.which) ? event.which : event.keyCode;
+/*
+  if(keycode == 13){
+      if($("#noteContent").html().match(/<\/div><div>/i) == null){
+          //console.log($("#noteContent").html());
+          var title = "<div class='title'>" + $("#noteContent").html() + "</div><div id='start'></div>";
+          //$("#noteContent").html(title)
+          //console.log(title);
+          setTimeout(function(){
+              $("#noteContent").html(title);
+
+              var p = document.getElementById('start'),
+                  s = window.getSelection(),
+                  r = document.createRange();
+              r.setStart(p, 0);
+              r.setEnd(p, 0);
+              s.removeAllRanges();
+              s.addRange(r);
+
+
+          }, 100);
+      }
+  }
+*/
   if((event.metaKey || event.altKey) && keycode == 13) {
     if($(".dialog").css("display") == "block"){
       saveNote();
@@ -315,7 +372,10 @@ function setTouchSlider(row){
       function touchend(){
         if(diff_x < -50){
           $(this).animate({left: "-100px"}, 300);
-        }else{
+      }else if(diff_x > 150){
+          viewNote($(this).attr("id"));
+          $(this).animate({left: "0px"}, 300);
+      }else{
           $(this).animate({left: "0px"}, 300);
         }
       }
