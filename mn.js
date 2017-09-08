@@ -56,34 +56,32 @@ function addItem(key, noteData, how){
 
 
 function getNoteHtml(key, noteData){
-  var title = noteData.title;
-  var content = noteData.content;
-  var createDate = (new Date(noteData.createDate)).toString().substr(4, 17);
+    var idx = noteData.txt.indexOf("<div>");
+    var title = noteData.txt.substr(0,idx);
+    var content = noteData.txt.substr(idx);
+    content = content.replace(/<\/div><div>/gi, " "); // html새줄문자를 공백문자로 변경
+    content = content.replace(/<([^>]+)>/gi, "");   // 태그제거
+    content = content.substr(0,100); // 100자까지만 보여주기
+    var createDate = (new Date(noteData.createDate)).toString().substr(4, 17);
 
-  content = content.replaceAll("<", "&lt;").replaceAll(">", "&gt;");  // XSS 방어코드
-  content = content.replaceAll("\n", "<br/>");  // 새줄표시
-  content = content.replaceAll(" ", "&nbsp;");  // 공백표시
-  content = content.autoLink({ target: "_blank" });
-
-  //console.log("content = " + content + ", firstTxt = " + firstTxt);
-  var removeBtn = "";
-  var editBtn = "";
-  if(typeof userInfo != null){// 내가 작성한 글인 경우만 수정/삭제버튼이 표시
+    var removeBtn = "";
+    var editBtn = "";
+    if(typeof userInfo != null){// 내가 작성한 글인 경우만 수정/삭제버튼이 표시
       removeBtn = `<i id='btn_delete' onclick='removeNote("${key}")' class='material-icons'>delete</i>`;
       editBtn = `<i id='btn_edit' onclick='editNote("${key}")' class='material-icons'>edit</i>`;
-  }
+    }
 
-  var color = randomColor({hue: userInfo.data.iconColor, luminosity: 'dark'});  // https://randomcolor.llllll.li/
+    var color = randomColor({hue: userInfo.data.iconColor, luminosity: 'dark'});  // https://randomcolor.llllll.li/
 
-  var liChild = `<i class='createDate'>${createDate}</i><i class='btnContext'><<</i>
-                <div class='title' style="font-size:16px;">${title}</div>
-                <div class='content' style="font-size:12px;">${content}</div></p>${removeBtn}${editBtn}`;
+    var liChild = `<i class='createDate'>${createDate}</i><i class='btnContext'><<</i>
+                <div class='title'>${title}</div>
+                <div class='content'>${content}</div></p>${removeBtn}${editBtn}`;
 
-  var li = `<li id="${key}" class="collection-item avatar">${liChild}</li>`;
-  var html = {};
-  html.li = li;
-  html.liChild = liChild;
-  return html;
+    var li = `<li id="${key}" class="collection-item avatar">${liChild}</li>`;
+    var html = {};
+    html.li = li;
+    html.liChild = liChild;
+    return html;
 }
 
 
@@ -110,48 +108,46 @@ function onChildRemoved(data) {
 }
 
 function saveNote() {
-    var key = $("#noteTitle").attr("key");
-    var title = $("#noteTitle").val();
-    var content = $("#noteContent").val().trim();
-
+    var key = $("#noteContent").attr("key");
+    //var title = $("#noteTitle").val();
+    var txt = $("#noteContent").html().replace(/(<div><br><\/div>)+$/ig, ""); // 끝에 공백제거
+/*
     if (title === '') {
         alert("제목을 입력해 주세요");
         return;
     }
-    if(content.length > 30000){
+    */
+    if(txt.length > 30000){
       alert("30000자 이내로 입력 가능");
       return;
     }
-    if (content === '') {
+    if (txt === '') {
         alert("내용을 입력해 주세요");
         return;
     }
 
     $(".dialog").css("display", "none");
+    $("#addBtn").html("쓰기");
+    $("body").css("overflow", "visible");
+    $("#topNavi").html("arrow_upward");
+
 
     if(key == ""){// 저장
       firebase.database().ref('notes/' + userInfo.uid).push({
-          title: title,
-          content: content,
+          //title: title,
+          txt: txt,
           createDate: new Date().getTime()
       });
+
     }else{// 수정
       firebase.database().ref('notes/' + userInfo.uid + "/" + key).update({
-          title: title,
-          content: content,
+          //title: title,
+          txt: txt,
           createDate: new Date().getTime()
       });
     }
 }
 
-
-
-function fn_get_data_one(key) {
-    selectedKey = key;
-    var noteRef = firebase.database().ref('notes/' + userInfo.uid + '/' + key).once('value').then(function(snapshot){
-        $('.textarea').val(snapshot.val().content);
-    });
-}
 
 function removeNote(key) {
   if (userInfo != null && userInfo.isConnected) {
@@ -168,12 +164,14 @@ function editNote(key) {
   if (userInfo != null && userInfo.isConnected) {
     var noteRef = firebase.database().ref('notes/' + userInfo.uid + '/' + key).once('value').then(function(snapshot){
       $(".dialog").css("display", "block");
-      $("#noteTitle").val(snapshot.val().title);
-      $("#noteContent").val(snapshot.val().content);
+      $("#noteContent").attr("key", key);
+      $("#noteContent").html(snapshot.val().txt);
       $("#noteContent").focus();
-      $("#noteTitle").attr("key", key);
-      $("#addBtn").html("완료");
-      $("#topBtn").css("display", "none");
+      $("#addBtn").html("저장");
+      $("#topNavi").removeClass("navi");
+      $("#topNavi").addClass("list");
+      $("#topNavi").html("목록");
+      $("body").css("overflow", "hidden");
     });
   }else{
     alert("로그인이 필요합니다");
@@ -185,17 +183,16 @@ function writeNote() {
     if (userInfo != null && userInfo.isConnected) {
       if($("#addBtn").html() == "쓰기"){
         $(".dialog").css("display", "block");
-        $("#noteTitle").val("");
-        $("#noteContent").val("");
-        $("#noteTitle").focus();
-        $("#noteTitle").attr("key", "");
-        $("#addBtn").html("완료");
-        $("#topBtn").css("display", "none");
+        $("#noteContent").html("");
+        $("#noteContent").focus();
+        $("#noteContent").attr("key", "");
+        $("#addBtn").html("저장");
+        $("#topNavi").removeClass("navi");
+        $("#topNavi").addClass("list");
+        $("#topNavi").html("목록");
+        $("body").css("overflow", "hidden");
       }else{
         saveNote();
-        $(".dialog").css("display", "none");
-        $("#topBtn").css("display", "block");
-        $("#addBtn").html("쓰기");
       }
 
     } else {
@@ -401,9 +398,13 @@ function listClick(){
 }
 
 function bodyScroll(){
-  if($(".state").html() != ""){// 검색결과 일때
+  if($(".state").html() != ""){// 검색결과 화면일 때
     return;
   }
+  if(window.scrollY == 0){// 처음 글쓰기 시작할때(스크롤이 아예 없을 때)
+    return;
+  }
+
 
   if(window.scrollY == $(document).height() - $(window).height()){
     NProgress.start();
@@ -419,7 +420,16 @@ function bodyScroll(){
 }
 
 function topNavi(){
-  $(window).scrollTop(0);
+    if($("#topNavi").html() == "목록"){
+        $(".dialog").css("display", "none");
+        $("#addBtn").html("쓰기");
+        $("body").css("overflow", "visible");
+        $("#topNavi").html("arrow_upward");
+        $("#topNavi").removeClass("list");
+        $("#topNavi").addClass("navi");
+    }else{
+        $(window).scrollTop(0);
+    }
 }
 
 function titleClick(){

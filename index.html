@@ -37,20 +37,19 @@
         </ul>
         <ul id="list" class="collection" onclick="listClick();" ontouchstart="listClick();"></ul>
         <div id="topBtn" class="fixed-action-btn" style="bottom: 110px; right: 24px;">
-          <a class="btn-floating btn-large waves-effect waves-light" style="opacity: 0.3;background-color:rgb(0, 140, 32)" onclick="topNavi();"> <i id="topNavi" class="material-icons">arrow_upward</i> </a>
+          <a class="btn-floating btn-large waves-effect waves-light" style="opacity: 0.3;background-color:rgb(0, 140, 32)" onclick="topNavi();"> <i id="topNavi" class="navi material-icons">arrow_upward</i> </a>
         </div>
         <div id="writeBtn" class="fixed-action-btn" style="bottom: 45px; right: 24px;">
           <a class="btn-floating btn-large waves-effect waves-light" style="opacity: 0.7;" onclick="writeNote();"> <i id="addBtn" class="material-icons">쓰기</i> </a>
         </div>
         <div class="dialog">
             <div id="div_write">
-              <input id="noteTitle" class="noteTitle" key=""></input>
-              <textarea id="noteContent" class="noteContent" placeholder="" onkeydown="keydownCheck(event);"></textarea>
+              <div id="noteContent" class="noteContent" contenteditable="true" onkeydown="keydownCheck(event);"></div>
             </div>
         </div>
         <div class="search">
             <div id="modal"></div>
-            <div id="div_write"><textarea id="input2" class="input" placeholder="" onkeydown="keydownCheck(event);"></textarea>
+            <div id="div_search"><textarea id="input2" class="input" placeholder="" onkeydown="keydownCheck(event);"></textarea>
                 <div class="btn_grp">
                     <div id="btn_search" class="btn" onclick="searchNote();">검색</div>
                     <div id="btn_cancel" class="btn" onclick="cancelSearch();">취소</div>
@@ -137,7 +136,7 @@
                     $("#writeBtn").show();
                     $("#addBtn").html("로긴");
                   }
-                }, 5000);
+              }, 20000);
                 //alert("연결상태가 끊어졌습니다.");
               }
             });
