@@ -219,6 +219,7 @@ function writeNote() {
         $(".dialog").css("display", "block");
         $("#noteContent").html("");
         $("#noteContent").focus();
+        //document.execCommand("bold");
         $("#noteContent").attr("key", "");
         $("#addBtn").html("저장");
         $("#topNavi").removeClass("navi");
@@ -292,31 +293,23 @@ function cancelSearch() {
 }
 
 
-function keydownCheck(event){
+function keyupCheck(event){
   var keycode = (event.which) ? event.which : event.keyCode;
-/*
+
   if(keycode == 13){
-      if($("#noteContent").html().match(/<\/div><div>/i) == null){
-          //console.log($("#noteContent").html());
-          var title = "<div class='title'>" + $("#noteContent").html() + "</div><div id='start'></div>";
-          //$("#noteContent").html(title)
-          //console.log(title);
-          setTimeout(function(){
-              $("#noteContent").html(title);
-
-              var p = document.getElementById('start'),
-                  s = window.getSelection(),
-                  r = document.createRange();
-              r.setStart(p, 0);
-              r.setEnd(p, 0);
-              s.removeAllRanges();
-              s.addRange(r);
-
-
-          }, 100);
+      if($("#noteContent").html().match(/<\/div><div/i) == null){
+          // 첫번째 줄 입력했을 때 제목효과
+          var range = document.createRange();
+          var root_node = document.getElementById("noteContent");
+          range.setStart(root_node,0);
+          range.setEnd(root_node,1);
+          var newNode = document.createElement("div");
+          newNode.setAttribute("class", "title");
+          range.surroundContents(newNode);
       }
   }
-*/
+
+
   if((event.metaKey || event.altKey) && keycode == 13) {
     if($(".dialog").css("display") == "block"){
       saveNote();

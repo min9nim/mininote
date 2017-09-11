@@ -44,12 +44,12 @@
         </div>
         <div class="dialog">
             <div id="div_write">
-              <div id="noteContent" class="noteContent" contenteditable="true" onkeydown="keydownCheck(event);"></div>
+              <div id="noteContent" class="noteContent" contenteditable="true" onkeyup="keyupCheck(event);"></div>
             </div>
         </div>
         <div class="search">
             <div id="modal"></div>
-            <div id="div_search"><textarea id="input2" class="input" placeholder="" onkeydown="keydownCheck(event);"></textarea>
+            <div id="div_search"><textarea id="input2" class="input" placeholder="" onkeyup="keyupCheck(event);"></textarea>
                 <div class="btn_grp">
                     <div id="btn_search" class="btn" onclick="searchNote();">검색</div>
                     <div id="btn_cancel" class="btn" onclick="cancelSearch();">취소</div>
