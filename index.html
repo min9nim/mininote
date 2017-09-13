@@ -81,6 +81,7 @@
             var noteRef;
             var noteList = [];
             var visibleRowCnt = 50;
+            var timer = null;
 
             NProgress.start();  // https://github.com/rstacruz/nprogress
             firebase.auth().onAuthStateChanged(function(user) {

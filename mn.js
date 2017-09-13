@@ -168,21 +168,32 @@ function viewNote(key) {
         $(".dialog").css("display", "block");
         $("#noteContent").attr("key", key);
         var txt = snapshot.val().txt;
-        var idx = txt.indexOf("<div>");
-        if(idx>0){
-            var title = txt.substr(0,idx);
-            var content = txt.substr(idx).autoLink({ target: "_blank" });
-        }else{
-            var title = txt;
-            var content = "";
-        }
-        $("#noteContent").html("<div class='title'>" + title + "</div>" + content);
+
+        $("#noteContent").html(txt);
         $("#addBtn").html("저장");
         $("#topNavi").removeClass("navi");
         $("#topNavi").addClass("list");
         $("#topNavi").html("목록");
         $("body").css("overflow", "hidden");
         $(window).scrollTop(0);
+
+        // 내용 변경여부 체크
+        timer = setInterval(function(){
+            var key = $("#noteContent").attr("key");
+
+            for(var i=0; i<noteList.length; i++){
+                if(noteList[i].key == key){
+                    console.log(noteList[i].val().txt);
+                    console.log($("#noteContent").html());
+                    if(noteList[i].val().txt == $("#noteContent").html()){
+                        console.log("변경사항 없음");
+                    }else{
+                        console.log("변경사항 있음");
+                    }
+                }
+            }
+        }, 3000);
+        
 
         var anchors = document.querySelectorAll("#noteContent a");
         anchors.forEach(function(i,a){
@@ -208,6 +219,7 @@ function viewNote(key) {
 function writeNote() {
     if (userInfo != null && userInfo.isConnected) {
       if($("#addBtn").html() == "쓰기"){
+          // 쓰기버튼 일때
         $(".dialog").css("display", "block");
         $("#noteContent").html("");
         $("#noteContent").focus();
@@ -218,7 +230,14 @@ function writeNote() {
         $("#topNavi").addClass("list");
         $("#topNavi").html("목록");
         $("body").css("overflow", "hidden");
+
+        timer = setInterval(function(){
+            console.log($("#noteContent").html());
+            var key = $("#noteContent").attr("key");
+            console.log(key);
+        }, 3000);
       }else{
+          //저장버튼 일때
         saveNote();
       }
 
@@ -472,6 +491,7 @@ function topNavi(){
         $("#topNavi").html("arrow_upward");
         $("#topNavi").removeClass("list");
         $("#topNavi").addClass("navi");
+        clearTimeout(timer);
     }else{
         $(window).scrollTop(0);
     }
