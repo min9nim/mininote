@@ -247,3 +247,12 @@ select#iconColor {
     font-size: 20px;
     font-weight: bold;
 }
+
+#noteContent li {
+    list-style-type: square;
+}
+
+#noteContent ul {
+    padding-left: 30px;
+    margin: 0px;
+}

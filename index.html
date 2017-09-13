@@ -146,9 +146,26 @@
             shortcut.add("Alt+W",function() {
             	writeNote();
             });
+
             shortcut.add("Alt+S",function() {
-              searchClick();
+                searchClick();
             });
+
+            shortcut.add("Ctrl+U",function() {
+                document.execCommand('insertunorderedlist');
+            },{"target":"noteContent"});
+
+            shortcut.add("tab",function() {
+                document.execCommand('indent');
+            },{"target":"noteContent"});
+
+            shortcut.add("Shift+tab",function() {
+                document.execCommand('outdent');
+            },{"target":"noteContent"});
+
+
+
+
         </script>
     </body>
 

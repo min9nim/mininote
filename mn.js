@@ -57,8 +57,15 @@ function addItem(key, noteData, how){
 
 function getNoteHtml(key, noteData){
     var idx = noteData.txt.indexOf("<div>");
-    var title = noteData.txt.substr(0,idx);
-    var content = noteData.txt.substr(idx);
+    if(idx > 0){
+        var title = noteData.txt.substr(0,idx);
+        var content = noteData.txt.substr(idx);
+    }else{
+        var title = noteData.txt;
+        var content = "";
+    }
+
+
     content = content.replace(/<\/div><div>/gi, " "); // html새줄문자를 공백문자로 변경
     content = content.replace(/<([^>]+)>/gi, "");   // 태그제거
     content = content.substr(0,100); // 100자까지만 보여주기
@@ -110,19 +117,9 @@ function onChildRemoved(data) {
 function saveNote() {
     var key = $("#noteContent").attr("key");
     //var title = $("#noteTitle").val();
+    debugger;
     var txt = $("#noteContent").html().replace(/(<div><br><\/div>)+$/ig, ""); // 끝에 공백제거
 
-    var idx = txt.indexOf("<div>");
-    var title = txt.substr(0,idx);
-    var content = txt.substr(idx);
-    txt = "<div class='title'>" + title + "</div>" + content;
-
-/*
-    if (title === '') {
-        alert("제목을 입력해 주세요");
-        return;
-    }
-    */
     if(txt.length > 30000){
       alert("30000자 이내로 입력 가능");
       return;
@@ -166,49 +163,44 @@ function removeNote(key) {
   }
 }
 
-function editNote(key) {
-  if (userInfo != null && userInfo.isConnected) {
-    var noteRef = firebase.database().ref('notes/' + userInfo.uid + '/' + key).once('value').then(function(snapshot){
-      $(".dialog").css("display", "block");
-      $("#noteContent").attr("key", key);
-
-      var txt = snapshot.val().txt;
-      $("#noteContent").html(txt);
-      /*
-      var idx = txt.indexOf("<div>");
-      var title = txt.substr(0,idx);
-      var content = txt.substr(idx);
-      $("#noteContent").html("<div class='title'>" + title + "</div>" + content);
-*/
-
-      $("#noteContent").focus();
-      $("#addBtn").html("저장");
-      $("#topNavi").removeClass("navi");
-      $("#topNavi").addClass("list");
-      $("#topNavi").html("목록");
-      $("body").css("overflow", "hidden");
-    });
-  }else{
-    alert("로그인이 필요합니다");
-  }
-}
-
-
 function viewNote(key) {
     var noteRef = firebase.database().ref('notes/' + userInfo.uid + '/' + key).once('value').then(function(snapshot){
-      $(".dialog").css("display", "block");
-      $("#noteContent").attr("key", key);
-      var txt = snapshot.val().txt;
-      var idx = txt.indexOf("<div>");
-      var title = txt.substr(0,idx);
-      var content = txt.substr(idx);
-      $("#noteContent").html("<div class='title'>" + title + "</div>" + content);
-      $("#addBtn").html("저장");
-      $("#topNavi").removeClass("navi");
-      $("#topNavi").addClass("list");
-      $("#topNavi").html("목록");
-      $("body").css("overflow", "hidden");
-      $(window).scrollTop(0);
+        $(".dialog").css("display", "block");
+        $("#noteContent").attr("key", key);
+        var txt = snapshot.val().txt;
+        var idx = txt.indexOf("<div>");
+        if(idx>0){
+            var title = txt.substr(0,idx);
+            var content = txt.substr(idx).autoLink({ target: "_blank" });
+        }else{
+            var title = txt;
+            var content = "";
+        }
+        $("#noteContent").html("<div class='title'>" + title + "</div>" + content);
+        $("#addBtn").html("저장");
+        $("#topNavi").removeClass("navi");
+        $("#topNavi").addClass("list");
+        $("#topNavi").html("목록");
+        $("body").css("overflow", "hidden");
+        $(window).scrollTop(0);
+
+        var anchors = document.querySelectorAll("#noteContent a");
+        anchors.forEach(function(i,a){
+            a.onmouseover = function(e){
+                if (e.ctrlKey) {
+                    if(e.target.getAttribute("contenteditable") != "false"){
+                        e.target.setAttribute("contenteditable","false");
+                    }
+                }else{
+                    if(e.target.getAttribute("contenteditable") == "false"){
+                        e.target.setAttribute("contenteditable","true");
+                    }
+                }
+            };
+            a.onmouseleave = function(e){
+                e.target.setAttribute("contenteditable","true");
+            };
+        });
     });
 }
 
