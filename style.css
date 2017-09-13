@@ -1,5 +1,12 @@
 #writeBtn {
     display: block;
+    bottom: 45px;
+    right: 24px;
+    opacity: 0.9;
+}
+
+#writeBtn.disable {
+    opacity: 0.2;
 }
 
 .dialog {
@@ -255,4 +262,13 @@ select#iconColor {
 #noteContent ul {
     padding-left: 30px;
     margin: 0px;
+}
+
+[placeholder]:empty:before {
+    content: attr(placeholder);
+    color: #aaa;
+}
+
+[placeholder]:empty:focus:before {
+    content: "";
 }
