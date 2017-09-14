@@ -134,7 +134,6 @@ function saveNote() {
 
     $("#writeBtn").addClass("disable");
 
-
     if (key == "") {// 저장
         firebase.database().ref('notes/' + userInfo.uid).push({
             //title: title,
@@ -303,29 +302,28 @@ function keyupCheck(event) {
                  range.surroundContents(newNode);
              }*/
     }
-    $("#writeBtn").removeClass("disable");
 
-/*
-    for(var i=0; i<noteList.length; i++){
-        if(noteList[i].key == key){
-            //console.log(noteList[i].val().txt);
-            //console.log($("#noteContent").html());
-            if(noteList[i].val().txt == $("#noteContent").html()){
-                console.log("변경사항 없음");
-            }else{
-                console.log("변경사항 있음");
-            }
-        }
-    }
-*/
+
 
     if ($("#writeBtn").hasClass("disable")) {
-        $("#writeBtn").removeClass("disable");
+        var key = $("#noteContent").attr("key");
+        for(var i=0; i<noteList.length; i++){
+            if(noteList[i].key == key){
+                //console.log(noteList[i].val().txt);
+                //console.log($("#noteContent").html());
+                if(noteList[i].val().txt == $("#noteContent").html()){
+                //    console.log("변경사항 없음");
+                }else{
+                //    console.log("변경사항 있음");
+                    $("#writeBtn").removeClass("disable");
+                }
+            }
+        }
     }
 
 
     if ((event.metaKey || event.altKey) && keycode == 13) {
-        
+
         if ($(".dialog").css("display") == "block") {
             saveNote();
         } else {
@@ -500,7 +498,7 @@ function topNavi() {
         $("#topNavi").removeClass("list");
         $("#topNavi").addClass("navi");
         $("#writeBtn").removeClass("disable");
-        clearTimeout(timer);
+        //clearTimeout(timer);
     } else {
         $(window).scrollTop(0);
     }

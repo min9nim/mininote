@@ -157,13 +157,18 @@
             },{"target":"noteContent"});
 
             shortcut.add("tab",function() {
-                debugger;
                 document.execCommand('indent');
             },{"target":"noteContent"});
 
             shortcut.add("Shift+tab",function() {
                 document.execCommand('outdent');
             },{"target":"noteContent"});
+
+            shortcut.add("meta+S",function() {
+                setTimeout(saveNote, 500);
+            },{"target":"noteContent"});
+
+
 
 
 
