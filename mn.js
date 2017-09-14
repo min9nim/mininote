@@ -117,6 +117,8 @@ function saveNote() {
     //var title = $("#noteTitle").val();
     var txt = $("#noteContent").html().replace(/(<div><br><\/div>)+$/ig, ""); // 끝에 공백제거
 
+    txt = txt.autoLink({target: "_blank"});
+
     if (txt.length > 30000) {
         alert("30000자 이내로 입력 가능");
         return;
@@ -129,6 +131,7 @@ function saveNote() {
     //$(".dialog").css("display", "none");
     //$("#addBtn").html("쓰기");
     //$("body").css("overflow", "visible");
+    //$("#topNavi").html("arrow_upward");
     //$("#topNavi").html("arrow_upward");
 
 
@@ -168,7 +171,6 @@ function viewNote(key) {
         $("#noteContent").attr("key", key);
         var txt = snapshot.val().txt;
 
-        txt = txt.autoLink({ target: "_blank" });
 
         $("#noteContent").html(txt);
         $("#addBtn").html("저장");
@@ -306,17 +308,16 @@ function keyupCheck(event) {
     }
 
 
-
     if ($("#writeBtn").hasClass("disable")) {
         var key = $("#noteContent").attr("key");
-        for(var i=0; i<noteList.length; i++){
-            if(noteList[i].key == key){
+        for (var i = 0; i < noteList.length; i++) {
+            if (noteList[i].key == key) {
                 //console.log(noteList[i].val().txt);
                 //console.log($("#noteContent").html());
-                if(noteList[i].val().txt == $("#noteContent").html()){
-                //    console.log("변경사항 없음");
-                }else{
-                //    console.log("변경사항 있음");
+                if (noteList[i].val().txt == $("#noteContent").html()) {
+                    //    console.log("변경사항 없음");
+                } else {
+                    //    console.log("변경사항 있음");
                     $("#writeBtn").removeClass("disable");
                 }
             }
