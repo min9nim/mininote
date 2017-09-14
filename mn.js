@@ -168,6 +168,8 @@ function viewNote(key) {
         $("#noteContent").attr("key", key);
         var txt = snapshot.val().txt;
 
+        txt = txt.autoLink({ target: "_blank" });
+
         $("#noteContent").html(txt);
         $("#addBtn").html("저장");
         $("#topNavi").removeClass("navi");
