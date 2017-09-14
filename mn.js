@@ -126,10 +126,13 @@ function saveNote() {
         return;
     }
 
-    $(".dialog").css("display", "none");
-    $("#addBtn").html("쓰기");
-    $("body").css("overflow", "visible");
-    $("#topNavi").html("arrow_upward");
+    //$(".dialog").css("display", "none");
+    //$("#addBtn").html("쓰기");
+    //$("body").css("overflow", "visible");
+    //$("#topNavi").html("arrow_upward");
+
+
+    $("#writeBtn").addClass("disable");
 
 
     if (key == "") {// 저장
@@ -210,9 +213,6 @@ function writeNote() {
             $("body").css("overflow", "hidden");
 
             $("#writeBtn").addClass("disable");
-
-
-
 
         } else {
             //저장버튼 일때
@@ -303,7 +303,21 @@ function keyupCheck(event) {
                  range.surroundContents(newNode);
              }*/
     }
+    $("#writeBtn").removeClass("disable");
 
+/*
+    for(var i=0; i<noteList.length; i++){
+        if(noteList[i].key == key){
+            //console.log(noteList[i].val().txt);
+            //console.log($("#noteContent").html());
+            if(noteList[i].val().txt == $("#noteContent").html()){
+                console.log("변경사항 없음");
+            }else{
+                console.log("변경사항 있음");
+            }
+        }
+    }
+*/
 
     if ($("#writeBtn").hasClass("disable")) {
         $("#writeBtn").removeClass("disable");
@@ -311,6 +325,7 @@ function keyupCheck(event) {
 
 
     if ((event.metaKey || event.altKey) && keycode == 13) {
+        
         if ($(".dialog").css("display") == "block") {
             saveNote();
         } else {
