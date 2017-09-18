@@ -1,3 +1,8 @@
+#list {
+    margin: 0px;
+}
+
+
 #writeBtn {
     display: block;
     bottom: 45px;
@@ -11,7 +16,7 @@
 
 .dialog{
     position: absolute;
-    width: 100%;
+    width: calc(100% - 150px);
     height: 100%;
     top: 32px;
     left: 150px;
@@ -67,7 +72,7 @@
 }
 
 .header {
-    background-color: #26a69a;
+    background-color: #054e7f;
     color: #fff;
     font-size: 20px;
     padding-left: 10px;
@@ -115,6 +120,16 @@
     font-size: 22px;
     line-height: 50px;
 }
+
+#writeBtn a {
+    background-color: #054e7f;
+}
+
+#topBtn a  {
+    background-color: #054e7f;
+    opacity: 0.3;
+}
+
 
 .createDate {
     color: #999999;

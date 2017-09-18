@@ -101,7 +101,9 @@ function onChildChanged(data) {
 
     // 오른쪽 끝 컨텍스트버튼 이벤트 처리
     setContextBtnEvent($("#" + key + " .btnContext"));
-    window.scrollTo("", document.getElementById(key).offsetTop + document.getElementById("list").offsetTop);
+
+    // 수정한 글목록으로 스크롤 이동
+    //window.scrollTo("", document.getElementById(key).offsetTop + document.getElementById("list").offsetTop);
 }
 
 function onChildRemoved(data) {
@@ -138,11 +140,13 @@ function saveNote() {
     $("#writeBtn").addClass("disable");
 
     if (key == "") {// 저장
-        firebase.database().ref('notes/' + userInfo.uid).push({
+        var res = firebase.database().ref('notes/' + userInfo.uid).push({
             //title: title,
             txt: txt,
             createDate: new Date().getTime()
         });
+
+        $("#noteContent").attr("key", res.key);
 
     } else {// 수정
         firebase.database().ref('notes/' + userInfo.uid + "/" + key).update({
