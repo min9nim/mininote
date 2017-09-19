@@ -209,10 +209,8 @@ function writeNote() {
         if ($("#addBtn").html() == "쓰기") {
             // 쓰기버튼 일때
             $(".dialog").css("display", "block");
-            $("#noteContent").html("<div class='title' placeholder='제목'></div><div><br/></div><div placeholder='내용'></div>");
-            $("#noteContent div")[1].focus();
-            $("#noteContent").focus();
-            $("#noteContent").attr("key", "");
+            $("#noteContent").html("<div class='title' placeholder='제목'>제목</div><div><br/></div><div placeholder='내용'></div>");
+            $("#noteContent .title").focus();   // 파폭에서 해당 지점으로 포커스 들어가지 않음
 
             $("#addBtn").html("저장");
             $("#writeBtn").addClass("disable");
@@ -223,6 +221,15 @@ function writeNote() {
             $("body").css("overflow", "hidden");
 
             $("#writeBtn").addClass("disable");
+
+
+            var title = document.querySelector("#noteContent .title")
+            var s = window.getSelection();
+            s.removeAllRanges();
+            var range = document.createRange();
+            range.selectNode(title.firstChild); // firstChild 로 세팅하지 않으면 파폭에서는 div 태그까지 통째로 선택영역으로 잡힌다
+            s.addRange(range);
+            
 
         } else {
             //저장버튼 일때
@@ -508,6 +515,9 @@ function topNavi() {
         $("#topNavi").removeClass("list");
         $("#topNavi").addClass("navi");
         $("#writeBtn").removeClass("disable");
+
+        $("#list li").removeClass("selected");
+
         //clearTimeout(timer);
     } else {
         $(window).scrollTop(0);
