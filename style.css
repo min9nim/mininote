@@ -282,6 +282,11 @@ select#iconColor {
     list-style-type: square;
 }
 
+#list .selected {
+    background-color: #eee;
+    opacity: 0.9;
+}
+
 #noteContent ul {
     padding-left: 30px;
     margin: 0px;

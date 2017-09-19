@@ -175,6 +175,9 @@ function viewNote(key) {
         $("#noteContent").attr("key", key);
         var txt = snapshot.val().txt;
 
+        $("#list li.selected").removeClass("selected");
+        $("#"+key).addClass("selected");
+
 
         $("#noteContent").html(txt);
         $("#addBtn").html("저장");
