@@ -206,9 +206,10 @@ function viewNote(key) {
 
 function writeNote() {
     if (userInfo != null && userInfo.isConnected) {
-        if ($("#addBtn").html() == "쓰기") {
+        if ($("#addBtn").html() == "새글") {
             // 쓰기버튼 일때
             $(".dialog").css("display", "block");
+            $("#noteContent").attr("key",  "");
             $("#noteContent").html("<div class='title' placeholder='제목'>제목</div><div><br/></div><div placeholder='내용'></div>");
             $("#noteContent .title").focus();   // 파폭에서 해당 지점으로 포커스 들어가지 않음
 
@@ -229,7 +230,7 @@ function writeNote() {
             var range = document.createRange();
             range.selectNode(title.firstChild); // firstChild 로 세팅하지 않으면 파폭에서는 div 태그까지 통째로 선택영역으로 잡힌다
             s.addRange(range);
-            
+
 
         } else {
             //저장버튼 일때
@@ -509,7 +510,7 @@ function bodyScroll() {
 function topNavi() {
     if ($("#topNavi").html() == "목록") {
         $(".dialog").css("display", "none");
-        $("#addBtn").html("쓰기");
+        $("#addBtn").html("새글");
         $("body").css("overflow", "visible");
         $("#topNavi").html("arrow_upward");
         $("#topNavi").removeClass("list");

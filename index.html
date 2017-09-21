@@ -40,7 +40,7 @@
           <a class="btn-floating btn-large waves-effect waves-light" onclick="topNavi();"> <i id="topNavi" class="navi material-icons">arrow_upward</i> </a>
         </div>
         <div id="writeBtn" class="fixed-action-btn">
-          <a class="btn-floating btn-large waves-effect waves-light" onclick="writeNote();"><i id="addBtn" class="material-icons">쓰기</i> </a>
+          <a class="btn-floating btn-large waves-effect waves-light" onclick="writeNote();"><i id="addBtn" class="material-icons">새글</i> </a>
         </div>
         <div class="dialog">
             <div id="div_write">
@@ -124,7 +124,7 @@
                   userInfo.isConnected = true;
                 //$(".state").html("online");
                 $("#writeBtn").show();
-                $("#addBtn").html("쓰기");
+                $("#addBtn").html("새글");
               } else {
                 if(userInfo != null)
                   userInfo.isConnected = false;

@@ -16,10 +16,10 @@
 
 .dialog{
     position: absolute;
-    width: calc(100% - 150px);
+    width: calc(100% - 120px);
     height: 100%;
     top: 32px;
-    left: 150px;
+    left: 120px;
     display: none;
     font-size: 12px;
     background-color: white;
@@ -270,7 +270,7 @@ select#iconColor {
 }
 
 #list li .content {
-    font-size: 12px;
+    font-size: 13px;
 }
 
 #noteContent .title {
