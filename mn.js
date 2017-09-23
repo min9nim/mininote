@@ -360,6 +360,9 @@ function ManageDiff(){
         return this.hasDiff;
     }
     this.start = function(){
+        if(this.timer){
+            return;
+        }
         this.timer = setInterval(function(){
             if(md.checkDiff()) {
                 saveNote();
@@ -368,7 +371,7 @@ function ManageDiff(){
         },1000);
     }
     this.end = function(){
-        clearTimeout(this.timer);
+        this.timer = clearTimeout(this.timer);
     }
 }
 
