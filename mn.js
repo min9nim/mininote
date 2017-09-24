@@ -233,6 +233,9 @@ function writeNote() {
 
             $("#writeBtn").addClass("disable");
 
+            // 스크롤처리
+            $(window).scrollTop(0);
+
             // 포커스 처리
             var title = document.querySelector("#noteContent .title")
             var s = window.getSelection();
@@ -365,6 +368,9 @@ function ManageDiff(){
         }
         this.timer = setInterval(function(){
             if(md.checkDiff()) {
+                if($("#noteContent div:first-child").html() == "제목"){
+                    return;
+                }
                 saveNote();
                 $("#writeBtn").addClass("disable");
             }

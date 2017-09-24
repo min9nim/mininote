@@ -125,7 +125,11 @@
                   userInfo.isConnected = true;
                 //$(".state").html("online");
                 $("#writeBtn").show();
-                $("#addBtn").html("새글");
+                if($(".dialog").css("display")=="none"){
+                    $("#addBtn").html("새글");
+                }else{
+                    $("#addBtn").html("저장");
+                }
               } else {
                 if(userInfo != null)
                   userInfo.isConnected = false;
