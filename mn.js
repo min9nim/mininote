@@ -123,7 +123,7 @@ function onChildRemoved(data) {
 }
 
 function saveNote() {
-    console.log("saveNote called..");
+    //console.log("saveNote called..");
     var key = $("#noteContent").attr("key");
     //var title = $("#noteTitle").val();
     var txt = $("#noteContent").html().replace(/(<div><br><\/div>)+$/ig, ""); // 끝에 공백제거
@@ -349,7 +349,7 @@ function keyupCheck(event) {
 function ManageDiff(){
     this.hasDiff = false;
     this.checkDiff = function(){
-        console.log("checkDiff called..");
+        //console.log("checkDiff called..");
         if($(".dialog").css("display") == "none"){
             // 글편집 상태가 아니면 변경사항 체크 자동종료
             this.end();
@@ -368,8 +368,15 @@ function ManageDiff(){
         return this.hasDiff;
     }
     this.start = function(){
-        console.log("md.start called");
+        //console.log("md.start called");
         //console.log(this.timer);
+        var mark = document.querySelectorAll("#noteContent div")[1].innerHTML;
+        if(mark == "<br>"){
+            document.querySelectorAll("#noteContent div")[1].innerHTML = "."
+        }else{
+            document.querySelectorAll("#noteContent div")[1].innerHTML = mark + ".";
+        }
+
         if(this.timer){
             //return;
             md.end();   // 수정 중인 상황에는 타이머 초기화
@@ -379,6 +386,7 @@ function ManageDiff(){
                 if($("#noteContent div:first-child").html() == "제목"){
                     // 제목을 수정하지 않을 경우 저장하지 않는다
                 }else{
+                    document.querySelectorAll("#noteContent div")[1].innerHTML = "<br>";
                     saveNote();
                     $("#writeBtn").addClass("disable");
                 }
