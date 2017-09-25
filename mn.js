@@ -191,9 +191,12 @@ function viewNote(key) {
 
         $("#noteContent").html(txt);
         $("#addBtn").html("저장");
+        $("#writeBtn").hide();
         $("#topNavi").removeClass("navi");
         $("#topNavi").addClass("list");
         $("#topNavi").html("목록");
+        $("#topBtn a").css("opacity", "");
+
         $("body").css("overflow", "hidden");
         $(window).scrollTop(0);
 
@@ -221,12 +224,16 @@ function writeNote() {
             $("#noteContent").html("<div class='title' placeholder='제목'>제목</div><div><br/></div><div placeholder='내용'></div>");
             $("#noteContent .title").focus();   // 파폭에서 해당 지점으로 포커스 들어가지 않음
 
+            // 저장버튼 처리
             $("#addBtn").html("저장");
             $("#writeBtn").addClass("disable");
+            $("#writeBtn").hide();
 
             $("#topNavi").removeClass("navi");
             $("#topNavi").addClass("list");
             $("#topNavi").html("목록");
+            $("#topBtn a").css("opacity", "");
+
             $("body").css("overflow", "hidden");
 
             $("#writeBtn").addClass("disable");
@@ -362,8 +369,10 @@ function ManageDiff(){
     }
     this.start = function(){
         console.log("md.start called");
+        //console.log(this.timer);
         if(this.timer){
-            return;
+            //return;
+            md.end();   // 수정 중인 상황에는 타이머 초기화
         }
         this.timer = setTimeout(function(){
             if(md.checkDiff()) {
@@ -375,7 +384,7 @@ function ManageDiff(){
                 }
             }
             md.end();
-        },1000);
+        }, 1000);
     }
     this.end = function(){
         this.timer = clearTimeout(this.timer);
@@ -509,7 +518,6 @@ function setIconColor(color) {
     });
 }
 
-
 function listClick() {
     $(".menu").animate({left: "-220px"}, 300);
 }
@@ -539,12 +547,16 @@ function bodyScroll() {
 function topNavi() {
     if ($("#topNavi").html() == "목록") {
         $(".dialog").css("display", "none");
-        $("#addBtn").html("새글");
+
         $("body").css("overflow", "visible");
         $("#topNavi").html("arrow_upward");
         $("#topNavi").removeClass("list");
         $("#topNavi").addClass("navi");
+        $("#topBtn a").css("opacity", "0.3");
+
+        $("#addBtn").html("새글");
         $("#writeBtn").removeClass("disable");
+        $("#writeBtn").show();
 
         $("#list li").removeClass("selected");
 
