@@ -351,21 +351,21 @@ function ManageDiff(){
         this.noteKey = $("#noteContent").attr("key");
         if(!this.noteKey){
             // 신규인 경우
-          return this.hasDiff = true;
-        }
-
-        // 아래 루프를 없애도록 해야해...
-        for (var i = 0; i < noteList.length; i++) {
-            if (noteList[i].key == this.noteKey) {
-                this.hasDiff = noteList[i].val().txt != $("#noteContent").html();
-                break;
+          this.hasDiff = true;
+        }else{
+            // 아래 루프를 없애도록 해야해...
+            for (var i = 0; i < noteList.length; i++) {
+                if (noteList[i].key == this.noteKey) {
+                    this.hasDiff = noteList[i].val().txt != $("#noteContent").html();
+                    break;
+                }
             }
         }
 
         // 변경사항 있을 경우 변경사항 표시..
         if(this.hasDiff){
             var mark = document.querySelector("#diffMark").innerHTML;
-            document.querySelector("#diffMark").innerHTML = mark + ".";
+            document.querySelector("#diffMark").innerHTML = mark + "*";
         }
 
         if(this.timer){

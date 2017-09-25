@@ -172,6 +172,7 @@
 
             shortcut.add("meta+S",function() {
                 //setTimeout(saveNote, 500);
+                document.querySelector("#diffMark").innerHTML = "";
                 saveNote();
             },{"target":"noteContent"});
             shortcut.add("Ctrl+S",function() {
