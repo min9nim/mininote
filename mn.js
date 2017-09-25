@@ -368,10 +368,11 @@ function ManageDiff(){
         this.timer = setTimeout(function(){
             if(md.checkDiff()) {
                 if($("#noteContent div:first-child").html() == "제목"){
-                    return;
+                    // 제목을 수정하지 않을 경우 저장하지 않는다
+                }else{
+                    saveNote();
+                    $("#writeBtn").addClass("disable");
                 }
-                saveNote();
-                $("#writeBtn").addClass("disable");
             }
             md.end();
         },1000);
