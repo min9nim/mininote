@@ -197,8 +197,6 @@ function viewNote(key) {
         $("body").css("overflow", "hidden");
         $(window).scrollTop(0);
 
-        // 내용 변경여부 체크
-        md.start();
 
 
         var anchors = document.querySelectorAll("#noteContent a");
@@ -243,10 +241,6 @@ function writeNote() {
             var range = document.createRange();
             range.selectNode(title.firstChild); // firstChild 로 세팅하지 않으면 파폭에서는 div 태그까지 통째로 선택영역으로 잡힌다
             s.addRange(range);
-
-
-            // 내용 변경여부 체크
-            md.start();
 
 
         } else {
@@ -318,6 +312,10 @@ function cancelSearch() {
 
 
 function keyupCheck(event) {
+
+    // 내용 변경여부 체크
+    md.start();
+
     var keycode = (event.which) ? event.which : event.keyCode;
 
     if (keycode == 13) {
@@ -363,10 +361,11 @@ function ManageDiff(){
         return this.hasDiff;
     }
     this.start = function(){
+        console.log("md.start called");
         if(this.timer){
             return;
         }
-        this.timer = setInterval(function(){
+        this.timer = setTimeout(function(){
             if(md.checkDiff()) {
                 if($("#noteContent div:first-child").html() == "제목"){
                     return;
@@ -374,6 +373,7 @@ function ManageDiff(){
                 saveNote();
                 $("#writeBtn").addClass("disable");
             }
+            md.end();
         },1000);
     }
     this.end = function(){
