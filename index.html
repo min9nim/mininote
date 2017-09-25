@@ -82,7 +82,7 @@
             var noteRef;
             var noteList = [];
             var visibleRowCnt = 50;
-            var timer = null;
+            var md = new ManageDiff();
 
             NProgress.start();  // https://github.com/rstacruz/nprogress
             firebase.auth().onAuthStateChanged(function(user) {
@@ -125,7 +125,11 @@
                   userInfo.isConnected = true;
                 //$(".state").html("online");
                 $("#writeBtn").show();
-                $("#addBtn").html("새글");
+                if($(".dialog").css("display")=="none"){
+                    $("#addBtn").html("새글");
+                }else{
+                    $("#addBtn").html("저장");
+                }
               } else {
                 if(userInfo != null)
                   userInfo.isConnected = false;
@@ -166,13 +170,13 @@
             },{"target":"noteContent"});
 
             shortcut.add("meta+S",function() {
-                setTimeout(saveNote, 500);
+                //setTimeout(saveNote, 500);
+                saveNote();
             },{"target":"noteContent"});
-
-
-
-
-
+            shortcut.add("Ctrl+S",function() {
+                //setTimeout(saveNote, 500);
+                saveNote();
+            },{"target":"noteContent"});
 
         </script>
     </body>

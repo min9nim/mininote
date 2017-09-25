@@ -102,6 +102,14 @@ function onChildChanged(data) {
     // 오른쪽 끝 컨텍스트버튼 이벤트 처리
     setContextBtnEvent($("#" + key + " .btnContext"));
 
+    // noteList 갱신
+    for(var i=0; i<noteList.length; i++){
+        if(noteList[i].key == key){
+            noteList[i] = data;
+            break;
+        }
+    }
+
     // 수정한 글목록으로 스크롤 이동
     //window.scrollTo("", document.getElementById(key).offsetTop + document.getElementById("list").offsetTop);
 }
@@ -115,6 +123,7 @@ function onChildRemoved(data) {
 }
 
 function saveNote() {
+    console.log("saveNote called..");
     var key = $("#noteContent").attr("key");
     //var title = $("#noteTitle").val();
     var txt = $("#noteContent").html().replace(/(<div><br><\/div>)+$/ig, ""); // 끝에 공백제거
@@ -137,7 +146,7 @@ function saveNote() {
     //$("#topNavi").html("arrow_upward");
 
 
-    $("#writeBtn").addClass("disable");
+
 
     if (key == "") {// 저장
         var res = firebase.database().ref('notes/' + userInfo.uid).push({
@@ -169,6 +178,7 @@ function removeNote(key) {
     }
 }
 
+
 function viewNote(key) {
     var noteRef = firebase.database().ref('notes/' + userInfo.uid + '/' + key).once('value').then(function (snapshot) {
         $(".dialog").css("display", "block");
@@ -188,7 +198,7 @@ function viewNote(key) {
         $(window).scrollTop(0);
 
         // 내용 변경여부 체크
-        $("#writeBtn").addClass("disable");
+        md.start();
 
 
         var anchors = document.querySelectorAll("#noteContent a");
@@ -223,13 +233,20 @@ function writeNote() {
 
             $("#writeBtn").addClass("disable");
 
+            // 스크롤처리
+            $(window).scrollTop(0);
 
+            // 포커스 처리
             var title = document.querySelector("#noteContent .title")
             var s = window.getSelection();
             s.removeAllRanges();
             var range = document.createRange();
             range.selectNode(title.firstChild); // firstChild 로 세팅하지 않으면 파폭에서는 div 태그까지 통째로 선택영역으로 잡힌다
             s.addRange(range);
+
+
+            // 내용 변경여부 체크
+            md.start();
 
 
         } else {
@@ -321,37 +338,48 @@ function keyupCheck(event) {
                  range.surroundContents(newNode);
              }*/
     }
-
-
-    if ($("#writeBtn").hasClass("disable")) {
-        var key = $("#noteContent").attr("key");
-        for (var i = 0; i < noteList.length; i++) {
-            if (noteList[i].key == key) {
-                //console.log(noteList[i].val().txt);
-                //console.log($("#noteContent").html());
-                if (noteList[i].val().txt == $("#noteContent").html()) {
-                    //    console.log("변경사항 없음");
-                } else {
-                    //    console.log("변경사항 있음");
-                    $("#writeBtn").removeClass("disable");
-                }
-            }
-        }
-    }
-
-
-    if ((event.metaKey || event.altKey) && keycode == 13) {
-
-        if ($(".dialog").css("display") == "block") {
-            saveNote();
-        } else {
-            searchNote();
-        }
-        event.preventDefault();
-        return false;
-    }
 }
 
+
+function ManageDiff(){
+    this.hasDiff = false;
+    this.checkDiff = function(){
+        console.log("checkDiff called..");
+        if($(".dialog").css("display") == "none"){
+            // 글편집 상태가 아니면 변경사항 체크 자동종료
+            this.end();
+        }
+        this.noteKey = $("#noteContent").attr("key");
+        if(!this.noteKey){
+            // 신규 글쓰기인 경우 자동저장
+          return this.hasDiff = true;
+        }
+        for (var i = 0; i < noteList.length; i++) {
+            if (noteList[i].key == this.noteKey) {
+                this.hasDiff = noteList[i].val().txt != $("#noteContent").html();
+                break;
+            }
+        }
+        return this.hasDiff;
+    }
+    this.start = function(){
+        if(this.timer){
+            return;
+        }
+        this.timer = setInterval(function(){
+            if(md.checkDiff()) {
+                if($("#noteContent div:first-child").html() == "제목"){
+                    return;
+                }
+                saveNote();
+                $("#writeBtn").addClass("disable");
+            }
+        },1000);
+    }
+    this.end = function(){
+        this.timer = clearTimeout(this.timer);
+    }
+}
 
 function setHeader() {
     if (userInfo != null) {
@@ -532,3 +560,4 @@ function titleClick() {
         firebase.auth().signInWithRedirect(new firebase.auth.GoogleAuthProvider());
     }
 }
+
