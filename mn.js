@@ -123,7 +123,7 @@ function onChildRemoved(data) {
 }
 
 function saveNote() {
-    //console.log("saveNote called..");
+    console.log("saveNote called..");
     var key = $("#noteContent").attr("key");
     //var title = $("#noteTitle").val();
     var txt = $("#noteContent").html().replace(/(<div><br><\/div>)+$/ig, ""); // 끝에 공백제거
@@ -319,19 +319,16 @@ function cancelSearch() {
 
 
 function keyupCheck(event) {
+    var keycode = (event.which) ? event.which : event.keyCode;
 
     // 내용 변경여부 체크
-    md.start();
-
-    var keycode = (event.which) ? event.which : event.keyCode;
+    md.checkDiff();
 
     if (keycode == 13) {
         /*
         if ($("#noteContent div:first-child").hasClass("title") == false) {
             $("#noteContent div:first-child").addClass("title")
         }*/
-
-
         /*     if($("#noteContent").html().match(/<\/div><div/i) == null){
                  // 첫번째 줄 입력했을 때 제목효과
                  var range = document.createRange();
@@ -348,45 +345,39 @@ function keyupCheck(event) {
 
 function ManageDiff(){
     this.hasDiff = false;
+
     this.checkDiff = function(){
-        //console.log("checkDiff called..");
-        if($(".dialog").css("display") == "none"){
-            // 글편집 상태가 아니면 변경사항 체크 자동종료
-            this.end();
-        }
+        console.log("checkDiff called..");
         this.noteKey = $("#noteContent").attr("key");
         if(!this.noteKey){
-            // 신규 글쓰기인 경우 자동저장
+            // 신규인 경우
           return this.hasDiff = true;
         }
+
+        // 아래 루프를 없애도록 해야해...
         for (var i = 0; i < noteList.length; i++) {
             if (noteList[i].key == this.noteKey) {
                 this.hasDiff = noteList[i].val().txt != $("#noteContent").html();
                 break;
             }
         }
-        return this.hasDiff;
-    }
-    this.start = function(){
-        //console.log("md.start called");
-        //console.log(this.timer);
-        var mark = document.querySelectorAll("#noteContent div")[1].innerHTML;
-        if(mark == "<br>"){
-            document.querySelectorAll("#noteContent div")[1].innerHTML = "."
-        }else{
-            document.querySelectorAll("#noteContent div")[1].innerHTML = mark + ".";
+
+        // 변경사항 있을 경우 변경사항 표시..
+        if(this.hasDiff){
+            var mark = document.querySelector("#diffMark").innerHTML;
+            document.querySelector("#diffMark").innerHTML = mark + ".";
         }
 
         if(this.timer){
-            //return;
             md.end();   // 수정 중인 상황에는 타이머 초기화
         }
+
         this.timer = setTimeout(function(){
-            if(md.checkDiff()) {
+            if(md.hasDiff) {
                 if($("#noteContent div:first-child").html() == "제목"){
                     // 제목을 수정하지 않을 경우 저장하지 않는다
                 }else{
-                    document.querySelectorAll("#noteContent div")[1].innerHTML = "<br>";
+                    document.querySelector("#diffMark").innerHTML = "";
                     saveNote();
                     $("#writeBtn").addClass("disable");
                 }
@@ -394,6 +385,7 @@ function ManageDiff(){
             md.end();
         }, 1000);
     }
+
     this.end = function(){
         this.timer = clearTimeout(this.timer);
     }
