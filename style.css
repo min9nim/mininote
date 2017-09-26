@@ -17,7 +17,7 @@
 .dialog{
     position: absolute;
     width: calc(100% - 120px);
-    height: 100%;
+    height: calc(100% - 30px);
     top: 32px;
     left: 120px;
     display: none;

@@ -7,6 +7,7 @@ function showNoteList(uid) {
         for (key in noteObj) {
             addItem(key, noteObj[key]);
         }
+
         $(".header .title").html(userInfo.data.nickname + "'s " + noteList.length + " notes");
         NProgress.done();
     });
@@ -14,6 +15,7 @@ function showNoteList(uid) {
 
 function initNoteList(uid) {
     //var noteRef = firebase.database().ref('notes/' + uid).limitToLast(100);
+    // 이벤트 등록용..
     noteRef = firebase.database().ref('notes/' + uid);
     noteRef.on('child_added', onChildAdded);
     noteRef.on('child_changed', onChildChanged);
@@ -22,8 +24,9 @@ function initNoteList(uid) {
 }
 
 function onChildAdded(data) {
-    //console.log("## onChildAdded called");
+    //console.log("## onChildAdded called " + data.key);
     noteList.push(data);
+    notes.setItem(data.key, data.val());
     var curDate = new Date().getTime();
     var createDate = data.val().createDate;
     var diff = curDate - createDate;
@@ -31,11 +34,10 @@ function onChildAdded(data) {
     if (diff < 1000) {// 방금 새로 등록한 글인 경우만
         addItem(data.key, data.val());
         if ($(".state").html() == "") {
-            $(".header .title").html(userInfo.data.nickname + "'s " + noteList.length + " notes");
+            $(".header .title").html(userInfo.data.nickname + "'s " +  notes.length + " notes");
         } else {
-            $(".header .title").html(noteList.length + " notes");
+            $(".header .title").html(notes.length + " notes");
         }
-
     }
 }
 
@@ -110,6 +112,9 @@ function onChildChanged(data) {
         }
     }
 
+    // notes 갱신
+    notes.setItem(key, noteData);
+
     // 수정한 글목록으로 스크롤 이동
     //window.scrollTo("", document.getElementById(key).offsetTop + document.getElementById("list").offsetTop);
 }
@@ -119,7 +124,8 @@ function onChildRemoved(data) {
     var key = data.key;
     $('#' + key).remove();
     noteList.splice(noteList.indexOf(data), 1);  // noteList에서 삭제된 요소 제거
-    $(".header .title").html(userInfo.data.nickname + "'s " + noteList.length + " notes");
+    notes.removeItem(key);
+    $(".header .title").html(userInfo.data.nickname + "'s " + notes.length + " notes");
 }
 
 function saveNote() {
@@ -351,15 +357,18 @@ function ManageDiff(){
         this.noteKey = $("#noteContent").attr("key");
         if(!this.noteKey){
             // 신규인 경우
-          this.hasDiff = true;
+            this.hasDiff = true;
         }else{
             // 아래 루프를 없애도록 해야해...
+            this.hasDiff = notes.getItem(this.noteKey).txt != $("#noteContent").html();
+            /*
             for (var i = 0; i < noteList.length; i++) {
                 if (noteList[i].key == this.noteKey) {
                     this.hasDiff = noteList[i].val().txt != $("#noteContent").html();
                     break;
                 }
             }
+            */
         }
 
         // 변경사항 있을 경우 변경사항 표시..
@@ -487,7 +496,7 @@ function searchFirstTxt() {
                 addItem(key, noteObj[key]);
             }
         }
-        $(".header .title").html(noteList.length + " notes");
+        $(".header .title").html(notes.length + " notes");
         $(".header .state").html(`> <span style="font-style:italic;">${firstTxt}</span> 's ${$("#list li").length} results`);
         // 매칭단어 하이라이트닝
         $(".txt").each(function (i) {
@@ -499,7 +508,7 @@ function searchFirstTxt() {
 function setNickname(nickname) {
     userInfo.data.nickname = nickname;
     firebase.database().ref('users/' + userInfo.uid).update(userInfo.data);
-    $(".header .title").html(userInfo.data.nickname + "'s " + noteList.length + " notes");
+    $(".header .title").html(userInfo.data.nickname + "'s " + notes.length + " notes");
 }
 
 
@@ -534,9 +543,10 @@ function bodyScroll() {
     if (window.scrollY == $(document).height() - $(window).height()) {
         NProgress.start();
         $("#nprogress .spinner").css("top", "95%");
-        var end = noteList.length - $("#list li").length;
+        var end = notes.length - $("#list li").length;
         var start = end - visibleRowCnt < 0 ? 0 : end - visibleRowCnt;
-        var nextList = noteList.slice(start, end).reverse();
+        var nextList = noteList.slice(start, end).reverse();    // 여기서 배열구조를 버리기가 간단치가 않고나..
+
         nextList.forEach(function (x, i) {
             addItem(x.key, x.val(), "append");
         });
