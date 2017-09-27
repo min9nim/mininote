@@ -16,10 +16,10 @@
 
 .dialog{
     position: absolute;
-    width: calc(100% - 120px);
+    width: calc(100% - 93px);
     height: calc(100% - 30px);
     top: 32px;
-    left: 120px;
+    left: 93px;
     display: none;
     font-size: 12px;
     background-color: white;

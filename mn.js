@@ -186,6 +186,8 @@ function removeNote(key) {
 
 
 function viewNote(key) {
+   md.save();
+
     var noteRef = firebase.database().ref('notes/' + userInfo.uid + '/' + key).once('value').then(function (snapshot) {
         $(".dialog").css("display", "block");
         $("#noteContent").attr("key", key);
@@ -382,19 +384,20 @@ function ManageDiff(){
         }
 
         this.timer = setTimeout(function(){
-            if(md.hasDiff) {
-                if($("#noteContent div:first-child").html() == "제목"){
-                    // 제목을 수정하지 않을 경우 저장하지 않는다
-                }else{
-                    document.querySelector("#diffMark").innerHTML = "";
-                    saveNote();
-                    $("#writeBtn").addClass("disable");
-                }
-            }
+            md.save();
             md.end();
         }, 1000);
     }
-
+    this.save = function(){
+        if(this.hasDiff) {
+            if($("#noteContent div:first-child").html() == "제목"){
+                // 제목을 수정하지 않을 경우 저장하지 않는다
+            }else{
+                saveNote();
+            }
+        }
+        document.querySelector("#diffMark").innerHTML = "";
+    }
     this.end = function(){
         this.timer = clearTimeout(this.timer);
     }
