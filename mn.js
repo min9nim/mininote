@@ -148,29 +148,17 @@ function saveNote() {
         return;
     }
 
-    //$(".dialog").css("display", "none");
-    //$("#addBtn").html("쓰기");
-    //$("body").css("overflow", "visible");
-    //$("#topNavi").html("arrow_upward");
-    //$("#topNavi").html("arrow_upward");
-
-
-
-
     if (key == "") {// 저장
         var res = firebase.database().ref('notes/' + userInfo.uid).push({
-            //title: title,
             txt: txt,
-            createDate: new Date().getTime()
+            createDate: new Date().getTime(),
+            updateDate: new Date().getTime()
         });
-
         $("#noteContent").attr("key", res.key);
-
     } else {// 수정
         firebase.database().ref('notes/' + userInfo.uid + "/" + key).update({
-            //title: title,
             txt: txt,
-            createDate: new Date().getTime()
+            updateDate: new Date().getTime()
         });
     }
 }

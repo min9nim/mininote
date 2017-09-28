@@ -1,187 +1,199 @@
 <!DOCTYPE html>
 <html>
 
-    <head>
-        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
-        <!--Import Google Icon Font-->
-        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
-        <link rel="icon" type="image/png"  href="/favicon.ico">
-        <!-- Compiled and minified CSS -->
-        <link rel="stylesheet" href="ext/materialize.min.css">
-        <link rel='stylesheet' href='ext/nprogress.css'/>
-        <link rel="stylesheet" href="style.css">
-        <title>miniNote project :)</title>
-    </head>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0"/>
+    <!--Import Google Icon Font-->
+    <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link rel="icon" type="image/png" href="/favicon.ico">
+    <!-- Compiled and minified CSS -->
+    <link rel="stylesheet" href="ext/materialize.min.css">
+    <link rel='stylesheet' href='ext/nprogress.css'/>
+    <link rel="stylesheet" href="style.css">
+    <title>miniNote project :)</title>
+</head>
 
-    <body onscroll="bodyScroll();">
-        <div class="header">
-          <i id="btnMenu" class='material-icons' onclick="menuClick();">menu</i>
-          <div class="title" onclick="titleClick();">mininote is loading..</div>
-          <div class="state"></div>
-          <div class="message"></div>
-          <i id="btnSearch" class='material-icons' onclick="searchClick();">search</i>
+<body onscroll="bodyScroll();">
+<div class="header">
+    <i id="btnMenu" class='material-icons' onclick="menuClick();">menu</i>
+    <div class="title" onclick="titleClick();">mininote is loading..</div>
+    <div class="state"></div>
+    <div class="message"></div>
+    <i id="btnSearch" class='material-icons' onclick="searchClick();">search</i>
+</div>
+<ul class="menu collection">
+    <li class="collection-item">
+        <div class="menuTitle"><i class="material-icons circle">N</i>nickname</div>
+        <div class="menuContent"><input id="nickname" type="text" onchange="setNickname(this.value);"/></div>
+    </li>
+    <li class="collection-item">
+        <div class="menuTitle"><i class="material-icons circle">F</i>fontSize</div>
+        <div class="menuContent"><input id="fontSize" type="number" onchange="setFontSize(this.value);"/></div>
+    </li>
+    <li class="collection-item">
+        <div class="menuTitle"><i class="material-icons circle">I</i>iconColor</div>
+        <div class="menuContent"><select id="iconColor" onchange="setIconColor(this.value);">
+            <option value="all">all</option>
+            <option value="red">red</option>
+            <option value="orange">orange</option>
+            <option value="yellow">yellow</option>
+            <option value="green">green</option>
+            <option value="blue">blue</option>
+            <option value="purple">purple</option>
+            <option value="pink">pink</option>
+            <option value="monochrome">monochrome</option>
+        </select></div>
+    </li>
+</ul>
+<ul id="list" class="collection" onclick="listClick();" ontouchstart="listClick();"></ul>
+<div id="topBtn" class="fixed-action-btn" style="bottom: 110px; right: 24px;">
+    <div id="diffMark" style="display:inline-block"></div>
+    <a class="btn-floating btn-large waves-effect waves-light" style="opacity: 0.3" onclick="topNavi();"> <i
+            id="topNavi" class="navi material-icons">arrow_upward</i> </a>
+</div>
+<div id="writeBtn" class="fixed-action-btn">
+    <a class="btn-floating btn-large waves-effect waves-light" onclick="writeNote();"><i id="addBtn"
+                                                                                         class="material-icons">새글</i>
+    </a>
+</div>
+<div class="dialog">
+    <div id="div_write">
+        <div id="noteContent" class="noteContent" contenteditable="true" onkeyup="keyupCheck(event);"></div>
+    </div>
+</div>
+<div class="search">
+    <div id="modal"></div>
+    <div id="div_search"><textarea id="input2" class="input" placeholder="" onkeyup=""></textarea>
+        <div class="btn_grp">
+            <div id="btn_search" class="btn" onclick="searchNote();">검색</div>
+            <div id="btn_cancel" class="btn" onclick="cancelSearch();">취소</div>
         </div>
-        <ul class="menu collection">
-          <li class="collection-item"><div class="menuTitle"><i class="material-icons circle">N</i>nickname</div><div class="menuContent"><input id="nickname" type="text" onchange="setNickname(this.value);" /></div></li>
-          <li class="collection-item"><div class="menuTitle"><i class="material-icons circle">F</i>fontSize</div><div class="menuContent"><input id="fontSize" type="number" onchange="setFontSize(this.value);" /></div></li>
-          <li class="collection-item"><div class="menuTitle"><i class="material-icons circle">I</i>iconColor</div><div class="menuContent"><select  id="iconColor" onchange="setIconColor(this.value);">
-<option value="all">all</option>
-  <option value="red">red</option>
-  <option value="orange">orange</option>
-  <option value="yellow">yellow</option>
-  <option value="green">green</option>
-  <option value="blue">blue</option>
-  <option value="purple">purple</option>
-  <option value="pink">pink</option>
-  <option value="monochrome">monochrome</option>
-</select></div></li>
-        </ul>
-        <ul id="list" class="collection" onclick="listClick();" ontouchstart="listClick();"></ul>
-        <div id="topBtn" class="fixed-action-btn" style="bottom: 110px; right: 24px;">
-            <div id="diffMark" style="display:inline-block"></div>
-          <a class="btn-floating btn-large waves-effect waves-light" style="opacity: 0.3" onclick="topNavi();"> <i id="topNavi" class="navi material-icons">arrow_upward</i> </a>
-        </div>
-        <div id="writeBtn" class="fixed-action-btn">
-          <a class="btn-floating btn-large waves-effect waves-light" onclick="writeNote();"><i id="addBtn" class="material-icons">새글</i> </a>
-        </div>
-        <div class="dialog">
-            <div id="div_write">
-              <div id="noteContent" class="noteContent" contenteditable="true" onkeyup="keyupCheck(event);"></div>
-            </div>
-        </div>
-        <div class="search">
-            <div id="modal"></div>
-            <div id="div_search"><textarea id="input2" class="input" placeholder="" onkeyup=""></textarea>
-                <div class="btn_grp">
-                    <div id="btn_search" class="btn" onclick="searchNote();">검색</div>
-                    <div id="btn_cancel" class="btn" onclick="cancelSearch();">취소</div>
-                </div>
-            </div>
-        </div>
-        <script type="text/javascript" src="ext/jquery-3.2.1.js"></script>
-        <script src="ext/materialize.min.js"></script>
+    </div>
+</div>
+<script type="text/javascript" src="ext/jquery-3.2.1.js"></script>
+<script type="text/javascript" src="ext/materialize.min.js"></script>
+<script type="text/javascript" src="util.js"></script>
+<script type="text/javascript" src="mn.js"></script>
+<script type="text/javascript" src='ext/autolink.js'></script>
+<script type="text/javascript" src='ext/nprogress.js'></script>
+<script type="text/javascript" src='ext/randomColor.js'></script>
+<script type="text/javascript" src='ext/shortcut.js'></script>
+<script src="https://www.gstatic.com/firebasejs/4.3.0/firebase.js"></script>
+<script>
+    // Initialize Firebase
+    var config = {
+        apiKey: "AIzaSyCA7fmVSWpyP0MPpw1QRU6h9OZ7hrr6sGA",
+        authDomain: "mininote-a7060.firebaseapp.com",
+        databaseURL: "https://mininote-a7060.firebaseio.com",
+        projectId: "mininote-a7060",
+        storageBucket: "mininote-a7060.appspot.com",
+        messagingSenderId: "26778481220"
+    };
+    firebase.initializeApp(config);
+    var userInfo = null; // 로그인한 사용자 정보
+    var noteRef;
+    var noteList = [];
+    var notes = new HashTable();
+    var visibleRowCnt = 50;
+    var md = new ManageDiff();
 
-        <script type="text/javascript" src="util.js"></script>
-        <script type="text/javascript" src="mn.js"></script>
-        <script type="text/javascript" src='ext/autolink.js'></script>
-        <script type="text/javascript" src='ext/nprogress.js'></script>
-        <script type="text/javascript" src='ext/randomColor.js'></script>
-        <script type="text/javascript" src='ext/shortcut.js'></script>
-        <script src="https://www.gstatic.com/firebasejs/4.3.0/firebase.js"></script>
-        <script>
-            // Initialize Firebase
-            var config = {
-              apiKey: "AIzaSyCA7fmVSWpyP0MPpw1QRU6h9OZ7hrr6sGA",
-              authDomain: "mininote-a7060.firebaseapp.com",
-              databaseURL: "https://mininote-a7060.firebaseio.com",
-              projectId: "mininote-a7060",
-              storageBucket: "mininote-a7060.appspot.com",
-              messagingSenderId: "26778481220"
-            };
-            firebase.initializeApp(config);
-            var userInfo = null; // 로그인한 사용자 정보
-            var noteRef;
-            var noteList = [];
-            var notes = new HashTable();
-            var visibleRowCnt = 50;
-            var md = new ManageDiff();
-
-            NProgress.start();  // https://github.com/rstacruz/nprogress
-            firebase.auth().onAuthStateChanged(function(user) {
-                if (user) {// 인증완료
-                    userInfo = user;
-                    $("#writeBtn").show();
-                    var userRef = firebase.database().ref("users/"+userInfo.uid);
-                    userRef.once('value').then(function(snapshot){
-                        if(snapshot.val() != null){
-                          userInfo.data = snapshot.val();
-                          setHeader();
-                          initNoteList(userInfo.uid);
-                        }else{// 신규 로그인 경우
-                          var userData = {
-                            fontSize : "18px",
-                            iconColor : "green",
-                            email : userInfo.email,
-                            nickname : userInfo.email.split("@")[0]
-                          };
-                          userRef.set(userData, function(){
-                            userInfo.data = userData;
-                            setHeader();
-                            initNoteList(userInfo.uid);
-                          });
-                        }
+    NProgress.start();  // https://github.com/rstacruz/nprogress
+    firebase.auth().onAuthStateChanged(function (user) {
+        if (user) {// 인증완료
+            userInfo = user;
+            $("#writeBtn").show();
+            var userRef = firebase.database().ref("users/" + userInfo.uid);
+            userRef.once('value').then(function (snapshot) {
+                if (snapshot.val() != null) {
+                    userInfo.data = snapshot.val();
+                    setHeader();
+                    initNoteList(userInfo.uid);
+                } else {// 신규 로그인 경우
+                    var userData = {
+                        fontSize: "18px",
+                        iconColor: "green",
+                        email: userInfo.email,
+                        nickname: userInfo.email.split("@")[0]
+                    };
+                    userRef.set(userData, function () {
+                        userInfo.data = userData;
+                        setHeader();
+                        initNoteList(userInfo.uid);
                     });
-                }else{
-                  userInfo = null;
-                  setHeader();
-                  NProgress.done();
-                  if(confirm("로그인이 필요합니다")){
-                    firebase.auth().signInWithRedirect(new firebase.auth.GoogleAuthProvider());
-                  }
                 }
             });
+        } else {
+            userInfo = null;
+            setHeader();
+            NProgress.done();
+            if (confirm("로그인이 필요합니다")) {
+                firebase.auth().signInWithRedirect(new firebase.auth.GoogleAuthProvider());
+            }
+        }
+    });
 
-            firebase.database().ref(".info/connected").on("value", function(snap) {
-              if (snap.val() === true) {
-                if(userInfo != null)
-                  userInfo.isConnected = true;
-                //$(".state").html("online");
+    firebase.database().ref(".info/connected").on("value", function (snap) {
+        if (snap.val() === true) {
+            if (userInfo != null)
+                userInfo.isConnected = true;
+            //$(".state").html("online");
+
+            if ($(".dialog").css("display") == "none") {
                 $("#writeBtn").show();
-                if($(".dialog").css("display")=="none"){
-                    $("#addBtn").html("새글");
-                }else{
-                    $("#addBtn").html("저장");
-                }
-              } else {
-                if(userInfo != null)
-                  userInfo.isConnected = false;
-                //userInfo = null;  // 로그인이 유지된 상태에서도 디비연결이 잠깐 끊어질 수는 있다
-                //$(".state").html("offline");
-                //$("#list").html("");
-                $("#writeBtn").hide();
-                setTimeout(function(){
-                  if(userInfo.isConnected == false){
+                $("#addBtn").html("새글");
+            } else {
+                //$("#addBtn").html("저장");
+            }
+        } else {
+            if (userInfo != null)
+                userInfo.isConnected = false;
+            //userInfo = null;  // 로그인이 유지된 상태에서도 디비연결이 잠깐 끊어질 수는 있다
+            //$(".state").html("offline");
+            //$("#list").html("");
+            $("#writeBtn").hide();
+            setTimeout(function () {
+                if (userInfo.isConnected == false) {
                     $("#writeBtn").show();
                     $("#addBtn").html("로긴");
-                  }
-              }, 20000);
-                //alert("연결상태가 끊어졌습니다.");
-              }
-            });
+                }
+            }, 20000);
+            //alert("연결상태가 끊어졌습니다.");
+        }
+    });
 
 
-            // 단축키 설정
-            shortcut.add("Alt+W",function() {
-            	writeNote();
-            });
+    // 단축키 설정
+    shortcut.add("Alt+W", function () {
+        writeNote();
+    });
 
-            shortcut.add("Alt+S",function() {
-                searchClick();
-            });
+    shortcut.add("Alt+S", function () {
+        searchClick();
+    });
 
-            shortcut.add("Ctrl+U",function() {
-                document.execCommand('insertunorderedlist');
-            },{"target":"noteContent"});
+    shortcut.add("Ctrl+U", function () {
+        document.execCommand('insertunorderedlist');
+    }, {"target": "noteContent"});
 
-            shortcut.add("tab",function() {
-                document.execCommand('indent');
-            },{"target":"noteContent"});
+    shortcut.add("tab", function () {
+        document.execCommand('indent');
+    }, {"target": "noteContent"});
 
-            shortcut.add("Shift+tab",function() {
-                document.execCommand('outdent');
-            },{"target":"noteContent"});
+    shortcut.add("Shift+tab", function () {
+        document.execCommand('outdent');
+    }, {"target": "noteContent"});
 
-            shortcut.add("meta+S",function() {
-                //setTimeout(saveNote, 500);
-                document.querySelector("#diffMark").innerHTML = "";
-                saveNote();
-            },{"target":"noteContent"});
-            shortcut.add("Ctrl+S",function() {
-                //setTimeout(saveNote, 500);
-                saveNote();
-            },{"target":"noteContent"});
+    shortcut.add("meta+S", function () {
+        //setTimeout(saveNote, 500);
+        document.querySelector("#diffMark").innerHTML = "";
+        saveNote();
+    }, {"target": "noteContent"});
+    shortcut.add("Ctrl+S", function () {
+        //setTimeout(saveNote, 500);
+        saveNote();
+    }, {"target": "noteContent"});
 
-        </script>
-    </body>
+</script>
+</body>
 
 </html>
