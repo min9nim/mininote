@@ -63,7 +63,7 @@
 </div>
 <div class="search">
     <div id="modal"></div>
-    <div id="div_search"><textarea id="input2" class="input" placeholder="" onkeyup=""></textarea>
+    <div id="div_search"><textarea id="input2" class="input" placeholder=""></textarea>
         <div class="btn_grp">
             <div id="btn_search" class="btn" onclick="searchNote();">검색</div>
             <div id="btn_cancel" class="btn" onclick="cancelSearch();">취소</div>
@@ -184,14 +184,15 @@
     }, {"target": "noteContent"});
 
     shortcut.add("meta+S", function () {
-        //setTimeout(saveNote, 500);
         document.querySelector("#diffMark").innerHTML = "";
         saveNote();
     }, {"target": "noteContent"});
     shortcut.add("Ctrl+S", function () {
-        //setTimeout(saveNote, 500);
         saveNote();
     }, {"target": "noteContent"});
+    shortcut.add("meta+enter", function () {
+        searchNote();
+    }, {"target": "input2"});
 
 </script>
 </body>

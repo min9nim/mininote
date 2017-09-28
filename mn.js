@@ -136,8 +136,8 @@ function saveNote() {
     var key = $("#noteContent").attr("key");
     //var title = $("#noteTitle").val();
     var txt = $("#noteContent").html().replace(/(<div><br><\/div>)+$/ig, ""); // 끝에 공백제거
-
-    txt = txt.autoLink({target: "_blank"});
+    txt = txt.replace(/<span style="background-color:yellow;">|<\/span>/gi, "");    // 하이라이트 스타일 제거
+    txt = txt.autoLink({target: "_blank"}); // 링크 설정
 
     if (txt.length > 30000) {
         alert("30000자 이내로 입력 가능");
@@ -187,6 +187,12 @@ function viewNote(key) {
         $("#list li.selected").removeClass("selected");
         $("#"+key).addClass("selected");
 
+        var searchWord = $(".state span").html();
+        if(searchWord){
+            // 검색결과일 경우라면 매칭단어 하이라이트닝
+            var reg = new RegExp(searchWord, "gi");
+            txt = txt.replace(reg, `<span style="background-color:yellow;">${searchWord}</span>`); // html태그 내용까지 매치되면 치환하는 문제가 있음
+        }
 
         $("#noteContent").html(txt);
         $("#addBtn").html("저장");
