@@ -300,3 +300,21 @@ select#iconColor {
 [placeholder]:empty:focus:before {
     content: "";
 }
+
+#div_search {
+    position: absolute;
+    width: 90%;
+    height: 20%;
+    top: 30%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-30%);
+}
+
+.input {
+    height: 100%;
+    border: 1px solid #69f;
+    background-color: #fff;
+    padding: 5px;
+    overflow: auto;
+    font-size: 20px;
+}

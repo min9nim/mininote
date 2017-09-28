@@ -1,4 +1,7 @@
 function showNoteList(uid) {
+    //console.log("showNoteList called..");
+    viewList();
+
     $(".state").text("");
     $("#list").text("");
 
@@ -295,25 +298,20 @@ function searchNote() {
     }
 
     $(".search").css("display", "none");
+    $("#list").html("");
 
-    noteRef.once("value").then(function (snapshot) {
-        $("#list").html("");
-        var noteObj = snapshot.val();
-        for (key in noteObj) {
-            if (noteObj[key].txt.indexOf(txt) >= 0) {
-                addItem(key, noteObj[key]);
-            }
+    notes.each(function(key, val){
+        noTagTxt = val.txt.replace(/<([^>]+)>/gi, "");   // 태그제거
+        if(noTagTxt.match(new RegExp(txt, "gi"))){
+            addItem(key, val);
         }
-        $(".header .title").html(noteList.length + " notes");
-        $(".header .state").html(`> <span style="font-style:italic;">${txt}</span> 's ${$("#list li").length} results`);
-
-        // 매칭단어 하이라이트닝
-        var reg = new RegExp(txt, "g");
-        $(".txt").each(function (i) {
-            this.innerHTML = this.innerHTML.replace(reg, `<span style="background-color:yellow;">${txt}</span>`); // html태그 내용까지 매치되면 치환하는 문제가 있음
-        });
-
     });
+
+
+    $(".header .title").html(noteList.length + " notes");
+    $(".header .state").html(`> <span style="font-style:italic;">${txt}</span> 's ${$("#list li").length} results`);
+
+
 }
 
 
@@ -486,27 +484,6 @@ function signout() {
 }
 
 
-function searchFirstTxt() {
-    var firstTxt = event.target.innerText;
-    var noteRef = firebase.database().ref('notes/' + userInfo.uid);
-    noteRef.once("value").then(function (snapshot) {
-        $("#list").html("");
-        var reg = new RegExp(firstTxt, "i");
-        var noteObj = snapshot.val();
-        for (key in noteObj) {
-            var res = reg.exec(noteObj[key].txt);
-            if (res !== null && res.index == 0) {
-                addItem(key, noteObj[key]);
-            }
-        }
-        $(".header .title").html(notes.length + " notes");
-        $(".header .state").html(`> <span style="font-style:italic;">${firstTxt}</span> 's ${$("#list li").length} results`);
-        // 매칭단어 하이라이트닝
-        $(".txt").each(function (i) {
-            this.innerHTML = this.innerHTML.replace(firstTxt, `<span style="background-color:yellow;">${firstTxt}</span>`); // html태그 내용까지 매치되면 치환하는 문제가 있음
-        });
-    });
-}
 
 function setNickname(nickname) {
     userInfo.data.nickname = nickname;
@@ -559,25 +536,27 @@ function bodyScroll() {
 
 function topNavi() {
     if ($("#topNavi").html() == "목록") {
-        $(".dialog").css("display", "none");
-
-        $("body").css("overflow", "visible");
-        $("#topNavi").html("arrow_upward");
-        $("#topNavi").removeClass("list");
-        $("#topNavi").addClass("navi");
-        $("#topBtn a").css("opacity", "0.3");
-
-        $("#addBtn").html("새글");
-        $("#writeBtn").removeClass("disable");
-        $("#writeBtn").show();
-
-        $("#list li").removeClass("selected");
-
-        //clearTimeout(timer);
+        // 목록버튼 누른 경우
+        viewList();
     } else {
+        // top 버튼 누른경우
         $(window).scrollTop(0);
     }
 }
+
+function viewList(){
+    $(".dialog").css("display", "none");
+    $("body").css("overflow", "visible");
+    $("#topNavi").html("arrow_upward");
+    $("#topNavi").removeClass("list");
+    $("#topNavi").addClass("navi");
+    $("#topBtn a").css("opacity", "0.3");
+    $("#addBtn").html("새글");
+    $("#writeBtn").removeClass("disable");
+    $("#writeBtn").show();
+    $("#list li").removeClass("selected");
+}
+
 
 function titleClick() {
     if (userInfo) {
