@@ -296,7 +296,7 @@ function searchNote() {
 
     notes.each(function(key, val){
         noTagTxt = val.txt.replace(/<([^>]+)>/gi, "");   // 태그제거
-        if(noTagTxt.match(new RegExp(txt, "gi"))){
+        if((new RegExp(txt, "gi")).test(noTagTxt)){
             addItem(key, val);
         }
     });
@@ -305,7 +305,7 @@ function searchNote() {
     $(".header .title").html(noteList.length + " notes");
     $(".header .state").html(`> <span style="font-style:italic;">${txt}</span> 's ${$("#list li").length} results`);
 
-
+    viewList();
 }
 
 
