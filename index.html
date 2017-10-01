@@ -57,6 +57,7 @@
     </a>
 </div>
 <div class="dialog">
+    <div id="dragbar"></div>
     <div id="div_write">
         <div id="noteContent" class="noteContent" contenteditable="true" onkeyup="keyupCheck(event);"></div>
     </div>
@@ -71,6 +72,7 @@
     </div>
 </div>
 <script type="text/javascript" src="ext/jquery-3.2.1.js"></script>
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
 <script type="text/javascript" src="ext/materialize.min.js"></script>
 <script type="text/javascript" src="util.js"></script>
 <script type="text/javascript" src="mn.js"></script>
@@ -193,6 +195,21 @@
     shortcut.add("meta+enter", function () {
         searchNote();
     }, {"target": "input2"});
+
+
+    $( "#dragbar" ).draggable({
+        axis: "x",
+        zIndex: 100,
+        drag: function( event, ui ) {
+            leftpos = this.leftpos + ui.position.left;
+            $(".dialog").css("left", leftpos);
+            $(".dialog").css("width", "calc(100% - " + leftpos + "px)");
+            ui.position.left = 0;
+        },
+        start: function(event, ui){
+            this.leftpos = $(".dialog").position().left;
+        }
+    });
 
 </script>
 </body>

@@ -1,3 +1,7 @@
+:root {
+    --main-bg-color: #054e7f;
+}
+
 #list {
     margin: 0px;
 }
@@ -22,8 +26,17 @@
     left: 93px;
     display: none;
     font-size: 12px;
-    background-color: white;
-    border: 1px solid #bbb;
+    //background-color: white;
+    //border: 1px solid #bbb;
+    margin: 3px;
+}
+
+#dragbar {
+    width:3px;
+    height: calc(100% - 10px);
+    background-color: var(--main-bg-color);
+    cursor: col-resize;
+    z-index: 1;
 }
 
 .search {
@@ -47,9 +60,8 @@
     position: absolute;
     width: 99%;
     height: calc(100% - 10px);
-    top: 30%;
-    left: 50%;
-    transform: translateX(-50%) translateY(-30%);
+    top: 0px;
+    left: 3px;
 }
 
 .noteContent {
@@ -72,7 +84,7 @@
 }
 
 .header {
-    background-color: #054e7f;
+    /*background-color: #054e7f;*/
     color: #fff;
     font-size: 20px;
     padding-left: 10px;
@@ -122,11 +134,11 @@
 }
 
 #writeBtn a {
-    background-color: #054e7f;
+    background-color: var(--main-bg-color);
 }
 
 #topBtn a  {
-    background-color: #054e7f;
+    background-color: var(--main-bg-color);
     /*opacity: 0.3;*/
 }
 
@@ -261,6 +273,10 @@ select#iconColor {
     cursor: pointer;
 }
 
+#list {
+    margin: 3px;
+}
+
 #list li {
     padding-left: 15px;
 }
@@ -317,4 +333,8 @@ select#iconColor {
     padding: 5px;
     overflow: auto;
     font-size: 20px;
+}
+
+body {
+    background-color: var(--main-bg-color);
 }
