@@ -19,16 +19,19 @@
 }
 
 .dialog{
-    position: absolute;
-    width: calc(100% - 93px);
-    height: calc(100% - 30px);
-    top: 32px;
-    left: 93px;
+    position: fixed;
+    width: 90%;
+    height: 90%;
     display: none;
     font-size: 12px;
-    //background-color: white;
-    //border: 1px solid #bbb;
-    margin: 3px;
+    background-color: white;
+    border: 2px solid #bbb;
+    top: 30%;
+    left: 50%;
+    transform: translateX(-50%) translateY(-30%);
+    resize: both;
+    overflow: auto;
+}
 }
 
 #dragbar {
@@ -57,18 +60,14 @@
 }
 
 #div_write {
-    position: absolute;
-    width: 99%;
-    height: calc(100% - 10px);
     top: 0px;
-    left: 3px;
+    height: 100%;
 }
 
 .noteContent {
     height: 100%;
-    /*border: 1px solid #6699ff;*/
     background-color: white;
-    padding: 5px;
+    padding: 10px;
     overflow: auto;
     font-size: 16px;
 }
@@ -181,7 +180,8 @@
     /* 높이 가운데 정렬 */
     position: absolute;
     right: -30px;
-    display: inline-block;
+    /*display: inline-block;*/
+    display: none;
 }
 
 .btn_grp {
@@ -275,6 +275,7 @@ select#iconColor {
 
 #list {
     margin: 3px;
+    background-color: #fff;
 }
 
 #list li {

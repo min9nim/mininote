@@ -195,7 +195,7 @@
     shortcut.add("meta+enter", function () {
         searchNote();
     }, {"target": "input2"});
-
+/*
 
     $( "#dragbar" ).draggable({
         axis: "x",
@@ -210,6 +210,13 @@
             this.leftpos = $(".dialog").position().left;
         }
     });
+*/
+
+    document.querySelector(".dialog").addEventListener('touchmove', function(e) {
+
+        e.stopPropagation();
+
+    }, false);
 
 </script>
 </body>

@@ -135,6 +135,7 @@ function saveNote() {
     console.log("saveNote called..");
     var key = $("#noteContent").attr("key");
     //var title = $("#noteTitle").val();
+    $("#noteContent div[placeholder]").removeAttr("placeholder");      // 불필요태그 제거
     var txt = $("#noteContent").html().replace(/(<div><br><\/div>)+$/ig, ""); // 끝에 공백제거
     txt = txt.replace(/<span style="background-color:yellow;">|<\/span>/gi, "");    // 하이라이트 스타일 제거
     txt = txt.autoLink({target: "_blank"}); // 링크 설정
@@ -147,6 +148,8 @@ function saveNote() {
         alert("내용을 입력해 주세요");
         return;
     }
+
+
 
     if (key == "") {// 저장
         var res = firebase.database().ref('notes/' + userInfo.uid).push({
@@ -202,8 +205,11 @@ function viewNote(key) {
         $("#topNavi").html("목록");
         $("#topBtn a").css("opacity", "");
 
-        $("body").css("overflow", "hidden");
-        $(window).scrollTop(0);
+        //$("body").css("overflow", "hidden");
+        //$(window).scrollTop(0);
+
+
+        //$(".dialog").css("top", window.scrollY + (window.scrollY > 32 ? 0 : 32));
 
 
 
