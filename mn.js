@@ -205,12 +205,12 @@ function viewNote(key) {
         $("#topNavi").html("목록");
         $("#topBtn a").css("opacity", "");
 
+        //document.querySelector("body").style.overflow = "hidden";   // 모바일에서는 스크롤이  fixed div를 뚫고 뒤로 바로 전달되는 현상 때문에 그냥 막어버림
         //$("body").css("overflow", "hidden");
         //$(window).scrollTop(0);
 
 
         //$(".dialog").css("top", window.scrollY + (window.scrollY > 32 ? 0 : 32));
-
 
 
         var anchors = document.querySelectorAll("#noteContent a");
@@ -546,7 +546,8 @@ function topNavi() {
 
 function viewList(){
     $(".dialog").css("display", "none");
-    $("body").css("overflow", "visible");
+    //$("body").css("overflow", "visible");
+    document.querySelector("body").style.overflow = "visible";
     $("#topNavi").html("arrow_upward");
     $("#topNavi").removeClass("list");
     $("#topNavi").addClass("navi");

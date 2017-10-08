@@ -57,13 +57,14 @@
     </a>
 </div>
 <div class="dialog">
+    <div class="modal"></div>
     <div id="dragbar"></div>
     <div id="div_write">
         <div id="noteContent" class="noteContent" contenteditable="true" onkeyup="keyupCheck(event);"></div>
     </div>
 </div>
 <div class="search">
-    <div id="modal"></div>
+    <div class="modal"></div>
     <div id="div_search"><textarea id="input2" class="input" placeholder=""></textarea>
         <div class="btn_grp">
             <div id="btn_search" class="btn" onclick="searchNote();">검색</div>
@@ -212,11 +213,16 @@
     });
 */
 
-    document.querySelector(".dialog").addEventListener('touchmove', function(e) {
+document.querySelector("#noteContent").addEventListener("scroll", function(e){
+    console.log("11");
+    e.stopPropagation();
+});
 
-        e.stopPropagation();
+document.querySelector("body").addEventListener("scroll", function(e){
+    console.log("22");
+    e.stopPropagation();
+});
 
-    }, false);
 
 </script>
 </body>
