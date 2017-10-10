@@ -20,15 +20,14 @@
 
 .dialog{
     position: fixed;
-    width: 89%;
-    height: 92%;
+    width: calc(100% - 105px);
+    height:  calc(100% - 20px);
     display: none;
     font-size: 12px;
     background-color: white;
     border: 2px solid #bbb;
-    top: 32%;
-    left: 50%;
-    transform: translateX(-50%) translateY(-30%);
+    top: 10px;
+    left: 95px;
     resize: both;
     overflow: auto;
 }
@@ -60,8 +59,10 @@
 }
 
 #div_write {
+    position: absolute;
     top: 0px;
     height: 100%;
+    width: 100%;
 }
 
 .noteContent {

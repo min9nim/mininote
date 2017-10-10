@@ -182,6 +182,12 @@ function removeNote(key) {
 function viewNote(key) {
    md.save();
 
+   if(isMobile.any || true){
+       document.querySelector(".dialog").style.position = "absolute";
+       document.querySelector(".dialog").style.top = (window.scrollY + 10 ) + "px";
+   }
+
+
     var noteRef = firebase.database().ref('notes/' + userInfo.uid + '/' + key).once('value').then(function (snapshot) {
         $(".dialog").css("display", "block");
         $("#noteContent").attr("key", key);

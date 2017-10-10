@@ -9,7 +9,7 @@
     <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="ext/materialize.min.css">
     <link rel='stylesheet' href='ext/nprogress.css'/>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="style.css?v=1">
     <title>miniNote project :)</title>
 </head>
 
@@ -57,8 +57,6 @@
     </a>
 </div>
 <div class="dialog">
-    <div class="modal"></div>
-    <div id="dragbar"></div>
     <div id="div_write">
         <div id="noteContent" class="noteContent" contenteditable="true" onkeyup="keyupCheck(event);"></div>
     </div>
@@ -72,8 +70,8 @@
         </div>
     </div>
 </div>
-<script type="text/javascript" src="ext/jquery-3.2.1.js"></script>
-<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+<script type="text/javascript" src="ext/jquery.js"></script>
+<!--script type="text/javascript" src="ext/jquery-ui.js"></script-->
 <script type="text/javascript" src="ext/materialize.min.js"></script>
 <script type="text/javascript" src="util.js"></script>
 <script type="text/javascript" src="mn.js"></script>
@@ -81,7 +79,8 @@
 <script type="text/javascript" src='ext/nprogress.js'></script>
 <script type="text/javascript" src='ext/randomColor.js'></script>
 <script type="text/javascript" src='ext/shortcut.js'></script>
-<script src="https://www.gstatic.com/firebasejs/4.3.0/firebase.js"></script>
+<script type="text/javascript" src='ext/isMobile.js'></script>
+<script type="text/javascript" src='ext/firebase.js'></script>
 <script>
     // Initialize Firebase
     var config = {
@@ -165,53 +164,41 @@
     });
 
 
-    // 단축키 설정
-    shortcut.add("Alt+W", function () {
-        writeNote();
-    });
 
-    shortcut.add("Alt+S", function () {
-        searchClick();
-    });
+    if(!isMobile.any){
+        //  PC환경에서만 단축키 설정
+        shortcut.add("Alt+W", function () {
+            writeNote();
+        });
 
-    shortcut.add("Ctrl+U", function () {
-        document.execCommand('insertunorderedlist');
-    }, {"target": "noteContent"});
+        shortcut.add("Alt+S", function () {
+            searchClick();
+        });
 
-    shortcut.add("tab", function () {
-        document.execCommand('indent');
-    }, {"target": "noteContent"});
+        shortcut.add("Ctrl+U", function () {
+            document.execCommand('insertunorderedlist');
+        }, {"target": "noteContent"});
 
-    shortcut.add("Shift+tab", function () {
-        document.execCommand('outdent');
-    }, {"target": "noteContent"});
+        shortcut.add("tab", function () {
+            document.execCommand('indent');
+        }, {"target": "noteContent"});
 
-    shortcut.add("meta+S", function () {
-        document.querySelector("#diffMark").innerHTML = "";
-        saveNote();
-    }, {"target": "noteContent"});
-    shortcut.add("Ctrl+S", function () {
-        saveNote();
-    }, {"target": "noteContent"});
-    shortcut.add("meta+enter", function () {
-        searchNote();
-    }, {"target": "input2"});
-/*
+        shortcut.add("Shift+tab", function () {
+            document.execCommand('outdent');
+        }, {"target": "noteContent"});
 
-    $( "#dragbar" ).draggable({
-        axis: "x",
-        zIndex: 100,
-        drag: function( event, ui ) {
-            leftpos = this.leftpos + ui.position.left;
-            $(".dialog").css("left", leftpos);
-            $(".dialog").css("width", "calc(100% - " + leftpos + "px)");
-            ui.position.left = 0;
-        },
-        start: function(event, ui){
-            this.leftpos = $(".dialog").position().left;
-        }
-    });
-*/
+        shortcut.add("meta+S", function () {
+            document.querySelector("#diffMark").innerHTML = "";
+            saveNote();
+        }, {"target": "noteContent"});
+        shortcut.add("Ctrl+S", function () {
+            saveNote();
+        }, {"target": "noteContent"});
+        shortcut.add("meta+enter", function () {
+            searchNote();
+        }, {"target": "input2"});
+    }
+
 
 document.querySelector("#noteContent").addEventListener("scroll", function(e){
     console.log("11");
@@ -222,6 +209,7 @@ document.querySelector("body").addEventListener("scroll", function(e){
     console.log("22");
     e.stopPropagation();
 });
+
 
 
 </script>
