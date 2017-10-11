@@ -182,9 +182,12 @@ function removeNote(key) {
 function viewNote(key) {
    md.save();
 
-   if(isMobile.any || true){
-       document.querySelector(".dialog").style.position = "absolute";
-       document.querySelector(".dialog").style.top = (window.scrollY + 10 ) + "px";
+   // 뒤에 스크롤 막기
+    document.body.style.overflow = "hidden";
+
+   if(isMobile.any){// 모바일 fixed div에서 커서가 이상하게 동작되는 문제 회피
+       $m.qs(".dialog").style.position = "absolute";
+       $m.qs(".dialog").style.top = (window.scrollY + 10 ) + "px";
    }
 
 
@@ -208,10 +211,10 @@ function viewNote(key) {
         $("#writeBtn").hide();
         $("#topNavi").removeClass("navi");
         $("#topNavi").addClass("list");
-        $("#topNavi").html("목록");
-        $("#topBtn a").css("opacity", "");
+        $m.qs("#topNavi").innerHTML = "목록";
+        $m.qs("#topBtn a").css.opacity = "";
 
-        //document.querySelector("body").style.overflow = "hidden";   // 모바일에서는 스크롤이  fixed div를 뚫고 뒤로 바로 전달되는 현상 때문에 그냥 막어버림
+        //$m.qs("body").style.overflow = "hidden";   // 모바일에서는 스크롤이  fixed div를 뚫고 뒤로 바로 전달되는 현상 때문에 그냥 막어버림
         //$("body").css("overflow", "hidden");
         //$(window).scrollTop(0);
 
@@ -219,7 +222,7 @@ function viewNote(key) {
         //$(".dialog").css("top", window.scrollY + (window.scrollY > 32 ? 0 : 32));
 
 
-        var anchors = document.querySelectorAll("#noteContent a");
+        var anchors = $m.qsa("#noteContent a");
         anchors.forEach(function (a) {
             a.onmouseleave = function (e) {
                 e.target.setAttribute("contenteditable", "true");
@@ -259,7 +262,7 @@ function writeNote() {
             $(window).scrollTop(0);
 
             // 포커스 처리
-            var title = document.querySelector("#noteContent .title")
+            var title = $m.qs("#noteContent .title")
             var s = window.getSelection();
             s.removeAllRanges();
             var range = document.createRange();
@@ -379,8 +382,8 @@ function ManageDiff(){
 
         // 변경사항 있을 경우 변경사항 표시..
         if(this.hasDiff){
-            var mark = document.querySelector("#diffMark").innerHTML;
-            document.querySelector("#diffMark").innerHTML = mark + "*";
+            var mark = $m.qs("#diffMark").innerHTML;
+            $m.qs("#diffMark").innerHTML = mark + "*";
         }
 
         if(this.timer){
@@ -400,7 +403,7 @@ function ManageDiff(){
                 saveNote();
             }
         }
-        document.querySelector("#diffMark").innerHTML = "";
+        $m.qs("#diffMark").innerHTML = "";
     }
     this.end = function(){
         this.timer = clearTimeout(this.timer);
@@ -551,9 +554,11 @@ function topNavi() {
 }
 
 function viewList(){
+    document.body.style.overflow = "visible";
+
     $(".dialog").css("display", "none");
     //$("body").css("overflow", "visible");
-    document.querySelector("body").style.overflow = "visible";
+    $m.qs("body").style.overflow = "visible";
     $("#topNavi").html("arrow_upward");
     $("#topNavi").removeClass("list");
     $("#topNavi").addClass("navi");

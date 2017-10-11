@@ -91,3 +91,9 @@ function HashTable(obj)
         this.length = 0;
     }
 }
+
+
+$m.qs = document.querySelector;
+$m.qsa = document.querySelectorAll;
+
+

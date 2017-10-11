@@ -9,7 +9,7 @@
     <!-- Compiled and minified CSS -->
     <link rel="stylesheet" href="ext/materialize.min.css">
     <link rel='stylesheet' href='ext/nprogress.css'/>
-    <link rel="stylesheet" href="style.css?v=1">
+    <link rel="stylesheet" href="style.css">
     <title>miniNote project :)</title>
 </head>
 
@@ -198,19 +198,6 @@
             searchNote();
         }, {"target": "input2"});
     }
-
-
-document.querySelector("#noteContent").addEventListener("scroll", function(e){
-    console.log("11");
-    e.stopPropagation();
-});
-
-document.querySelector("body").addEventListener("scroll", function(e){
-    console.log("22");
-    e.stopPropagation();
-});
-
-
 
 </script>
 </body>
