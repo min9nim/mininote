@@ -191,14 +191,28 @@
             document.querySelector("#diffMark").innerHTML = "";
             saveNote();
         }, {"target": "noteContent"});
+        shortcut.add("meta+L", function () {
+            document.querySelector("#diffMark").innerHTML = "";
+            saveNote();
+            viewList();
+        });
+
         shortcut.add("Ctrl+S", function () {
             saveNote();
         }, {"target": "noteContent"});
         shortcut.add("meta+enter", function () {
             searchNote();
         }, {"target": "input2"});
-    }
 
+        $m.qs("#noteContent").onmouseenter = function (e) {
+            // 목록 스크롤 막기
+            document.body.style.overflow = "hidden";
+        };
+        $m.qs("#noteContent").onmouseleave = function (e) {
+            document.body.style.overflow = "visible";
+        };
+
+    }
 </script>
 </body>
 

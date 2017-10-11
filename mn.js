@@ -182,9 +182,6 @@ function removeNote(key) {
 function viewNote(key) {
    md.save();
 
-   // 목록 스크롤 막기
-    document.body.style.overflow = "hidden";
-
     // 모바일 fixed div 에서 커서가 이상하게 동작되는 문제 회피
    if(isMobile.any){
        $m.qs(".dialog").style.position = "absolute";
@@ -213,15 +210,7 @@ function viewNote(key) {
         $("#topNavi").removeClass("navi");
         $("#topNavi").addClass("list");
         $m.qs("#topNavi").innerHTML = "목록";
-        $m.qs("#topBtn a").css.opacity = "";
-
-        //$m.qs("body").style.overflow = "hidden";   // 모바일에서는 스크롤이  fixed div를 뚫고 뒤로 바로 전달되는 현상 때문에 그냥 막어버림
-        //$("body").css("overflow", "hidden");
-        //$(window).scrollTop(0);
-
-
-        //$(".dialog").css("top", window.scrollY + (window.scrollY > 32 ? 0 : 32));
-
+        $m.qs("#topBtn a").style.opacity = "";
 
         var anchors = $m.qsa("#noteContent a");
         anchors.forEach(function (a) {
@@ -556,7 +545,6 @@ function topNavi() {
 
 function viewList(){
     document.body.style.overflow = "visible";
-
     $(".dialog").css("display", "none");
     //$("body").css("overflow", "visible");
     $m.qs("body").style.overflow = "visible";
