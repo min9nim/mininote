@@ -182,10 +182,11 @@ function removeNote(key) {
 function viewNote(key) {
    md.save();
 
-   // 뒤에 스크롤 막기
+   // 목록 스크롤 막기
     document.body.style.overflow = "hidden";
 
-   if(isMobile.any){// 모바일 fixed div에서 커서가 이상하게 동작되는 문제 회피
+    // 모바일 fixed div 에서 커서가 이상하게 동작되는 문제 회피
+   if(isMobile.any){
        $m.qs(".dialog").style.position = "absolute";
        $m.qs(".dialog").style.top = (window.scrollY + 10 ) + "px";
    }
@@ -239,9 +240,9 @@ function writeNote() {
     if (userInfo != null && userInfo.isConnected) {
         if ($("#addBtn").html() == "새글") {
             // 쓰기버튼 일때
-            $(".dialog").css("display", "block");
+            $m.qs(".dialog").style.css.display = "block";
             $("#noteContent").attr("key",  "");
-            $("#noteContent").html("<div class='title' placeholder='제목'>제목</div><div><br/></div><div placeholder='내용'></div>");
+            $m.qs("#noteContent").innerHTML = "<div class='title' placeholder='제목'>제목</div><div><br/></div><div placeholder='내용'></div>";
             $("#noteContent .title").focus();   // 파폭에서 해당 지점으로 포커스 들어가지 않음
 
             // 저장버튼 처리
@@ -254,7 +255,7 @@ function writeNote() {
             $("#topNavi").html("목록");
             $("#topBtn a").css("opacity", "");
 
-            $("body").css("overflow", "hidden");
+            document.body.style.overflow =  "hidden";
 
             $("#writeBtn").addClass("disable");
 

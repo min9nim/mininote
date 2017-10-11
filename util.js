@@ -93,7 +93,13 @@ function HashTable(obj)
 }
 
 
-$m.qs = document.querySelector;
-$m.qsa = document.querySelectorAll;
+
+$m = {};
+$m.qs = function(sel) {
+    return document.querySelector(sel);
+};
+$m.qsa = function(sel){
+    return document.querySelectorAll(sel);
+};
 
 
