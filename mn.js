@@ -229,7 +229,7 @@ function writeNote() {
     if (userInfo != null && userInfo.isConnected) {
         if ($("#addBtn").html() == "새글") {
             // 쓰기버튼 일때
-            $m.qs(".dialog").style.css.display = "block";
+            $m.qs(".dialog").style.display = "block";
             $("#noteContent").attr("key",  "");
             $m.qs("#noteContent").innerHTML = "<div class='title' placeholder='제목'>제목</div><div><br/></div><div placeholder='내용'></div>";
             $("#noteContent .title").focus();   // 파폭에서 해당 지점으로 포커스 들어가지 않음
