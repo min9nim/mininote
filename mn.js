@@ -260,9 +260,10 @@ function writeNote() {
             s.addRange(range);
 
 
-        } else {
-            //저장버튼 일때
-            saveNote();
+        } else if ($("#addBtn").html() == "로긴") {
+            alert("로그인이 필요합니다");
+        }else{
+            console.log("기타 경우..");
         }
 
     } else {
