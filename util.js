@@ -77,6 +77,22 @@ function HashTable(obj)
         return values;
     }
 
+
+    this.getArray = function()
+    {
+        var arr = [];
+        for (var k in this.items) {
+            if (this.hasItem(k)) {
+                var item = {};
+                item.key = k;
+                item.val = this.items[k];
+                arr.push(item);
+            }
+        }
+        return arr;
+    }
+
+
     this.each = function(fn) {
         for (var k in this.items) {
             if (this.hasItem(k)) {
@@ -84,6 +100,7 @@ function HashTable(obj)
             }
         }
     }
+
 
     this.clear = function()
     {

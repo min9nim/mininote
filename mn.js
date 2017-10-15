@@ -11,7 +11,7 @@ function showNoteList(uid) {
             addItem(key, noteObj[key]);
         }
 
-        $(".header .title").html(userInfo.data.nickname + "'s " + noteList.length + " notes");
+        $(".header .title").html(userInfo.data.nickname + "'s " + notes.length + " notes");
         NProgress.done();
     });
 }
@@ -28,7 +28,7 @@ function initNoteList(uid) {
 
 function onChildAdded(data) {
     //console.log("## onChildAdded called " + data.key);
-    noteList.push(data);
+    //noteList.push(data);
     notes.setItem(data.key, data.val());
     var curDate = new Date().getTime();
     var createDate = data.val().createDate;
@@ -108,13 +108,14 @@ function onChildChanged(data) {
     setContextBtnEvent($("#" + key + " .btnContext"));
 
     // noteList 갱신
+    /*
     for(var i=0; i<noteList.length; i++){
         if(noteList[i].key == key){
             noteList[i] = data;
             break;
         }
     }
-
+*/
     // notes 갱신
     notes.setItem(key, noteData);
 
@@ -126,7 +127,7 @@ function onChildRemoved(data) {
 //  console.log("## onChildRemoved called..");
     var key = data.key;
     $('#' + key).remove();
-    noteList.splice(noteList.indexOf(data), 1);  // noteList에서 삭제된 요소 제거
+    //noteList.splice(noteList.indexOf(data), 1);  // noteList에서 삭제된 요소 제거
     notes.removeItem(key);
     $(".header .title").html(userInfo.data.nickname + "'s " + notes.length + " notes");
 }
@@ -308,7 +309,7 @@ function searchNote() {
     });
 
 
-    $(".header .title").html(noteList.length + " notes");
+    $(".header .title").html(notes.length + " notes");
     $(".header .state").html(`> <span style="font-style:italic;">${txt}</span> 's ${$("#list li").length} results`);
 
     viewList();
@@ -525,10 +526,10 @@ function bodyScroll() {
         $("#nprogress .spinner").css("top", "95%");
         var end = notes.length - $("#list li").length;
         var start = end - visibleRowCnt < 0 ? 0 : end - visibleRowCnt;
-        var nextList = noteList.slice(start, end).reverse();    // 여기서 배열구조를 버리기가 간단치가 않고나..
+        var nextList = notes.getArray().slice(start, end).reverse();
 
-        nextList.forEach(function (x, i) {
-            addItem(x.key, x.val(), "append");
+        nextList.forEach(function (x) {
+            addItem(x.key, x.val, "append");
         });
         NProgress.done();
     }
