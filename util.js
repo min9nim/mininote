@@ -119,4 +119,5 @@ $m.qsa = function(sel){
     return document.querySelectorAll(sel);
 };
 
+// 체이닝을 사용하려면...
 

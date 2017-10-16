@@ -1,3 +1,119 @@
+function init(){
+    NProgress.start();  // https://github.com/rstacruz/nprogress
+    firebase.auth().onAuthStateChanged(function (user) {
+        if (user) {// 인증완료
+            userInfo = user;
+            $("#writeBtn").show();
+            var userRef = firebase.database().ref("users/" + userInfo.uid);
+            userRef.once('value').then(function (snapshot) {
+                if (snapshot.val() != null) {
+                    userInfo.data = snapshot.val();
+                    setHeader();
+                    initNoteList(userInfo.uid);
+                } else {// 신규 로그인 경우
+                    var userData = {
+                        fontSize: "18px",
+                        iconColor: "green",
+                        email: userInfo.email,
+                        nickname: userInfo.email.split("@")[0]
+                    };
+                    userRef.set(userData, function () {
+                        userInfo.data = userData;
+                        setHeader();
+                        initNoteList(userInfo.uid);
+                    });
+                }
+            });
+        } else {
+            userInfo = null;
+            setHeader();
+            NProgress.done();
+            if (confirm("로그인이 필요합니다")) {
+                firebase.auth().signInWithRedirect(new firebase.auth.GoogleAuthProvider());
+            }
+        }
+    });
+
+    firebase.database().ref(".info/connected").on("value", function (snap) {
+        if (snap.val() === true) {
+            if (userInfo != null)
+                userInfo.isConnected = true;
+            //$(".state").html("online");
+
+            if ($(".dialog").css("display") == "none") {
+                $("#writeBtn").show();
+                $("#addBtn").html("새글");
+            } else {
+                //$("#addBtn").html("저장");
+            }
+        } else {
+            if (userInfo != null)
+                userInfo.isConnected = false;
+            //userInfo = null;  // 로그인이 유지된 상태에서도 디비연결이 잠깐 끊어질 수는 있다
+            //$(".state").html("offline");
+            //$("#list").html("");
+            $("#writeBtn").hide();
+            setTimeout(function () {
+                if (userInfo.isConnected == false) {
+                    $("#writeBtn").show();
+                    $("#addBtn").html("로긴");
+                }
+            }, 20000);
+            //alert("연결상태가 끊어졌습니다.");
+        }
+    });
+
+
+
+    if(!isMobile.any){
+        //  PC환경에서만 단축키 설정
+        shortcut.add("Alt+W", function () {
+            writeNote();
+        });
+
+        shortcut.add("Alt+S", function () {
+            searchClick();
+        });
+
+        shortcut.add("Ctrl+U", function () {
+            document.execCommand('insertunorderedlist');
+        }, {"target": "noteContent"});
+
+        shortcut.add("tab", function () {
+            document.execCommand('indent');
+        }, {"target": "noteContent"});
+
+        shortcut.add("Shift+tab", function () {
+            document.execCommand('outdent');
+        }, {"target": "noteContent"});
+
+        shortcut.add("meta+S", function () {
+            document.querySelector("#diffMark").innerHTML = "";
+            saveNote();
+        }, {"target": "noteContent"});
+        shortcut.add("meta+L", function () {
+            document.querySelector("#diffMark").innerHTML = "";
+            saveNote();
+            viewList();
+        });
+
+        shortcut.add("Ctrl+S", function () {
+            saveNote();
+        }, {"target": "noteContent"});
+        shortcut.add("meta+enter", function () {
+            searchNote();
+        }, {"target": "input2"});
+
+        $m.qs("#noteContent").onmouseenter = function (e) {
+            // 목록 스크롤 막기
+            document.body.style.overflow = "hidden";
+        };
+        $m.qs("#noteContent").onmouseleave = function (e) {
+            document.body.style.overflow = "visible";
+        };
+    }
+}
+
 function showNoteList(uid) {
     //console.log("showNoteList called..");
     viewList();
@@ -464,7 +580,7 @@ function setTouchSlider(row) {
 
 
 function menuClick() {
-    if ($(".menu").css("left") == "0px") {
+    if ($m.qs(".menu").style.left == "0px") {
         $(".menu").animate({left: "-220px"}, 300);
     } else {
         $(".menu").animate({left: "0px"}, 300);
@@ -523,8 +639,8 @@ function bodyScroll() {
 
     if (window.scrollY == $(document).height() - $(window).height()) {
         NProgress.start();
-        $("#nprogress .spinner").css("top", "95%");
-        var end = notes.length - $("#list li").length;
+        $m.qs("#nprogress .spinner").style.top = "95%";
+        var end = notes.length - $m.qsa("#list li").length;
         var start = end - visibleRowCnt < 0 ? 0 : end - visibleRowCnt;
         var nextList = notes.getArray().slice(start, end).reverse();
 
@@ -536,7 +652,7 @@ function bodyScroll() {
 }
 
 function topNavi() {
-    if ($("#topNavi").html() == "목록") {
+    if ($m.qs("#topNavi").innerHTML == "목록") {
         // 목록버튼 누른 경우
         viewList();
     } else {
@@ -547,13 +663,12 @@ function topNavi() {
 
 function viewList(){
     document.body.style.overflow = "visible";
-    $(".dialog").css("display", "none");
-    //$("body").css("overflow", "visible");
+    $m.qs(".dialog").style.display = "none";
     $m.qs("body").style.overflow = "visible";
-    $("#topNavi").html("arrow_upward");
+    $m.qs("#topNavi").innerHTML = "arrow_upward";
     $("#topNavi").removeClass("list");
     $("#topNavi").addClass("navi");
-    $("#topBtn a").css("opacity", "0.3");
+    $m.qs("#topBtn a").style.opacity = "0.3";
     $("#addBtn").html("새글");
     $("#writeBtn").removeClass("disable");
     $("#writeBtn").show();

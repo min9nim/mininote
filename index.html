@@ -11,6 +11,37 @@
     <link rel='stylesheet' href='ext/nprogress.css'/>
     <link rel="stylesheet" href="style.css">
     <title>miniNote project :)</title>
+    <script type="text/javascript" src='ext/autolink.js'></script>
+    <script type="text/javascript" src='ext/nprogress.js'></script>
+    <script type="text/javascript" src='ext/randomColor.js'></script>
+    <script type="text/javascript" src='ext/shortcut.js'></script>
+    <script type="text/javascript" src='ext/isMobile.js'></script>
+    <script type="text/javascript" src='ext/firebase.js'></script>
+    <script type="text/javascript" src="ext/jquery.js"></script>
+    <!--script type="text/javascript" src="ext/jquery-ui.js"></script-->
+    <script type="text/javascript" src="ext/materialize.min.js"></script>
+    <script type="text/javascript" src="util.js"></script>
+    <script type="text/javascript" src="mn.js"></script>
+    <script type="text/javascript">
+        // Initialize Firebase
+        var config = {
+            apiKey: "AIzaSyCA7fmVSWpyP0MPpw1QRU6h9OZ7hrr6sGA",
+            authDomain: "mininote-a7060.firebaseapp.com",
+            databaseURL: "https://mininote-a7060.firebaseio.com",
+            projectId: "mininote-a7060",
+            storageBucket: "mininote-a7060.appspot.com",
+            messagingSenderId: "26778481220"
+        };
+        firebase.initializeApp(config);
+        var userInfo = null; // 로그인한 사용자 정보
+        var noteRef;
+        //var noteList = [];
+        var notes = new HashTable();
+        var visibleRowCnt = 30;
+        var md = new ManageDiff();
+
+        window.onload = init;
+    </script>
 </head>
 
 <body onscroll="bodyScroll();">
@@ -70,150 +101,6 @@
         </div>
     </div>
 </div>
-<script type="text/javascript" src="ext/jquery.js"></script>
-<!--script type="text/javascript" src="ext/jquery-ui.js"></script-->
-<script type="text/javascript" src="ext/materialize.min.js"></script>
-<script type="text/javascript" src="util.js"></script>
-<script type="text/javascript" src="mn.js"></script>
-<script type="text/javascript" src='ext/autolink.js'></script>
-<script type="text/javascript" src='ext/nprogress.js'></script>
-<script type="text/javascript" src='ext/randomColor.js'></script>
-<script type="text/javascript" src='ext/shortcut.js'></script>
-<script type="text/javascript" src='ext/isMobile.js'></script>
-<script type="text/javascript" src='ext/firebase.js'></script>
-<script>
-    // Initialize Firebase
-    var config = {
-        apiKey: "AIzaSyCA7fmVSWpyP0MPpw1QRU6h9OZ7hrr6sGA",
-        authDomain: "mininote-a7060.firebaseapp.com",
-        databaseURL: "https://mininote-a7060.firebaseio.com",
-        projectId: "mininote-a7060",
-        storageBucket: "mininote-a7060.appspot.com",
-        messagingSenderId: "26778481220"
-    };
-    firebase.initializeApp(config);
-    var userInfo = null; // 로그인한 사용자 정보
-    var noteRef;
-    var noteList = [];
-    var notes = new HashTable();
-    var visibleRowCnt = 30;
-    var md = new ManageDiff();
-
-    NProgress.start();  // https://github.com/rstacruz/nprogress
-    firebase.auth().onAuthStateChanged(function (user) {
-        if (user) {// 인증완료
-            userInfo = user;
-            $("#writeBtn").show();
-            var userRef = firebase.database().ref("users/" + userInfo.uid);
-            userRef.once('value').then(function (snapshot) {
-                if (snapshot.val() != null) {
-                    userInfo.data = snapshot.val();
-                    setHeader();
-                    initNoteList(userInfo.uid);
-                } else {// 신규 로그인 경우
-                    var userData = {
-                        fontSize: "18px",
-                        iconColor: "green",
-                        email: userInfo.email,
-                        nickname: userInfo.email.split("@")[0]
-                    };
-                    userRef.set(userData, function () {
-                        userInfo.data = userData;
-                        setHeader();
-                        initNoteList(userInfo.uid);
-                    });
-                }
-            });
-        } else {
-            userInfo = null;
-            setHeader();
-            NProgress.done();
-            if (confirm("로그인이 필요합니다")) {
-                firebase.auth().signInWithRedirect(new firebase.auth.GoogleAuthProvider());
-            }
-        }
-    });
-
-    firebase.database().ref(".info/connected").on("value", function (snap) {
-        if (snap.val() === true) {
-            if (userInfo != null)
-                userInfo.isConnected = true;
-            //$(".state").html("online");
-
-            if ($(".dialog").css("display") == "none") {
-                $("#writeBtn").show();
-                $("#addBtn").html("새글");
-            } else {
-                //$("#addBtn").html("저장");
-            }
-        } else {
-            if (userInfo != null)
-                userInfo.isConnected = false;
-            //userInfo = null;  // 로그인이 유지된 상태에서도 디비연결이 잠깐 끊어질 수는 있다
-            //$(".state").html("offline");
-            //$("#list").html("");
-            $("#writeBtn").hide();
-            setTimeout(function () {
-                if (userInfo.isConnected == false) {
-                    $("#writeBtn").show();
-                    $("#addBtn").html("로긴");
-                }
-            }, 20000);
-            //alert("연결상태가 끊어졌습니다.");
-        }
-    });
-
-
-
-    if(!isMobile.any){
-        //  PC환경에서만 단축키 설정
-        shortcut.add("Alt+W", function () {
-            writeNote();
-        });
-
-        shortcut.add("Alt+S", function () {
-            searchClick();
-        });
-
-        shortcut.add("Ctrl+U", function () {
-            document.execCommand('insertunorderedlist');
-        }, {"target": "noteContent"});
-
-        shortcut.add("tab", function () {
-            document.execCommand('indent');
-        }, {"target": "noteContent"});
-
-        shortcut.add("Shift+tab", function () {
-            document.execCommand('outdent');
-        }, {"target": "noteContent"});
-
-        shortcut.add("meta+S", function () {
-            document.querySelector("#diffMark").innerHTML = "";
-            saveNote();
-        }, {"target": "noteContent"});
-        shortcut.add("meta+L", function () {
-            document.querySelector("#diffMark").innerHTML = "";
-            saveNote();
-            viewList();
-        });
-
-        shortcut.add("Ctrl+S", function () {
-            saveNote();
-        }, {"target": "noteContent"});
-        shortcut.add("meta+enter", function () {
-            searchNote();
-        }, {"target": "input2"});
-
-        $m.qs("#noteContent").onmouseenter = function (e) {
-            // 목록 스크롤 막기
-            document.body.style.overflow = "hidden";
-        };
-        $m.qs("#noteContent").onmouseleave = function (e) {
-            document.body.style.overflow = "visible";
-        };
-
-    }
-</script>
 </body>
 
 </html>
