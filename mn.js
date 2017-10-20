@@ -79,6 +79,28 @@ function init(){
             document.execCommand('insertunorderedlist');
         }, {"target": "noteContent"});
 
+
+        shortcut.add("Ctrl+T", function () {
+            var chk =  document.createElement("input");
+            chk.setAttribute("type", "checkbox");
+            chk.setAttribute("class", "chk");
+            chk.onclick = function(){
+                if(event.target.checked){
+                    event.target.setAttribute("checked","");
+                }else{
+                    event.target.removeAttribute("checked");
+                }
+            };
+
+            var sel = window.getSelection();
+            var range = sel.getRangeAt(0);
+            range.insertNode(chk);
+            sel.modify("move", "forward", "character");
+
+        }, {"target": "noteContent"});
+
+
+
         shortcut.add("tab", function () {
             document.execCommand('indent');
         }, {"target": "noteContent"});
@@ -223,15 +245,6 @@ function onChildChanged(data) {
     // 오른쪽 끝 컨텍스트버튼 이벤트 처리
     setContextBtnEvent($("#" + key + " .btnContext"));
 
-    // noteList 갱신
-    /*
-    for(var i=0; i<noteList.length; i++){
-        if(noteList[i].key == key){
-            noteList[i] = data;
-            break;
-        }
-    }
-*/
     // notes 갱신
     notes.setItem(key, noteData);
 
@@ -322,6 +335,7 @@ function viewNote(key) {
         }
 
         $("#noteContent").html(txt);
+
         $("#addBtn").html("저장");
         $("#writeBtn").hide();
         $("#topNavi").removeClass("navi");
@@ -329,13 +343,24 @@ function viewNote(key) {
         $m.qs("#topNavi").innerHTML = "목록";
         $m.qs("#topBtn a").style.opacity = "";
 
-        var anchors = $m.qsa("#noteContent a");
-        anchors.forEach(function (a) {
+        // 링크 처리
+        $m.qsa("#noteContent a").forEach(function (a) {
             a.onmouseleave = function (e) {
                 e.target.setAttribute("contenteditable", "true");
             };
             a.onmouseenter = function (e) {
                 e.target.setAttribute("contenteditable", "false");
+            };
+        });
+
+        // checkbox 처리
+        $m.qsa("#noteContent input.chk").forEach(function(chk){
+            chk.onclick = function(){
+                if(event.target.checked){
+                    event.target.setAttribute("checked","");
+                }else{
+                    event.target.removeAttribute("checked");
+                }
             };
         });
     });
@@ -476,16 +501,7 @@ function ManageDiff(){
             // 신규인 경우
             this.hasDiff = true;
         }else{
-            // 아래 루프를 없애도록 해야해...
             this.hasDiff = notes.getItem(this.noteKey).txt != $("#noteContent").html();
-            /*
-            for (var i = 0; i < noteList.length; i++) {
-                if (noteList[i].key == this.noteKey) {
-                    this.hasDiff = noteList[i].val().txt != $("#noteContent").html();
-                    break;
-                }
-            }
-            */
         }
 
         // 변경사항 있을 경우 변경사항 표시..

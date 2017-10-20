@@ -341,3 +341,11 @@ select#iconColor {
 body {
     background-color: var(--main-bg-color);
 }
+
+
+.chk[type="checkbox"]:not(:checked), [type="checkbox"]:checked {
+    position: inherit;
+    left : 0px;
+    opacity: 1;
+    cursor: pointer;
+}
