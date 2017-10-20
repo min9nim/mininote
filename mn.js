@@ -94,8 +94,13 @@ function init(){
 
             var sel = window.getSelection();
             var range = sel.getRangeAt(0);
+
+            // range범위를 수정해 가면서 처리하는게 맞을 것 같은데.. 삽입하는 순서를 바로 잡으려면...
+            range.insertNode(document.createTextNode(" "));
             range.insertNode(chk);
             sel.modify("move", "forward", "character");
+            sel.modify("move", "forward", "character");
+
 
         }, {"target": "noteContent"});
 
@@ -262,7 +267,7 @@ function onChildRemoved(data) {
 }
 
 function saveNote() {
-    console.log("saveNote called..");
+    //console.log("saveNote called..");
     var key = $("#noteContent").attr("key");
     //var title = $("#noteTitle").val();
     $("#noteContent div[placeholder]").removeAttr("placeholder");      // 불필요태그 제거
@@ -495,7 +500,7 @@ function ManageDiff(){
     this.hasDiff = false;
 
     this.checkDiff = function(){
-        console.log("checkDiff called..");
+        //console.log("checkDiff called..");
         this.noteKey = $("#noteContent").attr("key");
         if(!this.noteKey){
             // 신규인 경우
