@@ -121,16 +121,16 @@ mn.init = function(){
 
         shortcut.add("meta+S", function () {
             document.querySelector("#diffMark").innerHTML = "";
-            saveNote();
+            mn.saveNote();
         }, {"target": "noteContent"});
         shortcut.add("meta+L", function () {
             document.querySelector("#diffMark").innerHTML = "";
-            saveNote();
-            viewList();
+            mn.saveNote();
+            mn.viewList();
         });
 
         shortcut.add("Ctrl+S", function () {
-            saveNote();
+            mn.saveNote();
         }, {"target": "noteContent"});
         shortcut.add("meta+enter", function () {
             searchNote();
@@ -148,7 +148,7 @@ mn.init = function(){
 
 function showNoteList(uid) {
     //console.log("showNoteList called..");
-    viewList();
+    mn.viewList();
 
     $(".state").text("");
     $("#list").text("");
@@ -156,7 +156,7 @@ function showNoteList(uid) {
     noteRef.limitToLast(visibleRowCnt).once("value").then(function (snapshot) {
         var noteObj = snapshot.val();
         for (key in noteObj) {
-            addItem(key, noteObj[key]);
+            mn.addItem(key, noteObj[key]);
         }
 
         $(".header .title").html(userInfo.data.nickname + "'s " + notes.length + " notes");
@@ -168,13 +168,13 @@ function initNoteList(uid) {
     //var noteRef = firebase.database().ref('notes/' + uid).limitToLast(100);
     // 이벤트 등록용..
     noteRef = firebase.database().ref('notes/' + uid);
-    noteRef.on('child_added', onChildAdded);
-    noteRef.on('child_changed', onChildChanged);
-    noteRef.on('child_removed', onChildRemoved);
+    noteRef.on('child_added', mn.onChildAdded);
+    noteRef.on('child_changed', mn.onChildChanged);
+    noteRef.on('child_removed', mn.onChildRemoved);
     showNoteList(uid);
 }
 
-function onChildAdded(data) {
+mn.onChildAdded = function(data) {
     //console.log("## onChildAdded called " + data.key);
     //noteList.push(data);
     notes.setItem(data.key, data.val());
@@ -183,7 +183,7 @@ function onChildAdded(data) {
     var diff = curDate - createDate;
     //console.log(diff);
     if (diff < 1000) {// 방금 새로 등록한 글인 경우만
-        addItem(data.key, data.val());
+        mn.addItem(data.key, data.val());
         if ($(".state").html() == "") {
             $(".header .title").html(userInfo.data.nickname + "'s " +  notes.length + " notes");
         } else {
@@ -192,8 +192,8 @@ function onChildAdded(data) {
     }
 }
 
-function addItem(key, noteData, how) {
-    var html = getNoteHtml(key, noteData);
+mn.addItem = function(key, noteData, how) {
+    var html = mn.getNoteHtml(key, noteData);
 
     if (how == "append") {
         $("#list").append(html.li);
@@ -207,7 +207,7 @@ function addItem(key, noteData, how) {
 }
 
 
-function getNoteHtml(key, noteData) {
+mn.getNoteHtml = function(key, noteData) {
     var idx = noteData.txt.indexOf("<div>");
     if (idx > 0) {
         var title = noteData.txt.substr(0, idx);
@@ -244,11 +244,11 @@ function getNoteHtml(key, noteData) {
 }
 
 
-function onChildChanged(data) {
+mn.onChildChanged = function(data) {
     //console.log("## onChildChanged called..");
     var key = data.key;
     var noteData = data.val();
-    var html = getNoteHtml(key, noteData);
+    var html = mn.getNoteHtml(key, noteData);
     $("#" + key).html(html.liChild);
     $("#" + key).animate({left: "0px"}, 300);
 
@@ -262,7 +262,7 @@ function onChildChanged(data) {
     //window.scrollTo("", document.getElementById(key).offsetTop + document.getElementById("list").offsetTop);
 }
 
-function onChildRemoved(data) {
+mn.onChildRemoved = function(data) {
 //  console.log("## onChildRemoved called..");
     var key = data.key;
     $('#' + key).remove();
@@ -271,10 +271,8 @@ function onChildRemoved(data) {
     $(".header .title").html(userInfo.data.nickname + "'s " + notes.length + " notes");
 }
 
-function saveNote() {
-    //console.log("saveNote called..");
+mn.saveNote = function() {
     var key = $("#noteContent").attr("key");
-    //var title = $("#noteTitle").val();
     $("#noteContent div[placeholder]").removeAttr("placeholder");      // 불필요태그 제거
     var txt = $("#noteContent").html().replace(/(<div><br><\/div>)+$/ig, ""); // 끝에 공백제거
     txt = txt.replace(/<span style="background-color:yellow;">|<\/span>/gi, "");    // 하이라이트 스타일 제거
@@ -449,7 +447,7 @@ function searchNote() {
     notes.each(function(key, val){
         noTagTxt = val.txt.replace(/<([^>]+)>/gi, "");   // 태그제거
         if((new RegExp(txt, "gi")).test(noTagTxt)){
-            addItem(key, val);
+            mn.addItem(key, val);
         }
     });
 
@@ -457,20 +455,12 @@ function searchNote() {
     $(".header .title").html(notes.length + " notes");
     $(".header .state").html(`> <span style="font-style:italic;">${txt}</span> 's ${$("#list li").length} results`);
 
-    viewList();
+    mn.viewList();
 }
 
 
-function cancelWrite() {
-    $(".dialog").css("display", "none");
-}
 
-function cancelSearch() {
-    $(".search").css("display", "none");
-}
-
-
-function keyupCheck(event) {
+mn.keyupCheck = function(event) {
     var keycode = (event.which) ? event.which : event.keyCode;
 
     // 내용 변경여부 체크
@@ -528,7 +518,7 @@ function ManageDiff(){
             if($("#noteContent div:first-child").html() == "제목"){
                 // 제목을 수정하지 않을 경우 저장하지 않는다
             }else{
-                saveNote();
+                mn.saveNote();
             }
         }
         $m.qs("#diffMark").innerHTML = "";
@@ -644,11 +634,11 @@ function setIconColor(color) {
     });
 }
 
-function listClick() {
+mn.listClick = function() {
     $(".menu").animate({left: "-220px"}, 300);
 }
 
-function bodyScroll() {
+mn.bodyScroll = function() {
     if ($(".state").html() != "") {// 검색결과 화면일 때
         return;
     }
@@ -665,23 +655,23 @@ function bodyScroll() {
         var nextList = notes.getArray().slice(start, end).reverse();
 
         nextList.forEach(function (x) {
-            addItem(x.key, x.val, "append");
+            mn.addItem(x.key, x.val, "append");
         });
         NProgress.done();
     }
 }
 
-function topNavi() {
+mn.topNavi = function() {
     if ($m.qs("#topNavi").innerHTML == "목록") {
         // 목록버튼 누른 경우
-        viewList();
+        mn.viewList();
     } else {
         // top 버튼 누른경우
         $(window).scrollTop(0);
     }
 }
 
-function viewList(){
+mn.viewList = function(){
     document.body.style.overflow = "visible";
     $m.qs(".dialog").style.display = "none";
     $m.qs("body").style.overflow = "visible";

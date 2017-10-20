@@ -47,7 +47,7 @@
     </script>
 </head>
 
-<body onscroll="bodyScroll();">
+<body onscroll="mn.bodyScroll();">
 <div class="header">
     <i id="btnMenu" class='material-icons' onclick="menuClick();">menu</i>
     <div class="title" onclick="titleClick();">mininote is loading..</div>
@@ -79,10 +79,10 @@
         </select></div>
     </li>
 </ul>
-<ul id="list" class="collection" onclick="listClick();" ontouchstart="listClick();"></ul>
+<ul id="list" class="collection" onclick="mn.listClick();" ontouchstart="mn.listClick();"></ul>
 <div id="topBtn" class="fixed-action-btn" style="bottom: 110px; right: 24px;">
     <div id="diffMark" style="display:inline-block"></div>
-    <a class="btn-floating btn-large waves-effect waves-light" style="opacity: 0.3" onclick="topNavi();"> <i
+    <a class="btn-floating btn-large waves-effect waves-light" style="opacity: 0.3" onclick="mn.topNavi();"> <i
             id="topNavi" class="navi material-icons">arrow_upward</i> </a>
 </div>
 <div id="writeBtn" class="fixed-action-btn">
@@ -92,7 +92,7 @@
 </div>
 <div class="dialog">
     <div id="div_write">
-        <div id="noteContent" class="noteContent" contenteditable="true" onkeyup="keyupCheck(event);"></div>
+        <div id="noteContent" class="noteContent" contenteditable="true" onkeyup="mn.keyupCheck(event);"></div>
     </div>
 </div>
 <div class="search">
