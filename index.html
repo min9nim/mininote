@@ -35,6 +35,7 @@
             messagingSenderId: "26778481220"
         };
         firebase.initializeApp(config);
+
         var userInfo = null; // 로그인한 사용자 정보
         var noteRef;
         //var noteList = [];
@@ -42,7 +43,7 @@
         var visibleRowCnt = 30;
         var md = new ManageDiff();
 
-        window.onload = init;
+        window.onload = mn.init;
     </script>
 </head>
 

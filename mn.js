@@ -1,4 +1,6 @@
-function init(){
+var mn = {};
+
+mn.init = function(){
     NProgress.start();  // https://github.com/rstacruz/nprogress
     firebase.auth().onAuthStateChanged(function (user) {
         if (user) {// 인증완료
@@ -64,6 +66,15 @@ function init(){
     });
 
 
+    mn.chkClick = function(){
+        if(event.target.checked){
+            event.target.setAttribute("checked","");
+        }else{
+            event.target.removeAttribute("checked");
+        }
+        md.checkDiff();
+    };
+
 
     if(!isMobile.any){
         //  PC환경에서만 단축키 설정
@@ -84,13 +95,7 @@ function init(){
             var chk =  document.createElement("input");
             chk.setAttribute("type", "checkbox");
             chk.setAttribute("class", "chk");
-            chk.onclick = function(){
-                if(event.target.checked){
-                    event.target.setAttribute("checked","");
-                }else{
-                    event.target.removeAttribute("checked");
-                }
-            };
+            chk.onclick = mn.chkClick;
 
             var sel = window.getSelection();
             var range = sel.getRangeAt(0);
@@ -360,13 +365,7 @@ function viewNote(key) {
 
         // checkbox 처리
         $m.qsa("#noteContent input.chk").forEach(function(chk){
-            chk.onclick = function(){
-                if(event.target.checked){
-                    event.target.setAttribute("checked","");
-                }else{
-                    event.target.removeAttribute("checked");
-                }
-            };
+            chk.onclick = mn.chkClick;
         });
     });
 }
