@@ -10,8 +10,8 @@ mn.init = function(){
             userRef.once('value').then(function (snapshot) {
                 if (snapshot.val() != null) {
                     userInfo.data = snapshot.val();
-                    setHeader();
-                    initNoteList(userInfo.uid);
+                    mn.setHeader();
+                    mn.initNoteList(userInfo.uid);
                 } else {// 신규 로그인 경우
                     var userData = {
                         fontSize: "18px",
@@ -21,14 +21,14 @@ mn.init = function(){
                     };
                     userRef.set(userData, function () {
                         userInfo.data = userData;
-                        setHeader();
-                        initNoteList(userInfo.uid);
+                        mn.setHeader();
+                        mn.initNoteList(userInfo.uid);
                     });
                 }
             });
         } else {
             userInfo = null;
-            setHeader();
+            mn.setHeader();
             NProgress.done();
             if (confirm("로그인이 필요합니다")) {
                 firebase.auth().signInWithRedirect(new firebase.auth.GoogleAuthProvider());
@@ -79,11 +79,11 @@ mn.init = function(){
     if(!isMobile.any){
         //  PC환경에서만 단축키 설정
         shortcut.add("Alt+W", function () {
-            writeNote();
+            mn.writeNote();
         });
 
         shortcut.add("Alt+S", function () {
-            searchClick();
+            mn.searchClick();
         });
 
         shortcut.add("Ctrl+U", function () {
@@ -133,7 +133,7 @@ mn.init = function(){
             mn.saveNote();
         }, {"target": "noteContent"});
         shortcut.add("meta+enter", function () {
-            searchNote();
+            mn.searchNote();
         }, {"target": "input2"});
 
         $m.qs("#noteContent").onmouseenter = function (e) {
@@ -146,7 +146,7 @@ mn.init = function(){
     }
 }
 
-function showNoteList(uid) {
+mn.showNoteList = function(uid) {
     //console.log("showNoteList called..");
     mn.viewList();
 
@@ -164,14 +164,14 @@ function showNoteList(uid) {
     });
 }
 
-function initNoteList(uid) {
+mn.initNoteList = function(uid) {
     //var noteRef = firebase.database().ref('notes/' + uid).limitToLast(100);
     // 이벤트 등록용..
     noteRef = firebase.database().ref('notes/' + uid);
     noteRef.on('child_added', mn.onChildAdded);
     noteRef.on('child_changed', mn.onChildChanged);
     noteRef.on('child_removed', mn.onChildRemoved);
-    showNoteList(uid);
+    mn.showNoteList(uid);
 }
 
 mn.onChildAdded = function(data) {
@@ -202,8 +202,8 @@ mn.addItem = function(key, noteData, how) {
     }
 
     // 오른쪽 끝 컨텍스트버튼 이벤트 처리
-    setContextBtnEvent($("#" + key + " .btnContext"));
-    setTouchSlider($("#" + key));
+    mn.setContextBtnEvent($("#" + key + " .btnContext"));
+    mn.setTouchSlider($("#" + key));
 }
 
 
@@ -226,15 +226,15 @@ mn.getNoteHtml = function(key, noteData) {
     var removeBtn = "";
     var editBtn = "";
     if (typeof userInfo != null) {// 내가 작성한 글인 경우만 수정/삭제버튼이 표시
-        removeBtn = `<i id='btn_delete' onclick='removeNote("${key}")' class='material-icons'>delete</i>`;
+        removeBtn = `<i id='btn_delete' onclick='mn.removeNote("${key}")' class='material-icons'>delete</i>`;
         editBtn = `<i id='btn_edit' onclick='editNote("${key}")' class='material-icons'>edit</i>`;
     }
 
     var color = randomColor({hue: userInfo.data.iconColor, luminosity: 'dark'});  // https://randomcolor.llllll.li/
 
     var liChild = `<i class='createDate'>${createDate}</i><i class='btnContext'><<</i>
-                <div class='title' onclick="viewNote('${key}')">${title}</div>
-                <div class='content' onclick="viewNote('${key}')">${content}</div></p>${removeBtn}${editBtn}`;
+                <div class='title' onclick="mn.viewNote('${key}')">${title}</div>
+                <div class='content' onclick="mn.viewNote('${key}')">${content}</div></p>${removeBtn}${editBtn}`;
 
     var li = `<li id="${key}" class="collection-item avatar">${liChild}</li>`;
     var html = {};
@@ -253,7 +253,7 @@ mn.onChildChanged = function(data) {
     $("#" + key).animate({left: "0px"}, 300);
 
     // 오른쪽 끝 컨텍스트버튼 이벤트 처리
-    setContextBtnEvent($("#" + key + " .btnContext"));
+    mn.setContextBtnEvent($("#" + key + " .btnContext"));
 
     // notes 갱신
     notes.setItem(key, noteData);
@@ -305,7 +305,7 @@ mn.saveNote = function() {
 }
 
 
-function removeNote(key) {
+mn.removeNote = function(key) {
     if (userInfo != null && userInfo.isConnected) {
         if (confirm("삭제하시겠습니까?")) {
             firebase.database().ref('notes/' + userInfo.uid + '/' + key).remove();
@@ -317,7 +317,7 @@ function removeNote(key) {
 }
 
 
-function viewNote(key) {
+mn.viewNote = function(key) {
    md.save();
 
     // 모바일 fixed div 에서 커서가 이상하게 동작되는 문제 회피
@@ -369,7 +369,7 @@ function viewNote(key) {
 }
 
 
-function writeNote() {
+mn.writeNote = function() {
     if (userInfo != null && userInfo.isConnected) {
         if ($("#addBtn").html() == "새글") {
             // 쓰기버튼 일때
@@ -417,7 +417,7 @@ function writeNote() {
 }
 
 
-function searchClick() {
+mn.searchClick = function() {
     if (userInfo != null && userInfo.isConnected) {
         $(".search").css("display", "block");
         $("#input2").val("");
@@ -429,7 +429,7 @@ function searchClick() {
 }
 
 
-function searchNote() {
+mn.searchNote = function() {
     var txt = $("#input2").val().trim();
 
     if (txt.length > 100) {
@@ -485,7 +485,7 @@ mn.keyupCheck = function(event) {
 }
 
 
-function ManageDiff(){
+mn.ManageDiff = function(){
     this.hasDiff = false;
 
     this.checkDiff = function(){
@@ -528,7 +528,7 @@ function ManageDiff(){
     }
 }
 
-function setHeader() {
+mn.setHeader = function() {
     if (userInfo != null) {
         $("#nickname").val(userInfo.data.nickname);
         $("#fontSize").val(userInfo.data.fontSize.replace("px", ""));
@@ -539,7 +539,7 @@ function setHeader() {
 }
 
 
-function setContextBtnEvent(contextBtn) {
+mn.setContextBtnEvent = function(contextBtn) {
     contextBtn.bind("click", function () {
         if (contextBtn.text() == "<<") {
             contextBtn.parent().animate({left: "-100px"}, 300, function () {
@@ -553,7 +553,7 @@ function setContextBtnEvent(contextBtn) {
     });
 }
 
-function setTouchSlider(row) {
+mn.setTouchSlider = function(row) {
     var start_x, diff_x;
     var start_y, diff_y;
     var dom_start_x;
@@ -576,7 +576,7 @@ function setTouchSlider(row) {
         if (diff_x < -50) {
             $(this).animate({left: "-100px"}, 300);
         } else if (diff_x > 150) {
-            viewNote($(this).attr("id"));
+            mn.viewNote($(this).attr("id"));
             $(this).animate({left: "0px"}, 300);
         } else {
             $(this).animate({left: "0px"}, 300);
@@ -589,7 +589,7 @@ function setTouchSlider(row) {
 }
 
 
-function menuClick() {
+mn.menuClick = function() {
     if ($m.qs(".menu").style.left == "0px") {
         $(".menu").animate({left: "-220px"}, 300);
     } else {
@@ -598,13 +598,9 @@ function menuClick() {
 }
 
 
-function signout() {
+mn.signout = function() {
     firebase.auth().signOut().then(function () {
-        //userInfo = null;
-        //$("#list").html("");
-        //$("#writeBtn").hide();
-        //alert('Signed Out');
-        // index.html 의 로그아웃 공통처리 로직이 수행됨
+        // 로그아웃 처리
     }, function (error) {
         console.error('Sign Out Error', error);
     });
@@ -612,20 +608,20 @@ function signout() {
 
 
 
-function setNickname(nickname) {
+mn.setNickname = function(nickname) {
     userInfo.data.nickname = nickname;
     firebase.database().ref('users/' + userInfo.uid).update(userInfo.data);
     $(".header .title").html(userInfo.data.nickname + "'s " + notes.length + " notes");
 }
 
 
-function setFontSize(size) {
+mn.setFontSize = function(size) {
     userInfo.data.fontSize = size + "px";
     firebase.database().ref('users/' + userInfo.uid).update(userInfo.data);
     $(".txt").css("font-size", userInfo.data.fontSize);
 }
 
-function setIconColor(color) {
+mn.setIconColor = function(color) {
     userInfo.data.iconColor = color;
     firebase.database().ref('users/' + userInfo.uid).update(userInfo.data);
     $("#list i.circle").each(function (i) {
@@ -686,9 +682,9 @@ mn.viewList = function(){
 }
 
 
-function titleClick() {
+mn.titleClick = function() {
     if (userInfo) {
-        showNoteList(userInfo.uid);
+        mn.showNoteList(userInfo.uid);
     } else {
         firebase.auth().signInWithRedirect(new firebase.auth.GoogleAuthProvider());
     }
