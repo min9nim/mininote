@@ -4,30 +4,30 @@ mn.init = function(){
     NProgress.start();  // https://github.com/rstacruz/nprogress
     firebase.auth().onAuthStateChanged(function (user) {
         if (user) {// 인증완료
-            userInfo = user;
+            mn.userInfo = user;
             $("#writeBtn").show();
-            var userRef = firebase.database().ref("users/" + userInfo.uid);
+            var userRef = firebase.database().ref("users/" + mn.userInfo.uid);
             userRef.once('value').then(function (snapshot) {
                 if (snapshot.val() != null) {
-                    userInfo.data = snapshot.val();
+                    mn.userInfo.data = snapshot.val();
                     mn.setHeader();
-                    mn.initNoteList(userInfo.uid);
+                    mn.initNoteList(mn.userInfo.uid);
                 } else {// 신규 로그인 경우
                     var userData = {
                         fontSize: "18px",
                         iconColor: "green",
-                        email: userInfo.email,
-                        nickname: userInfo.email.split("@")[0]
+                        email: mn.userInfo.email,
+                        nickname: mn.userInfo.email.split("@")[0]
                     };
                     userRef.set(userData, function () {
-                        userInfo.data = userData;
+                        mn.userInfo.data = userData;
                         mn.setHeader();
-                        mn.initNoteList(userInfo.uid);
+                        mn.initNoteList(mn.userInfo.uid);
                     });
                 }
             });
         } else {
-            userInfo = null;
+            mn.userInfo = null;
             mn.setHeader();
             NProgress.done();
             if (confirm("로그인이 필요합니다")) {
@@ -38,8 +38,8 @@ mn.init = function(){
 
     firebase.database().ref(".info/connected").on("value", function (snap) {
         if (snap.val() === true) {
-            if (userInfo != null)
-                userInfo.isConnected = true;
+            if (mn.userInfo != null)
+                mn.userInfo.isConnected = true;
             //$(".state").html("online");
 
             if ($(".dialog").css("display") == "none") {
@@ -49,14 +49,14 @@ mn.init = function(){
                 //$("#addBtn").html("저장");
             }
         } else {
-            if (userInfo != null)
-                userInfo.isConnected = false;
+            if (mn.userInfo != null)
+                mn.userInfo.isConnected = false;
             //userInfo = null;  // 로그인이 유지된 상태에서도 디비연결이 잠깐 끊어질 수는 있다
             //$(".state").html("offline");
             //$("#list").html("");
             $("#writeBtn").hide();
             setTimeout(function () {
-                if (userInfo.isConnected == false) {
+                if (mn.userInfo.isConnected == false) {
                     $("#writeBtn").show();
                     $("#addBtn").html("로긴");
                 }
@@ -72,7 +72,7 @@ mn.init = function(){
         }else{
             event.target.removeAttribute("checked");
         }
-        md.checkDiff();
+        mn.md.checkDiff();
     };
 
 
@@ -153,31 +153,31 @@ mn.showNoteList = function(uid) {
     $(".state").text("");
     $("#list").text("");
 
-    noteRef.limitToLast(visibleRowCnt).once("value").then(function (snapshot) {
+    mn.noteRef.limitToLast(mn.visibleRowCnt).once("value").then(function (snapshot) {
         var noteObj = snapshot.val();
         for (key in noteObj) {
             mn.addItem(key, noteObj[key]);
         }
 
-        $(".header .title").html(userInfo.data.nickname + "'s " + notes.length + " notes");
+        $(".header .title").html(mn.userInfo.data.nickname + "'s " + mn.notes.length + " notes");
         NProgress.done();
     });
 }
 
 mn.initNoteList = function(uid) {
-    //var noteRef = firebase.database().ref('notes/' + uid).limitToLast(100);
+    //var mn.noteRef = firebase.database().ref('notes/' + uid).limitToLast(100);
     // 이벤트 등록용..
-    noteRef = firebase.database().ref('notes/' + uid);
-    noteRef.on('child_added', mn.onChildAdded);
-    noteRef.on('child_changed', mn.onChildChanged);
-    noteRef.on('child_removed', mn.onChildRemoved);
+    mn.noteRef = firebase.database().ref('notes/' + uid);
+    mn.noteRef.on('child_added', mn.onChildAdded);
+    mn.noteRef.on('child_changed', mn.onChildChanged);
+    mn.noteRef.on('child_removed', mn.onChildRemoved);
     mn.showNoteList(uid);
 }
 
 mn.onChildAdded = function(data) {
     //console.log("## onChildAdded called " + data.key);
     //noteList.push(data);
-    notes.setItem(data.key, data.val());
+    mn.notes.setItem(data.key, data.val());
     var curDate = new Date().getTime();
     var createDate = data.val().createDate;
     var diff = curDate - createDate;
@@ -185,9 +185,9 @@ mn.onChildAdded = function(data) {
     if (diff < 1000) {// 방금 새로 등록한 글인 경우만
         mn.addItem(data.key, data.val());
         if ($(".state").html() == "") {
-            $(".header .title").html(userInfo.data.nickname + "'s " +  notes.length + " notes");
+            $(".header .title").html(mn.userInfo.data.nickname + "'s " +  mn.notes.length + " notes");
         } else {
-            $(".header .title").html(notes.length + " notes");
+            $(".header .title").html(mn.notes.length + " notes");
         }
     }
 }
@@ -225,12 +225,12 @@ mn.getNoteHtml = function(key, noteData) {
 
     var removeBtn = "";
     var editBtn = "";
-    if (typeof userInfo != null) {// 내가 작성한 글인 경우만 수정/삭제버튼이 표시
+    if (typeof mn.userInfo != null) {// 내가 작성한 글인 경우만 수정/삭제버튼이 표시
         removeBtn = `<i id='btn_delete' onclick='mn.removeNote("${key}")' class='material-icons'>delete</i>`;
         editBtn = `<i id='btn_edit' onclick='editNote("${key}")' class='material-icons'>edit</i>`;
     }
 
-    var color = randomColor({hue: userInfo.data.iconColor, luminosity: 'dark'});  // https://randomcolor.llllll.li/
+    var color = randomColor({hue: mn.userInfo.data.iconColor, luminosity: 'dark'});  // https://randomcolor.llllll.li/
 
     var liChild = `<i class='createDate'>${createDate}</i><i class='btnContext'><<</i>
                 <div class='title' onclick="mn.viewNote('${key}')">${title}</div>
@@ -256,7 +256,7 @@ mn.onChildChanged = function(data) {
     mn.setContextBtnEvent($("#" + key + " .btnContext"));
 
     // notes 갱신
-    notes.setItem(key, noteData);
+    mn.notes.setItem(key, noteData);
 
     // 수정한 글목록으로 스크롤 이동
     //window.scrollTo("", document.getElementById(key).offsetTop + document.getElementById("list").offsetTop);
@@ -267,8 +267,8 @@ mn.onChildRemoved = function(data) {
     var key = data.key;
     $('#' + key).remove();
     //noteList.splice(noteList.indexOf(data), 1);  // noteList에서 삭제된 요소 제거
-    notes.removeItem(key);
-    $(".header .title").html(userInfo.data.nickname + "'s " + notes.length + " notes");
+    mn.notes.removeItem(key);
+    $(".header .title").html(mn.userInfo.data.nickname + "'s " + mn.notes.length + " notes");
 }
 
 mn.saveNote = function() {
@@ -290,14 +290,14 @@ mn.saveNote = function() {
 
 
     if (key == "") {// 저장
-        var res = firebase.database().ref('notes/' + userInfo.uid).push({
+        var res = firebase.database().ref('notes/' + mn.userInfo.uid).push({
             txt: txt,
             createDate: new Date().getTime(),
             updateDate: new Date().getTime()
         });
         $("#noteContent").attr("key", res.key);
     } else {// 수정
-        firebase.database().ref('notes/' + userInfo.uid + "/" + key).update({
+        firebase.database().ref('notes/' + mn.userInfo.uid + "/" + key).update({
             txt: txt,
             updateDate: new Date().getTime()
         });
@@ -306,9 +306,9 @@ mn.saveNote = function() {
 
 
 mn.removeNote = function(key) {
-    if (userInfo != null && userInfo.isConnected) {
+    if (mn.userInfo != null && mn.userInfo.isConnected) {
         if (confirm("삭제하시겠습니까?")) {
-            firebase.database().ref('notes/' + userInfo.uid + '/' + key).remove();
+            firebase.database().ref('notes/' + mn.userInfo.uid + '/' + key).remove();
             //$('#' + key).remove();
         }
     } else {
@@ -318,7 +318,7 @@ mn.removeNote = function(key) {
 
 
 mn.viewNote = function(key) {
-   md.save();
+   mn.md.save();
 
     // 모바일 fixed div 에서 커서가 이상하게 동작되는 문제 회피
    if(isMobile.any){
@@ -327,7 +327,7 @@ mn.viewNote = function(key) {
    }
 
 
-    var noteRef = firebase.database().ref('notes/' + userInfo.uid + '/' + key).once('value').then(function (snapshot) {
+    firebase.database().ref('notes/' + mn.userInfo.uid + '/' + key).once('value').then(function (snapshot) {
         $(".dialog").css("display", "block");
         $("#noteContent").attr("key", key);
         var txt = snapshot.val().txt;
@@ -370,7 +370,7 @@ mn.viewNote = function(key) {
 
 
 mn.writeNote = function() {
-    if (userInfo != null && userInfo.isConnected) {
+    if (mn.userInfo != null && mn.userInfo.isConnected) {
         if ($("#addBtn").html() == "새글") {
             // 쓰기버튼 일때
             $m.qs(".dialog").style.display = "block";
@@ -418,7 +418,7 @@ mn.writeNote = function() {
 
 
 mn.searchClick = function() {
-    if (userInfo != null && userInfo.isConnected) {
+    if (mn.userInfo != null && mn.userInfo.isConnected) {
         $(".search").css("display", "block");
         $("#input2").val("");
         $("#input2").focus();
@@ -444,7 +444,7 @@ mn.searchNote = function() {
     $(".search").css("display", "none");
     $("#list").html("");
 
-    notes.each(function(key, val){
+    mn.notes.each(function(key, val){
         noTagTxt = val.txt.replace(/<([^>]+)>/gi, "");   // 태그제거
         if((new RegExp(txt, "gi")).test(noTagTxt)){
             mn.addItem(key, val);
@@ -452,7 +452,7 @@ mn.searchNote = function() {
     });
 
 
-    $(".header .title").html(notes.length + " notes");
+    $(".header .title").html(mn.notes.length + " notes");
     $(".header .state").html(`> <span style="font-style:italic;">${txt}</span> 's ${$("#list li").length} results`);
 
     mn.viewList();
@@ -464,7 +464,7 @@ mn.keyupCheck = function(event) {
     var keycode = (event.which) ? event.which : event.keyCode;
 
     // 내용 변경여부 체크
-    md.checkDiff();
+    mn.md.checkDiff();
 
     if (keycode == 13) {
         /*
@@ -495,7 +495,7 @@ mn.ManageDiff = function(){
             // 신규인 경우
             this.hasDiff = true;
         }else{
-            this.hasDiff = notes.getItem(this.noteKey).txt != $("#noteContent").html();
+            this.hasDiff = mn.notes.getItem(this.noteKey).txt != $("#noteContent").html();
         }
 
         // 변경사항 있을 경우 변경사항 표시..
@@ -505,12 +505,12 @@ mn.ManageDiff = function(){
         }
 
         if(this.timer){
-            md.end();   // 수정 중인 상황에는 타이머 초기화
+            mn.md.end();   // 수정 중인 상황에는 타이머 초기화
         }
 
         this.timer = setTimeout(function(){
-            md.save();
-            md.end();
+            mn.md.save();
+            mn.md.end();
         }, 1000);
     }
     this.save = function(){
@@ -529,10 +529,10 @@ mn.ManageDiff = function(){
 }
 
 mn.setHeader = function() {
-    if (userInfo != null) {
-        $("#nickname").val(userInfo.data.nickname);
-        $("#fontSize").val(userInfo.data.fontSize.replace("px", ""));
-        $("#iconColor").val(userInfo.data.iconColor);
+    if (mn.userInfo != null) {
+        $("#nickname").val(mn.userInfo.data.nickname);
+        $("#fontSize").val(mn.userInfo.data.fontSize.replace("px", ""));
+        $("#iconColor").val(mn.userInfo.data.iconColor);
     } else {
         $(".header .title").html("mininote");
     }
@@ -609,21 +609,21 @@ mn.signout = function() {
 
 
 mn.setNickname = function(nickname) {
-    userInfo.data.nickname = nickname;
-    firebase.database().ref('users/' + userInfo.uid).update(userInfo.data);
-    $(".header .title").html(userInfo.data.nickname + "'s " + notes.length + " notes");
+    mn.userInfo.data.nickname = nickname;
+    firebase.database().ref('users/' + mn.userInfo.uid).update(mn.userInfo.data);
+    $(".header .title").html(mn.userInfo.data.nickname + "'s " + mn.notes.length + " notes");
 }
 
 
 mn.setFontSize = function(size) {
-    userInfo.data.fontSize = size + "px";
-    firebase.database().ref('users/' + userInfo.uid).update(userInfo.data);
-    $(".txt").css("font-size", userInfo.data.fontSize);
+    mn.userInfo.data.fontSize = size + "px";
+    firebase.database().ref('users/' + mn.userInfo.uid).update(mn.userInfo.data);
+    $(".txt").css("font-size", mn.userInfo.data.fontSize);
 }
 
 mn.setIconColor = function(color) {
-    userInfo.data.iconColor = color;
-    firebase.database().ref('users/' + userInfo.uid).update(userInfo.data);
+    mn.userInfo.data.iconColor = color;
+    firebase.database().ref('users/' + mn.userInfo.uid).update(mn.userInfo.data);
     $("#list i.circle").each(function (i) {
         var bgcolor = randomColor({hue: color, luminosity: 'dark'});
         $(this).css("background-color", bgcolor);
@@ -646,9 +646,9 @@ mn.bodyScroll = function() {
     if (window.scrollY == $(document).height() - $(window).height()) {
         NProgress.start();
         $m.qs("#nprogress .spinner").style.top = "95%";
-        var end = notes.length - $m.qsa("#list li").length;
-        var start = end - visibleRowCnt < 0 ? 0 : end - visibleRowCnt;
-        var nextList = notes.getArray().slice(start, end).reverse();
+        var end = mn.notes.length - $m.qsa("#list li").length;
+        var start = end - mn.visibleRowCnt < 0 ? 0 : end - mn.visibleRowCnt;
+        var nextList = mn.notes.getArray().slice(start, end).reverse();
 
         nextList.forEach(function (x) {
             mn.addItem(x.key, x.val, "append");
@@ -683,8 +683,8 @@ mn.viewList = function(){
 
 
 mn.titleClick = function() {
-    if (userInfo) {
-        mn.showNoteList(userInfo.uid);
+    if (mn.userInfo) {
+        mn.showNoteList(mn.userInfo.uid);
     } else {
         firebase.auth().signInWithRedirect(new firebase.auth.GoogleAuthProvider());
     }
