@@ -477,17 +477,12 @@ mn.searchNote = function () {
 
 mn.keyupCheck = function (event) {
     var keycode = (event.which) ? event.which : event.keyCode;
-    var preKeycode;
+
     // 내용 변경여부 체크
     mn.md.checkDiff();
 
-
-
-    console.log(keycode);
-
+    //  chkbox 자동고침
     mn.autoChkbox(keycode);
-
-
 
     if (keycode == 13) {
         /*
