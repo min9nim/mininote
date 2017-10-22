@@ -350,3 +350,5 @@ body {
     cursor: pointer;
     height: 16px;
 }
+
+.noscroll { position: fixed; overflow-y:scroll }
