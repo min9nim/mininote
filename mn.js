@@ -51,17 +51,13 @@ mn.init = function () {
         } else {
             if (mn.userInfo != null)
                 mn.userInfo.isConnected = false;
-            //userInfo = null;  // 로그인이 유지된 상태에서도 디비연결이 잠깐 끊어질 수는 있다
-            //$(".state").html("offline");
-            //$("#list").html("");
             $("#writeBtn").hide();
+
             setTimeout(function () {
                 if (mn.userInfo.isConnected == false) {
-                    $("#writeBtn").show();
-                    $("#addBtn").html("로긴");
+                    alert("서버와 연결이  끊어졌습니다.");
                 }
             }, 20000);
-            //alert("연결상태가 끊어졌습니다.");
         }
     });
 
@@ -77,21 +73,20 @@ mn.init = function () {
 
 
     (function () {
-        var prekey;
+        var prekey, preprekey;
         mn.autoChkbox = function (keycode) {
-            if (keycode == 32) {
-                if(prekey == 65) {
+            if ( keycode == 32 && prekey == 49 && preprekey == 49 ) {
                     // 앞에 두글자 지우고
                     var selection = window.getSelection();
                     var range = document.createRange();
                     range.setEnd(selection.anchorNode, selection.anchorOffset);
-                    range.setStart(selection.anchorNode, range.endOffset - 2);
+                    range.setStart(selection.anchorNode, range.endOffset - 3);
                     range.deleteContents();
 
                     // chkbox 삽입
                     mn.insertChkbox();
-                }
             }
+            preprekey = prekey;
             prekey = keycode;
         }
     })();
@@ -484,6 +479,8 @@ mn.keyupCheck = function (event) {
     //  chkbox 자동고침
     mn.autoChkbox(keycode);
 
+    //console.log(keycode);
+
     if (keycode == 13) {
         /*
         if ($("#noteContent div:first-child").hasClass("title") == false) {
@@ -715,10 +712,12 @@ mn.insertChkbox = function () {
     var range = sel.getRangeAt(0);
 
     // range범위를 수정해 가면서 처리하는게 맞을 것 같은데.. 삽입하는 순서를 바로 잡으려면...
-    range.insertNode(document.createTextNode(" "));
+    //range.setStart(sel.anchorNode, sel.anchorOffset+1);
+
+    range.insertNode(document.createTextNode(" ")); // chkbox 뒤에 공백문자 하나 넣어야 하는데 안된다;
     range.insertNode(chk);
 
     sel.modify("move", "forward", "character");
-    sel.modify("move", "forward", "character");
+    //sel.modify("move", "forward", "character");
 }
 
