@@ -20,7 +20,7 @@
 
 .dialog{
     position: fixed;
-    width: calc(100% - 105px);
+    width: calc(100% - 95px);
     height:  calc(100% - 20px);
     display: none;
     font-size: 12px;
