@@ -36,21 +36,19 @@
         };
         firebase.initializeApp(config);
 
-        var userInfo = null; // 로그인한 사용자 정보
-        var noteRef;
-        //var noteList = [];
-        var notes = new HashTable();
-        var visibleRowCnt = 30;
-        var md = new ManageDiff();
+        mn.userInfo = null; // 로그인한 사용자 정보
+        mn.notes = new HashTable();
+        mn.visibleRowCnt = 30;
+        mn.md = new mn.ManageDiff();
 
         window.onload = mn.init;
     </script>
 </head>
 
-<body onscroll="bodyScroll();">
+<body onscroll="mn.bodyScroll();">
 <div class="header">
-    <i id="btnMenu" class='material-icons' onclick="menuClick();">menu</i>
-    <div class="title" onclick="titleClick();">mininote is loading..</div>
+    <i id="btnMenu" class='material-icons' onclick="mn.menuClick();">menu</i>
+    <div class="title" onclick="mn.titleClick();">mininote is loading..</div>
     <div class="state"></div>
     <div class="message"></div>
     <i id="btnSearch" class='material-icons' onclick="searchClick();">search</i>
@@ -58,15 +56,15 @@
 <ul class="menu collection">
     <li class="collection-item">
         <div class="menuTitle"><i class="material-icons circle">N</i>nickname</div>
-        <div class="menuContent"><input id="nickname" type="text" onchange="setNickname(this.value);"/></div>
+        <div class="menuContent"><input id="nickname" type="text" onchange="mn.setNickname(this.value);"/></div>
     </li>
     <li class="collection-item">
         <div class="menuTitle"><i class="material-icons circle">F</i>fontSize</div>
-        <div class="menuContent"><input id="fontSize" type="number" onchange="setFontSize(this.value);"/></div>
+        <div class="menuContent"><input id="fontSize" type="number" onchange="mn.setFontSize(this.value);"/></div>
     </li>
     <li class="collection-item">
         <div class="menuTitle"><i class="material-icons circle">I</i>iconColor</div>
-        <div class="menuContent"><select id="iconColor" onchange="setIconColor(this.value);">
+        <div class="menuContent"><select id="iconColor" onchange="mn.setIconColor(this.value);">
             <option value="all">all</option>
             <option value="red">red</option>
             <option value="orange">orange</option>
@@ -79,10 +77,10 @@
         </select></div>
     </li>
 </ul>
-<ul id="list" class="collection" onclick="listClick();" ontouchstart="listClick();"></ul>
+<ul id="list" class="collection" onclick="mn.listClick();" ontouchstart="mn.listClick();"></ul>
 <div id="topBtn" class="fixed-action-btn" style="bottom: 110px; right: 24px;">
     <div id="diffMark" style="display:inline-block"></div>
-    <a class="btn-floating btn-large waves-effect waves-light" style="opacity: 0.3" onclick="topNavi();"> <i
+    <a class="btn-floating btn-large waves-effect waves-light" style="opacity: 0.3" onclick="mn.topNavi();"> <i
             id="topNavi" class="navi material-icons">arrow_upward</i> </a>
 </div>
 <div id="writeBtn" class="fixed-action-btn">
@@ -92,7 +90,7 @@
 </div>
 <div class="dialog">
     <div id="div_write">
-        <div id="noteContent" class="noteContent" contenteditable="true" onkeyup="keyupCheck(event);"></div>
+        <div id="noteContent" class="noteContent" contenteditable="true" onkeyup="mn.keyupCheck(event);"></div>
     </div>
 </div>
 <div class="search">
