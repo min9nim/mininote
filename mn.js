@@ -62,53 +62,13 @@ mn.init = function () {
     });
 
 
-    mn.chkClick = function () {
-        if (event.target.checked) {
-            event.target.setAttribute("checked", "");
-        } else {
-            event.target.removeAttribute("checked");
-        }
-        mn.md.checkDiff();
-    };
-
-    mn.deleteMapKey = function () {
-        // 앞에 3글자 지우고
-        var selection = window.getSelection();
-        var range = document.createRange();
-        range.setEnd(selection.anchorNode, selection.anchorOffset);
-        range.setStart(selection.anchorNode, range.endOffset - 3);
-        range.deleteContents();
-    };
-
-    mn.autoReplace = function (keycode) {
-        if (keycode != 32)
-            return;
-
-        var sel = window.getSelection();
-        var str = sel.anchorNode.textContent;
-        console.log(str);
-        var keymap = str.substr(sel.anchorOffset - 3, 2);
-
-        if (keymap == "11") {
-            mn.deleteMapKey();
-            mn.insertChkbox();
-        } else if (keymap == "22") {
-            mn.deleteMapKey();
-            document.execCommand('insertunorderedlist');
-        } else if (keymap == "))") {
-            mn.deleteMapKey();
-            document.execCommand('indent');
-        } else if (keymap == "((") {
-            mn.deleteMapKey();
-            document.execCommand('outdent');
-        }
-    };
-
 
     if (!isMobile.any) {
         //  PC환경에서만 단축키 설정
         shortcut.add("Alt+W", function () {
-            mn.writeNote();
+            if ($m.qs(".dialog").style.display == "none") {
+                mn.writeNote();
+            }
         });
 
         shortcut.add("Alt+S", function () {
@@ -119,11 +79,9 @@ mn.init = function () {
             document.execCommand('insertunorderedlist');
         }, {"target": "noteContent"});
 
-
         shortcut.add("Ctrl+T", function () {
             mn.insertChkbox();
         }, {"target": "noteContent"});
-
 
         shortcut.add("tab", function () {
             document.execCommand('indent');
@@ -134,12 +92,11 @@ mn.init = function () {
         }, {"target": "noteContent"});
 
         shortcut.add("meta+S", function () {
-            //document.querySelector("#diffMark").innerHTML = "";
             mn.flushDiff();
             mn.saveNote();
         }, {"target": "noteContent"});
+
         shortcut.add("meta+L", function () {
-            //document.querySelector("#diffMark").innerHTML = "";
             mn.flushDiff();
             mn.saveNote();
             mn.viewList();
@@ -148,6 +105,7 @@ mn.init = function () {
         shortcut.add("Ctrl+S", function () {
             mn.saveNote();
         }, {"target": "noteContent"});
+
         shortcut.add("meta+enter", function () {
             mn.searchNote();
         }, {"target": "input2"});
@@ -169,7 +127,52 @@ mn.init = function () {
         })();
 
     }
-}
+};
+
+
+mn.chkClick = function () {
+    if (event.target.checked) {
+        event.target.setAttribute("checked", "");
+    } else {
+        event.target.removeAttribute("checked");
+    }
+    mn.md.checkDiff();
+};
+
+mn.deleteMapKey = function () {
+    // 앞에 3글자 지우고
+    var selection = window.getSelection();
+    var range = document.createRange();
+    range.setEnd(selection.anchorNode, selection.anchorOffset);
+    range.setStart(selection.anchorNode, range.endOffset - 3);
+    range.deleteContents();
+};
+
+mn.autoReplace = function (keycode) {
+    if (keycode != 32)
+        return;
+
+    var sel = window.getSelection();
+    var str = sel.anchorNode.textContent;
+    console.log(str);
+    var keymap = str.substr(sel.anchorOffset - 3, 2);
+
+    if (keymap == "11") {
+        mn.deleteMapKey();
+        mn.insertChkbox();
+    } else if (keymap == "22") {
+        mn.deleteMapKey();
+        document.execCommand('insertunorderedlist');
+    } else if (keymap == "))") {
+        mn.deleteMapKey();
+        document.execCommand('indent');
+    } else if (keymap == "((") {
+        mn.deleteMapKey();
+        document.execCommand('outdent');
+    }
+};
+
+
 
 mn.showNoteList = function (uid) {
     //console.log("showNoteList called..");
