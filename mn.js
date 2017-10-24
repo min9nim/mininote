@@ -71,25 +71,37 @@ mn.init = function () {
         mn.md.checkDiff();
     };
 
+    mn.deleteMapKey = function () {
+        // 앞에 3글자 지우고
+        var selection = window.getSelection();
+        var range = document.createRange();
+        range.setEnd(selection.anchorNode, selection.anchorOffset);
+        range.setStart(selection.anchorNode, range.endOffset - 3);
+        range.deleteContents();
 
-    (function () {
-        var prekey, preprekey;
-        mn.autoChkbox = function (keycode) {
-            if ( keycode == 32 && prekey == 49 && preprekey == 49 ) {
-                    // 앞에 두글자 지우고
-                    var selection = window.getSelection();
-                    var range = document.createRange();
-                    range.setEnd(selection.anchorNode, selection.anchorOffset);
-                    range.setStart(selection.anchorNode, range.endOffset - 3);
-                    range.deleteContents();
+    }
+    mn.autoReplace = function (keycode) {
+        if (keycode != 32)
+            return;
 
-                    // chkbox 삽입
-                    mn.insertChkbox();
-            }
-            preprekey = prekey;
-            prekey = keycode;
+        var sel = window.getSelection();
+        var str = sel.anchorNode.textContent;
+        var keymap = str.substr(str.length - 3, 2);
+
+        if (keymap == "11") {
+            mn.deleteMapKey();
+            // chkbox 삽입
+            mn.insertChkbox();
+        } else if (keymap == "))") {
+            mn.deleteMapKey();
+            // 들여쓰기
+            document.execCommand('indent');
+        } else if (keymap == "((") {
+            mn.deleteMapKey();
+            // 내어쓰기
+            document.execCommand('outdent');
         }
-    })();
+    }
 
 
     if (!isMobile.any) {
@@ -138,7 +150,7 @@ mn.init = function () {
         }, {"target": "input2"});
 
 
-        (function(){
+        (function () {
             // 글편집 상태일 때 body 스크롤 금지
             // 윈도우에서 스크롤 깜빡임 문제 처리
             var top;
@@ -468,16 +480,14 @@ mn.searchNote = function () {
 }
 
 
-
-
 mn.keyupCheck = function (event) {
     var keycode = (event.which) ? event.which : event.keyCode;
 
     // 내용 변경여부 체크
     mn.md.checkDiff();
 
-    //  chkbox 자동고침
-    mn.autoChkbox(keycode);
+    // 자동고침 옵션
+    mn.autoReplace(keycode);
 
     //console.log(keycode);
 
