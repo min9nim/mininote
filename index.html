@@ -36,11 +36,6 @@
         };
         firebase.initializeApp(config);
 
-        mn.userInfo = null; // 로그인한 사용자 정보
-        mn.notes = new HashTable();
-        mn.visibleRowCnt = 30;
-        mn.md = new mn.ManageDiff();
-
         window.onload = mn.init;
     </script>
 </head>
