@@ -55,7 +55,7 @@ mn.init = function () {
 
             setTimeout(function () {
                 if (mn.userInfo.isConnected == false) {
-                    alert("서버와 연결이  끊어졌습니다.");
+                    alert("서버와 연결이 끊어졌습니다.");
                 }
             }, 20000);
         }
@@ -97,6 +97,12 @@ mn.init = function () {
         }, {"target": "noteContent"});
 
         shortcut.add("meta+L", function () {
+            mn.flushDiff();
+            mn.saveNote();
+            mn.viewList();
+        });
+
+        shortcut.add("Alt+L", function () {
             mn.flushDiff();
             mn.saveNote();
             mn.viewList();
@@ -273,7 +279,7 @@ mn.getNoteHtml = function (key, noteData) {
 
 
 mn.onChildChanged = function (data) {
-    console.log("## onChildChanged called..");
+    //console.log("## onChildChanged called..");
     var key = data.key;
     var noteData = data.val();
     var html = mn.getNoteHtml(key, noteData);
@@ -290,7 +296,7 @@ mn.onChildChanged = function (data) {
     if ($m.qs(".dialog").style.display != "none"
         && noteData.userAgent != navigator.userAgent
         && $m.qs("#noteContent").getAttribute("key") == key ) {
-        // 글보기상태이고 외부에서 변경이 발생한 경우
+        // 글보기상태이고 외부에서 변경이 발생한 경우 글내용 갱신
         console.log("외부 장비에서 변경사항 발생 ");
         mn.viewNote(key);
     }
