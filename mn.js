@@ -399,6 +399,13 @@ mn.viewNote = function (key) {
 mn.writeNote = function () {
     if (mn.userInfo != null && mn.userInfo.isConnected) {
         if ($("#addBtn").html() == "새글") {
+
+            if (isMobile.any) {
+                $m.qs(".dialog").style.position = "absolute";
+                $m.qs(".dialog").style.top = (window.scrollY + 10 ) + "px";
+            }
+
+
             // 쓰기버튼 일때
             $m.qs(".dialog").style.display = "block";
             $("#noteContent").attr("key", "");
@@ -415,12 +422,12 @@ mn.writeNote = function () {
             $("#topNavi").html("목록");
             $("#topBtn a").css("opacity", "");
 
-            document.body.style.overflow = "hidden";
+            //document.body.style.overflow = "hidden";
 
             $("#writeBtn").addClass("disable");
 
             // 스크롤처리
-            $(window).scrollTop(0);
+            //$(window).scrollTop(0);
 
             // 포커스 처리
             var title = $m.qs("#noteContent .title")
