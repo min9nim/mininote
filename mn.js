@@ -405,7 +405,6 @@ mn.writeNote = function () {
                 $m.qs(".dialog").style.top = (window.scrollY + 10 ) + "px";
             }
 
-
             // 쓰기버튼 일때
             $m.qs(".dialog").style.display = "block";
             $("#noteContent").attr("key", "");
@@ -422,12 +421,7 @@ mn.writeNote = function () {
             $("#topNavi").html("목록");
             $("#topBtn a").css("opacity", "");
 
-            //document.body.style.overflow = "hidden";
-
             $("#writeBtn").addClass("disable");
-
-            // 스크롤처리
-            //$(window).scrollTop(0);
 
             // 포커스 처리
             var title = $m.qs("#noteContent .title")
@@ -436,7 +430,6 @@ mn.writeNote = function () {
             var range = document.createRange();
             range.selectNode(title.firstChild); // firstChild 로 세팅하지 않으면 파폭에서는 div 태그까지 통째로 선택영역으로 잡힌다
             s.addRange(range);
-
 
         } else if ($("#addBtn").html() == "로긴") {
             alert("로그인이 필요합니다");
