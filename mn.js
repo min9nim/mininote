@@ -270,7 +270,7 @@ mn.getNoteHtml = function (key, noteData) {
 
 
 mn.onChildChanged = function (data) {
-    //console.log("## onChildChanged called..");
+    console.log("## onChildChanged called..");
     var key = data.key;
     var noteData = data.val();
     var html = mn.getNoteHtml(key, noteData);
@@ -348,6 +348,9 @@ mn.removeNote = function (key) {
     } else {
         alert("로그인이 필요합니다");
     }
+
+    event.preventDefault();
+    event.stopPropagation();
 }
 
 
