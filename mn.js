@@ -78,30 +78,32 @@ mn.init = function () {
         range.setEnd(selection.anchorNode, selection.anchorOffset);
         range.setStart(selection.anchorNode, range.endOffset - 3);
         range.deleteContents();
+    };
 
-    }
     mn.autoReplace = function (keycode) {
         if (keycode != 32)
             return;
 
         var sel = window.getSelection();
         var str = sel.anchorNode.textContent;
-        var keymap = str.substr(str.length - 3, 2);
+        console.log(str);
+        var keymap = str.substr(sel.anchorOffset - 3, 2);
 
         if (keymap == "11") {
             mn.deleteMapKey();
-            // chkbox 삽입
             mn.insertChkbox();
+        } else if (keymap == "22") {
+            mn.deleteMapKey();
+            document.execCommand('insertunorderedlist');
         } else if (keymap == "))") {
             mn.deleteMapKey();
-            // 들여쓰기
             document.execCommand('indent');
         } else if (keymap == "((") {
             mn.deleteMapKey();
-            // 내어쓰기
             document.execCommand('outdent');
         }
-    }
+    };
+
 
 
     if (!isMobile.any) {
