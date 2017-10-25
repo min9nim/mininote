@@ -6,7 +6,6 @@
     margin: 0px;
 }
 
-
 #writeBtn {
     display: block;
     bottom: 45px;
@@ -18,10 +17,10 @@
     opacity: 0.2;
 }
 
-.dialog{
+.dialog {
     position: fixed;
     width: calc(100% - 95px);
-    height:  calc(100% - 20px);
+    height: calc(100% - 20px);
     display: none;
     font-size: 12px;
     background-color: white;
@@ -31,10 +30,11 @@
     resize: both;
     overflow: auto;
 }
+
 }
 
 #dragbar {
-    width:3px;
+    width: 3px;
     height: calc(100% - 10px);
     background-color: var(--main-bg-color);
     cursor: col-resize;
@@ -137,11 +137,10 @@
     background-color: var(--main-bg-color);
 }
 
-#topBtn a  {
+#topBtn a {
     background-color: var(--main-bg-color);
     /*opacity: 0.3;*/
 }
-
 
 .createDate {
     color: #999999;
@@ -190,7 +189,8 @@
     text-align: center;
 }
 
-#btn_save {}
+#btn_save {
+}
 
 #nprogress .bar {
     position: absolute;
@@ -341,19 +341,24 @@ select#iconColor {
 }
 
 body {
-    /*
-    background-color: var(--main-bg-color);
-     */
     background-color: #ffffff;
+    overflow-y: scroll;
 }
 
+.btn {
+    background-color: var(--main-bg-color);
+}
 
 .chk[type="checkbox"]:not(:checked), [type="checkbox"]:checked {
     position: inherit;
-    left : 0px;
+    left: 0px;
     opacity: 1;
     cursor: pointer;
     height: 16px;
 }
 
-.noscroll { position: fixed; overflow-y:scroll }
+.noscroll {
+    position: fixed;
+    overflow-y: scroll;
+    width : 100%;
+}

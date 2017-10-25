@@ -75,11 +75,11 @@ mn.init = function () {
             mn.searchClick();
         });
 
-        shortcut.add("Ctrl+U", function () {
+        shortcut.add("Alt+U", function () {
             document.execCommand('insertunorderedlist');
         }, {"target": "noteContent"});
 
-        shortcut.add("Ctrl+T", function () {
+        shortcut.add("Alt+T", function () {
             mn.insertChkbox();
         }, {"target": "noteContent"});
 
@@ -89,10 +89,6 @@ mn.init = function () {
 
         shortcut.add("Shift+tab", function () {
             document.execCommand('outdent');
-        }, {"target": "noteContent"});
-
-        shortcut.add("meta+S", function () {
-            mn.md.save();
         }, {"target": "noteContent"});
 
         shortcut.add("meta+L", function () {
@@ -139,11 +135,11 @@ mn.chkClick = function () {
 };
 
 mn.deleteMapKey = function (s, e) {
-    // 앞에 2~3글자 지우고
-    var selection = window.getSelection();
+    // 현재 커서로 부터 앞에 s ~ e 글자 지우고
+    var sel = window.getSelection();
     var range = document.createRange();
-    range.setStart(selection.anchorNode, selection.anchorOffset - s);
-    range.setEnd(selection.anchorNode, selection.anchorOffset - e);
+    range.setStart(sel.anchorNode, sel.anchorOffset - s);
+    range.setEnd(sel.anchorNode, sel.anchorOffset - e);
     range.deleteContents();
 };
 
@@ -168,9 +164,11 @@ mn.autoReplace = function (keycode) {
     } else if (keymap == "((") {
         mn.deleteMapKey(3, 0);
         document.execCommand('outdent');
-    } else if (keymap == "to") {
-        mn.deleteMapKey(1, 0);
-        sel.getRangeAt(0).insertNode(document.createTextNode("dolist")); // chkbox 뒤에 공백문자 하나 넣어야 하는데 안된다;
+    } else if (keymap == "dd") {
+        mn.deleteMapKey(sel.anchorOffset, sel.anchorNode.textContent.length-sel.anchorOffset);
+    } else if (["mo", "tu", "we", "th", "fr", "sa", 'su'].indexOf(keymap) >= 0) {
+        mn.deleteMapKey(3, 0);
+        sel.getRangeAt(0).insertNode(document.createTextNode(keymap.toUpperCase() + " Todolist"));
         sel.modify("move", "forward", "character");
     }
 };

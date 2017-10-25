@@ -46,7 +46,7 @@
     <div class="title" onclick="mn.titleClick();">mininote is loading..</div>
     <div class="state"></div>
     <div class="message"></div>
-    <i id="btnSearch" class='material-icons' onclick="searchClick();">search</i>
+    <i id="btnSearch" class='material-icons' onclick="mn.searchClick();">search</i>
 </div>
 <ul class="menu collection">
     <li class="collection-item">
@@ -92,8 +92,8 @@
     <div class="modal"></div>
     <div id="div_search"><textarea id="input2" class="input" placeholder=""></textarea>
         <div class="btn_grp">
-            <div id="btn_search" class="btn" onclick="searchNote();">검색</div>
-            <div id="btn_cancel" class="btn" onclick="cancelSearch();">취소</div>
+            <div id="btn_search" class="btn" onclick="mn.searchNote();">검색</div>
+            <div id="btn_cancel" class="btn" onclick="mn.cancelSearch();">취소</div>
         </div>
     </div>
 </div>
