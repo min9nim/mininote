@@ -168,6 +168,10 @@ mn.autoReplace = function (keycode) {
     } else if (keymap == "((") {
         mn.deleteMapKey(3, 0);
         document.execCommand('outdent');
+    } else if (keymap == "to") {
+        mn.deleteMapKey(1, 0);
+        sel.getRangeAt(0).insertNode(document.createTextNode("dolist")); // chkbox 뒤에 공백문자 하나 넣어야 하는데 안된다;
+        sel.modify("move", "forward", "character");
     }
 };
 
