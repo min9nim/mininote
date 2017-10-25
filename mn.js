@@ -92,25 +92,18 @@ mn.init = function () {
         }, {"target": "noteContent"});
 
         shortcut.add("meta+S", function () {
-            mn.flushDiff();
-            mn.saveNote();
+            mn.md.save();
         }, {"target": "noteContent"});
 
         shortcut.add("meta+L", function () {
-            mn.flushDiff();
-            mn.saveNote();
+            mn.md.save();
             mn.viewList();
         });
 
         shortcut.add("Alt+L", function () {
-            mn.flushDiff();
-            mn.saveNote();
+            mn.md.save();
             mn.viewList();
         });
-
-        shortcut.add("Ctrl+S", function () {
-            mn.saveNote();
-        }, {"target": "noteContent"});
 
         shortcut.add("meta+enter", function () {
             mn.searchNote();
