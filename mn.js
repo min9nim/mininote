@@ -145,12 +145,12 @@ mn.chkClick = function () {
     mn.md.checkDiff();
 };
 
-mn.deleteMapKey = function () {
-    // 앞에 3글자 지우고
+mn.deleteMapKey = function (s, e) {
+    // 앞에 2~3글자 지우고
     var selection = window.getSelection();
     var range = document.createRange();
-    range.setEnd(selection.anchorNode, selection.anchorOffset);
-    range.setStart(selection.anchorNode, range.endOffset - 3);
+    range.setStart(selection.anchorNode, selection.anchorOffset - s);
+    range.setEnd(selection.anchorNode, selection.anchorOffset - e);
     range.deleteContents();
 };
 
@@ -164,16 +164,16 @@ mn.autoReplace = function (keycode) {
     var keymap = str.substr(sel.anchorOffset - 3, 2);
 
     if (keymap == "11") {
-        mn.deleteMapKey();
+        mn.deleteMapKey(3, 0);
         mn.insertChkbox();
     } else if (keymap == "22") {
-        mn.deleteMapKey();
+        mn.deleteMapKey(3, 1);
         document.execCommand('insertunorderedlist');
     } else if (keymap == "))") {
-        mn.deleteMapKey();
+        mn.deleteMapKey(3, 0);
         document.execCommand('indent');
     } else if (keymap == "((") {
-        mn.deleteMapKey();
+        mn.deleteMapKey(3, 0);
         document.execCommand('outdent');
     }
 };
