@@ -2,6 +2,38 @@ var mn = {};
 
 mn.init = function () {
     NProgress.start();  // https://github.com/rstacruz/nprogress
+    mn.userInfo = null; // 로그인한 사용자 정보
+    mn.visibleRowCnt = 30;
+    mn.notes = new HashTable();
+    mn.md = mn.newManageDiff();
+    mn.shortCut();
+    mn.auth();
+
+    firebase.database().ref(".info/connected").on("value", function (snap) {
+        if (snap.val() === true) {
+            mn.conOn();
+        } else {
+            mn.conOff();
+        }
+    });
+
+    (function () {
+        // 글편집 상태일 때 body 스크롤 금지
+        // 윈도우에서 스크롤 깜빡임 문제 처리
+        var top;
+        $m.qs("#noteContent").onmouseenter = function (e) {
+            top = document.documentElement.scrollTop;
+            $('body').css('top', -(top) + 'px').addClass('noscroll');
+
+        };
+        $m.qs("#noteContent").onmouseleave = function (e) {
+            $('body').removeClass('noscroll');
+            $(document).scrollTop(top)
+        };
+    })();
+};
+
+mn.auth = function () {
     firebase.auth().onAuthStateChanged(function (user) {
         if (user) {// 인증완료
             mn.userInfo = user;
@@ -13,14 +45,13 @@ mn.init = function () {
                     mn.setHeader();
                     mn.initNoteList(mn.userInfo.uid);
                 } else {// 신규 로그인 경우
-                    var userData = {
-                        fontSize: "18px",
-                        iconColor: "green",
-                        email: mn.userInfo.email,
-                        nickname: mn.userInfo.email.split("@")[0]
-                    };
                     userRef.set(userData, function () {
-                        mn.userInfo.data = userData;
+                        mn.userInfo.data = {
+                            fontSize: "18px",
+                            iconColor: "green",
+                            email: mn.userInfo.email,
+                            nickname: mn.userInfo.email.split("@")[0]
+                        };
                         mn.setHeader();
                         mn.initNoteList(mn.userInfo.uid);
                     });
@@ -35,93 +66,88 @@ mn.init = function () {
             }
         }
     });
+};
 
-    firebase.database().ref(".info/connected").on("value", function (snap) {
-        if (snap.val() === true) {
-            if (mn.userInfo != null)
-                mn.userInfo.isConnected = true;
-            //$(".state").html("online");
+mn.shortCut = function () {
+    if (isMobile.any)
+        return;//  PC환경에서만 단축키 설정
 
-            if ($(".dialog").css("display") == "none") {
-                $("#writeBtn").show();
-                $("#addBtn").html("새글");
-            } else {
-                //$("#addBtn").html("저장");
-            }
-        } else {
-            if (mn.userInfo != null)
-                mn.userInfo.isConnected = false;
-            $("#writeBtn").hide();
-
-            setTimeout(function () {
-                if (mn.userInfo.isConnected == false) {
-                    alert("서버와 연결이 끊어졌습니다.");
-                }
-            }, 20000);
+    shortcut.add("Alt+W", function () {
+        if ($m.qs(".dialog").style.display == "none") {
+            mn.writeNote();
         }
     });
 
+    shortcut.add("Alt+S", function () {
+        mn.searchClick();
+    });
+
+    shortcut.add("Alt+U", function () {
+        document.execCommand('insertunorderedlist');
+    }, {"target": "noteContent"});
+
+    shortcut.add("Alt+T", function () {
+        mn.insertChkbox();
+    }, {"target": "noteContent"});
+
+    shortcut.add("tab", function () {
+        document.execCommand('indent');
+    }, {"target": "noteContent"});
+
+    shortcut.add("Shift+tab", function () {
+        document.execCommand('outdent');
+    }, {"target": "noteContent"});
+
+    shortcut.add("meta+L", function () {
+        mn.md.save();
+        mn.viewList();
+    });
+
+    shortcut.add("Alt+L", function () {
+        mn.md.save();
+        mn.viewList();
+    });
+
+    shortcut.add("meta+enter", function () {
+        mn.searchNote();
+    }, {"target": "input2"});
 
 
-    if (!isMobile.any) {
-        //  PC환경에서만 단축키 설정
-        shortcut.add("Alt+W", function () {
-            if ($m.qs(".dialog").style.display == "none") {
-                mn.writeNote();
-            }
-        });
+};
 
-        shortcut.add("Alt+S", function () {
-            mn.searchClick();
-        });
-
-        shortcut.add("Alt+U", function () {
-            document.execCommand('insertunorderedlist');
-        }, {"target": "noteContent"});
-
-        shortcut.add("Alt+T", function () {
-            mn.insertChkbox();
-        }, {"target": "noteContent"});
-
-        shortcut.add("tab", function () {
-            document.execCommand('indent');
-        }, {"target": "noteContent"});
-
-        shortcut.add("Shift+tab", function () {
-            document.execCommand('outdent');
-        }, {"target": "noteContent"});
-
-        shortcut.add("meta+L", function () {
-            mn.md.save();
-            mn.viewList();
-        });
-
-        shortcut.add("Alt+L", function () {
-            mn.md.save();
-            mn.viewList();
-        });
-
-        shortcut.add("meta+enter", function () {
-            mn.searchNote();
-        }, {"target": "input2"});
-
-
-        (function () {
-            // 글편집 상태일 때 body 스크롤 금지
-            // 윈도우에서 스크롤 깜빡임 문제 처리
-            var top;
-            $m.qs("#noteContent").onmouseenter = function (e) {
-                top = document.documentElement.scrollTop;
-                $('body').css('top', -(top) + 'px').addClass('noscroll');
-
-            };
-            $m.qs("#noteContent").onmouseleave = function (e) {
-                $('body').removeClass('noscroll');
-                $(document).scrollTop(top)
-            };
-        })();
-
+mn.conOn = function () {
+    if (mn.userInfo != null) {
+        mn.userInfo.isConnected = true;
     }
+
+    if ($(".dialog").css("display") == "none") {
+        $("#writeBtn").show();
+        $("#addBtn").html("새글");
+    }
+
+    $m.qsa("#list li").forEach(function (o) {
+        o.style.backgroundColor = "#ffffff";
+    });
+    $m.qs("#noteContent").style.backgroundColor = "#ffffff";
+};
+
+mn.conOff = function () {
+    if (mn.userInfo != null) {
+        mn.userInfo.isConnected = false;
+    }
+
+    $m.qsa("#list li").forEach(function (o) {
+        o.style.backgroundColor = "#dddddd";
+    });
+    $m.qs("#noteContent").style.backgroundColor = "#dddddd";
+
+    $("#writeBtn").hide();
+
+    setTimeout(function () {
+        if (mn.userInfo.isConnected == false) {
+            // 20초간 상태 지켜보기
+        }
+    }, 20000);
 };
 
 
@@ -165,14 +191,13 @@ mn.autoReplace = function (keycode) {
         mn.deleteMapKey(3, 0);
         document.execCommand('outdent');
     } else if (keymap == "dd") {
-        mn.deleteMapKey(sel.anchorOffset, sel.anchorNode.textContent.length-sel.anchorOffset);
+        mn.deleteMapKey(sel.anchorOffset, sel.anchorNode.textContent.length - sel.anchorOffset);
     } else if (["mo", "tu", "we", "th", "fr", "sa", 'su'].indexOf(keymap) >= 0) {
         mn.deleteMapKey(3, 0);
         sel.getRangeAt(0).insertNode(document.createTextNode(keymap.toUpperCase() + " Todolist"));
         sel.modify("move", "forward", "word");  // 모바일에서는 이게 안 먹히네..
     }
 };
-
 
 
 mn.showNoteList = function (uid) {
@@ -290,7 +315,7 @@ mn.onChildChanged = function (data) {
 
     if ($m.qs(".dialog").style.display != "none"
         && noteData.userAgent != navigator.userAgent
-        && $m.qs("#noteContent").getAttribute("key") == key ) {
+        && $m.qs("#noteContent").getAttribute("key") == key) {
         // 글보기상태이고 외부에서 변경이 발생한 경우 글내용 갱신
         console.log("외부 장비에서 변경사항 발생 ");
         mn.viewNote(key);
@@ -523,50 +548,6 @@ mn.keyupCheck = function (event) {
 }
 
 
-mn.ManageDiff = function () {
-    this.hasDiff = false;
-
-    this.checkDiff = function () {
-        //console.log("checkDiff called..");
-        this.noteKey = $("#noteContent").attr("key");
-        if (!this.noteKey) {
-            // 신규인 경우
-            this.hasDiff = true;
-        } else {
-            this.hasDiff = mn.notes.getItem(this.noteKey).txt != $("#noteContent").html();
-        }
-
-        // 변경사항 있을 경우 변경사항 표시..
-        if (this.hasDiff) {
-            //var mark = $m.qs("#diffMark").innerHTML;
-            //$m.qs("#diffMark").innerHTML = mark + "*";
-            mn.pushDiff();
-        }
-
-        if (this.timer) {
-            mn.md.end();   // 수정 중인 상황에는 타이머 초기화
-        }
-
-        this.timer = setTimeout(function () {
-            mn.md.save();
-            mn.md.end();
-        }, 1000);
-    }
-    this.save = function () {
-        if (this.hasDiff) {
-            if ($("#noteContent div:first-child").html() == "제목") {
-                // 제목을 수정하지 않을 경우 저장하지 않는다
-            } else {
-                mn.saveNote();
-            }
-        }
-        //$m.qs("#diffMark").innerHTML = "";
-        mn.flushDiff();
-    }
-    this.end = function () {
-        this.timer = clearTimeout(this.timer);
-    }
-}
 
 mn.setHeader = function () {
     if (mn.userInfo != null) {
@@ -750,29 +731,71 @@ mn.insertChkbox = function () {
     //sel.modify("move", "forward", "character");
 };
 
-mn.rowClick = function(key) {
+mn.rowClick = function (key) {
     mn.md.save();
     mn.viewNote(key)
 };
 
 
-(function(){
-    var color = 255;
-    mn.pushDiff = function() {
-        color = color > 10 ?  color -2  : 10 ;
+
+
+mn.newManageDiff = function () {
+    var that = {},
+        timer,
+        color = 255,
+        hasDiff = false;
+
+    that.checkDiff = function () {
+        that.noteKey = $("#noteContent").attr("key");
+        if (!that.noteKey) {
+            // 신규인 경우
+            hasDiff = true;
+        } else {
+            hasDiff = mn.notes.getItem(that.noteKey).txt != $("#noteContent").html();
+        }
+
+        // 변경사항 있을 경우 변경사항 표시..
+        if (hasDiff) {
+            that.pushDiff();
+        }
+
+        if (timer) {
+            that.end();   // 수정 중인 상황에는 타이머 초기화
+        }
+
+        timer = setTimeout(function () {
+            that.save();
+            that.end();
+        }, 1000);
+    }
+    that.save = function () {
+        if (hasDiff) {
+            if ($("#noteContent div:first-child").html() == "제목") {
+                // 제목을 수정하지 않을 경우 저장하지 않는다
+            } else {
+                mn.saveNote();
+            }
+        }
+        //$m.qs("#diffMark").innerHTML = "";
+        that.flushDiff();
+    }
+
+    that.end = function () {
+        timer = clearTimeout(timer);
+    };
+
+    that.pushDiff = function () {
+        color = color > 10 ? color - 2 : 10;
         var hex = (color).toString(16);
         $m.qs("#noteContent").style.backgroundColor = "#" + hex + hex + hex;
     };
-    mn.flushDiff = function(){
+
+    that.flushDiff = function () {
         color = 255;
         var hex = (color).toString(16);
         $m.qs("#noteContent").style.backgroundColor = "#" + hex + hex + hex;
     }
-})();
 
-
-mn.userInfo = null; // 로그인한 사용자 정보
-mn.notes = new HashTable();
-mn.visibleRowCnt = 30;
-mn.md = new mn.ManageDiff();
+    return that;
+}
 
