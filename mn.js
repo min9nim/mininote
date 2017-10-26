@@ -152,10 +152,10 @@ mn.autoReplace = function (keycode) {
     console.log(str);
     var keymap = str.substr(sel.anchorOffset - 3, 2);
 
-    if (keymap == "11") {
+    if (keymap == "!!") {
         mn.deleteMapKey(3, 0);
         mn.insertChkbox();
-    } else if (keymap == "22") {
+    } else if (keymap == "@@") {
         mn.deleteMapKey(3, 1);
         document.execCommand('insertunorderedlist');
     } else if (keymap == "))") {
@@ -169,7 +169,7 @@ mn.autoReplace = function (keycode) {
     } else if (["mo", "tu", "we", "th", "fr", "sa", 'su'].indexOf(keymap) >= 0) {
         mn.deleteMapKey(3, 0);
         sel.getRangeAt(0).insertNode(document.createTextNode(keymap.toUpperCase() + " Todolist"));
-        sel.modify("move", "forward", "word");
+        sel.modify("move", "forward", "word");  // 모바일에서는 이게 안 먹히네..
     }
 };
 

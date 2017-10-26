@@ -19,14 +19,14 @@
 
 .dialog {
     position: fixed;
-    width: calc(100% - 95px);
+    width: calc(100% - 98px);
     height: calc(100% - 20px);
     display: none;
     font-size: 12px;
-    background-color: white;
+    background-color: #fff;
     border: 2px solid #bbb;
     top: 10px;
-    left: 95px;
+    left: 98px;
     resize: both;
     overflow: auto;
 }
