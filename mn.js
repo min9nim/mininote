@@ -169,7 +169,7 @@ mn.autoReplace = function (keycode) {
     } else if (["mo", "tu", "we", "th", "fr", "sa", 'su'].indexOf(keymap) >= 0) {
         mn.deleteMapKey(3, 0);
         sel.getRangeAt(0).insertNode(document.createTextNode(keymap.toUpperCase() + " Todolist"));
-        sel.modify("move", "forward", "character");
+        sel.modify("move", "forward", "word");
     }
 };
 
@@ -415,7 +415,7 @@ mn.writeNote = function () {
             // 쓰기버튼 일때
             $m.qs(".dialog").style.display = "block";
             $("#noteContent").attr("key", "");
-            $m.qs("#noteContent").innerHTML = "<div class='title' placeholder='제목'>제목</div><div><br/></div><div placeholder='내용'></div>";
+            $m.qs("#noteContent").innerHTML = "<div class='title' placeholder='제목'>제목</div><div><br/></div><div placeholder='내용'><br/></div>";
             $("#noteContent .title").focus();   // 파폭에서 해당 지점으로 포커스 들어가지 않음
 
             // 저장버튼 처리
