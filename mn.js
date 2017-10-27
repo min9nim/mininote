@@ -2,7 +2,6 @@ var mn = {};
 
 mn.init = function () {
     NProgress.start();  // https://github.com/rstacruz/nprogress
-    mn.userInfo = null; // 로그인한 사용자 정보
     mn.visibleRowCnt = 30;
     mn.notes = new HashTable();
     mn.md = mn.newManageDiff();
@@ -17,21 +16,24 @@ mn.init = function () {
         }
     });
 
-    (function () {
-        // 글편집 상태일 때 body 스크롤 금지
-        // 윈도우에서 스크롤 깜빡임 문제 처리
-        var top;
-        $m.qs("#noteContent").onmouseenter = function (e) {
-            top = document.documentElement.scrollTop;
-            $('body').css('top', -(top) + 'px').addClass('noscroll');
 
-        };
-        $m.qs("#noteContent").onmouseleave = function (e) {
-            $('body').removeClass('noscroll');
-            $(document).scrollTop(top)
-        };
-    })();
+    mn.bodyScrollWithNoteContent();
 };
+
+mn.bodyScrollWithNoteContent = function () {
+    // 글편집 상태일 때 body 스크롤 금지
+    // 윈도우에서 스크롤 깜빡임 문제 처리
+    var top;
+    $m.qs("#noteContent").onmouseenter = function (e) {
+        top = document.documentElement.scrollTop;
+        $('body').css('top', -(top) + 'px').addClass('noscroll');
+
+    };
+    $m.qs("#noteContent").onmouseleave = function (e) {
+        $('body').removeClass('noscroll');
+        $(document).scrollTop(top)
+    };
+}
 
 mn.auth = function () {
     firebase.auth().onAuthStateChanged(function (user) {
@@ -548,7 +550,6 @@ mn.keyupCheck = function (event) {
 }
 
 
-
 mn.setHeader = function () {
     if (mn.userInfo != null) {
         $("#nickname").val(mn.userInfo.data.nickname);
@@ -735,8 +736,6 @@ mn.rowClick = function (key) {
     mn.md.save();
     mn.viewNote(key)
 };
-
-
 
 
 mn.newManageDiff = function () {
