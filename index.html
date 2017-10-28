@@ -11,33 +11,16 @@
     <link rel='stylesheet' href='ext/nprogress.css'/>
     <link rel="stylesheet" href="style.css" />
 
-
     <title>miniNote project :)</title>
-    <script type="text/javascript" src='ext/autolink.js'></script>
-    <script type="text/javascript" src='ext/nprogress.js'></script>
-    <script type="text/javascript" src='ext/randomColor.js'></script>
-    <script type="text/javascript" src='ext/shortcut.js'></script>
-    <script type="text/javascript" src='ext/isMobile.js'></script>
     <script type="text/javascript" src='ext/firebase.js'></script>
-    <script type="text/javascript" src="ext/jquery.js"></script>
     <!--script type="text/javascript" src="ext/jquery-ui.js"></script-->
-    <script type="text/javascript" src="ext/materialize.min.js"></script>
+    <script type="text/javascript" src="ext/jquery.js"></script>
+    <script type="text/javascript" src="ext/materialize.js"></script>
     <script type="text/javascript" src="util.js"></script>
-    <script type="text/javascript" src="mn.js"></script>
-    <script type="text/javascript">
-        // Initialize Firebase
-        var config = {
-            apiKey: "AIzaSyCA7fmVSWpyP0MPpw1QRU6h9OZ7hrr6sGA",
-            authDomain: "mininote-a7060.firebaseapp.com",
-            databaseURL: "https://mininote-a7060.firebaseio.com",
-            projectId: "mininote-a7060",
-            storageBucket: "mininote-a7060.appspot.com",
-            messagingSenderId: "26778481220"
-        };
-        firebase.initializeApp(config);
+    <script type="text/javascript" src='ext/autolink.js'></script>
+    <script type="text/javascript" src='ext/shortcut.js'></script>
+    <script type="text/javascript" data-main="app" src="ext/require.js"></script>
 
-        window.onload = mn.init;
-    </script>
 </head>
 
 <body onscroll="mn.bodyScroll();">
