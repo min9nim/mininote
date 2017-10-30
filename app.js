@@ -13,7 +13,17 @@ firebase.initializeApp(config);
 requirejs.config({
     baseUrl: 'ext',
     paths: {
-        mn : "../mn"
+        mn : "../mn",
+        util : "../util"
+    },
+    shim : {
+        "util" : {
+            exports: "$m"
+        },
+        "shortcut" : {
+            exports: "shortcut"
+        }
+        //, "materialize" : ["jquery"]
     }
 });
 

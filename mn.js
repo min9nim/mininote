@@ -1,4 +1,21 @@
-define(["nprogress", "randomColor", "isMobile"], function(NProgress, randomColor, isMobile){
+define(["jquery",
+        "nprogress",
+        "randomColor",
+        "isMobile",
+        "util",
+        "shortcut",
+        "autolink"
+        //, "materialize"       // 이거 없어도 렌더링에 문제가 없네?
+       ], function(
+        $,
+        NProgress,
+        randomColor,
+        isMobil,
+        $m,
+        shortcut,
+        $autolink       // undefined
+){
+    // util.js의 HashTable 은 어떻게 받아오지?;
 
     var mn = {};
 
