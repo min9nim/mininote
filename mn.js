@@ -178,7 +178,7 @@ define(["nprogress", "randomColor", "isMobile"], function(NProgress, randomColor
 
         var sel = window.getSelection();
         var str = sel.anchorNode.textContent;
-        console.log(str);
+        //console.log(str);
         var keymap = str.substr(sel.anchorOffset - 3, 2);
 
         if (keymap == "!!") {
@@ -799,7 +799,11 @@ define(["nprogress", "randomColor", "isMobile"], function(NProgress, randomColor
         }
 
         return that;
-    }
+    };
+
+    mn.cancelSearch = function(){
+        $m.qs(".search").style.display = "none";
+    };
 
     return mn;
 });
