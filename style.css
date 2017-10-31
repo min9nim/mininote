@@ -196,7 +196,8 @@
 #nprogress .bar {
     position: absolute;
     top: 30px;
-    background: #708c0c;
+    background: var(--main-bg-color);
+    display: none;
 }
 
 #nprogress .spinner {
