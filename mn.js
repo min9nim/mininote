@@ -14,9 +14,12 @@ define(["jquery"
     , $shortcut
     , $autolink       // undefined
 ) {
+    // export
+    var mn = {};
+
     // local variable
-    var mn = {}
-        , visibleRowCnt = 30
+    var visibleRowCnt = 30
+        , userInfo
         , md
         , notes = new HashTable();
     ;
@@ -92,7 +95,7 @@ define(["jquery"
         };
 
         that.pushDiff = function () {
-            color = color > 10 ? color - 2 : 10;
+            color = color > 10 ? color - 1 : 12;
             var hex = (color).toString(16);
             $m.qs("#noteContent").style.backgroundColor = "#" + hex + hex + hex;
         };
@@ -107,53 +110,35 @@ define(["jquery"
     };
 
 
-    // util.js의 HashTable 은 어떻게 받아오지?;
-
-    mn.init = function () {
-        $nprogress.start();  // https://github.com/rstacruz/nprogress
-        md = newManageDiff();
-        setShortcut();
-        login();
-        bodyScrollWithNoteContent();
-
-        firebase.database().ref(".info/connected").on("value", function (snap) {
-            if (snap.val() === true) {
-                conOn();
-            } else {
-                conOff();
-            }
-        });
-    };
-
-    login = function(){
+    login = function () {
         firebase.auth().onAuthStateChanged(function (user) {
             var userRef = firebase.database().ref("users/" + user.uid);
             if (user) {// 인증완료
-                mn.userInfo = user;
+                userInfo = user;
                 $("#writeBtn").show();
                 userRef.once("value").then(function (snapshot) {
                     var userData;
                     if (snapshot.val() !== null) {
-                        mn.userInfo.data = snapshot.val();
+                        userInfo.data = snapshot.val();
                         setHeader();
-                        initNoteList(mn.userInfo.uid);
+                        initNoteList(userInfo.uid);
                     } else {// 신규 로그인 경우
                         userData = {
                             fontSize: "18px",
                             iconColor: "green",
-                            email: mn.userInfo.email,
-                            nickname: mn.userInfo.email.split("@")[0]
+                            email: userInfo.email,
+                            nickname: userInfo.email.split("@")[0]
                         };
 
                         userRef.set(userData, function () {
-                            mn.userInfo.data = userData;
+                            userInfo.data = userData;
                             setHeader();
-                            initNoteList(mn.userInfo.uid);
+                            initNoteList(userInfo.uid);
                         });
                     }
                 });
             } else {
-                mn.userInfo = null;
+                userInfo = null;
                 setHeader();
                 $nprogress.done();
                 if (confirm("로그인이 필요합니다")) {
@@ -228,8 +213,8 @@ define(["jquery"
     };
 
     conOn = function () {
-        if (mn.userInfo !== null) {
-            mn.userInfo.isConnected = true;
+        if (userInfo !== null) {
+            userInfo.isConnected = true;
         }
 
         if ($(".dialog").css("display") === "none") {
@@ -244,8 +229,8 @@ define(["jquery"
     };
 
     conOff = function () {
-        if (mn.userInfo) {
-            mn.userInfo.isConnected = false;
+        if (userInfo) {
+            userInfo.isConnected = false;
         }
 
         $m.qsa("#list li").forEach(function (o) {
@@ -256,7 +241,7 @@ define(["jquery"
         $("#writeBtn").hide();
 
         setTimeout(function () {
-            if (mn.userInfo.isConnected === false) {
+            if (userInfo.isConnected === false) {
                 // 20초간 상태 지켜보기
             }
         }, 20000);
@@ -313,24 +298,6 @@ define(["jquery"
     };
 
 
-    mn.showNoteList = function (uid) {
-        //console.log("showNoteList called..");
-        mn.viewList();
-
-        $(".state").text("");
-        $("#list").text("");
-
-        mn.noteRef.limitToLast(visibleRowCnt).once("value").then(function (snapshot) {
-            var noteObj = snapshot.val();
-            for (var key in noteObj) {
-                addItem(key, noteObj[key]);
-            }
-
-            $(".header .title").html(mn.userInfo.data.nickname + "'s " + notes.length + " notes");
-            $nprogress.done();
-        });
-    };
-
     initNoteList = function (uid) {
         //var mn.noteRef = firebase.database().ref("notes/" + uid).limitToLast(100);
         // 이벤트 등록용..
@@ -352,7 +319,7 @@ define(["jquery"
         if (diff < 1000) {// 방금 새로 등록한 글인 경우만
             addItem(data.key, data.val());
             if ($(".state").html() === "") {
-                $(".header .title").html(mn.userInfo.data.nickname + "'s " + notes.length + " notes");
+                $(".header .title").html(userInfo.data.nickname + "'s " + notes.length + " notes");
             } else {
                 $(".header .title").html(notes.length + " notes");
             }
@@ -377,7 +344,7 @@ define(["jquery"
     getNoteHtml = function (key, noteData) {
         var idx = noteData.txt.indexOf("<div>");
         var title, content, createDate, removeBtn = "", editBtn = "", liChild, li, html;
-        var color = $randomcolor({hue: mn.userInfo.data.iconColor, luminosity: "dark"});  // https://randomcolor.llllll.li/
+        var color = $randomcolor({hue: userInfo.data.iconColor, luminosity: "dark"});  // https://randomcolor.llllll.li/
 
 
         if (idx > 0) {
@@ -393,7 +360,7 @@ define(["jquery"
         content = content.substr(0, 100); // 100자까지만 보여주기
         createDate = (new Date(noteData.createDate)).toString().substr(4, 17);
 
-        if (typeof mn.userInfo !== null) {// 내가 작성한 글인 경우만 수정/삭제버튼이 표시
+        if (typeof userInfo !== null) {// 내가 작성한 글인 경우만 수정/삭제버튼이 표시
             removeBtn = `<i id="btn_delete" onclick='mn.removeNote("${key}")' class="material-icons">delete</i>`;
             editBtn = `<i id="btn_edit" onclick='editNote("${key}")' class="material-icons">edit</i>`;
         }
@@ -443,7 +410,7 @@ define(["jquery"
         $("#" + key).remove();
         //noteList.splice(noteList.indexOf(data), 1);  // noteList에서 삭제된 요소 제거
         notes.removeItem(key);
-        $(".header .title").html(mn.userInfo.data.nickname + "'s " + notes.length + " notes");
+        $(".header .title").html(userInfo.data.nickname + "'s " + notes.length + " notes");
     };
 
     saveNote = function () {
@@ -464,7 +431,7 @@ define(["jquery"
 
 
         if (key === "") {// 저장
-            var res = firebase.database().ref("notes/" + mn.userInfo.uid).push({
+            var res = firebase.database().ref("notes/" + userInfo.uid).push({
                 txt: txt,
                 createDate: Date.now(),
                 updateDate: Date.now(),
@@ -472,7 +439,7 @@ define(["jquery"
             });
             $("#noteContent").attr("key", res.key);
         } else {// 수정
-            firebase.database().ref("notes/" + mn.userInfo.uid + "/" + key).update({
+            firebase.database().ref("notes/" + userInfo.uid + "/" + key).update({
                 txt: txt,
                 updateDate: Date.now(),
                 userAgent: navigator.userAgent
@@ -481,10 +448,129 @@ define(["jquery"
     };
 
 
+    setHeader = function () {
+        if (userInfo !== null) {
+            $("#nickname").val(userInfo.data.nickname);
+            $("#fontSize").val(userInfo.data.fontSize.replace("px", ""));
+            $("#iconColor").val(userInfo.data.iconColor);
+        } else {
+            $(".header .title").html("mininote");
+        }
+    };
+
+
+    setContextBtnEvent = function (contextBtn) {
+        contextBtn.bind("click", function () {
+            if (contextBtn.text() === "<<") {
+                contextBtn.parent().animate({left: "-100px"}, 300, function () {
+                    contextBtn.text(">>");
+                });
+            } else {
+                contextBtn.parent().animate({left: "0px"}, 300, function () {
+                    contextBtn.text("<<");
+                });
+            }
+
+            event.stopPropagation();
+            event.preventDefault();
+
+        });
+    };
+
+    setTouchSlider = function (row) {
+        var start_x, diff_x;
+        var start_y, diff_y;
+        var dom_start_x;
+
+        function touchstart(e) {
+            start_x = e.originalEvent.touches ? e.originalEvent.touches[0].pageX : e.pageX;
+            start_y = e.originalEvent.touches ? e.originalEvent.touches[0].pageY : e.pageY;
+            dom_start_x = $(this).position().left;  // 터치시작할 때 최초 dom요소의 x위치를 기억하고 있어야 함
+        }
+
+        function touchmove(e) {
+            diff_x = (e.originalEvent.touches ? e.originalEvent.touches[0].pageX : e.pageX) - start_x;
+            diff_y = (e.originalEvent.touches ? e.originalEvent.touches[0].pageY : e.pageY) - start_y;
+            if (Math.abs(diff_x) > Math.abs(diff_y * 4)) {
+                $(this).css("left", dom_start_x + diff_x);
+            }
+        }
+
+        function touchend() {
+            if (diff_x < -50) {
+                $(this).animate({left: "-100px"}, 300);
+            } else if (diff_x > 150) {
+                //mn.viewNote($(this).attr("id"));
+                $(this).animate({left: "0px"}, 300);
+            } else {
+                $(this).animate({left: "0px"}, 300);
+            }
+        }
+
+        row.bind("touchstart", touchstart);
+        row.bind("touchmove", touchmove);
+        row.bind("touchend", touchend);
+    };
+
+
+    insertChkbox = function () {
+        var chk = document.createElement("input");
+        chk.setAttribute("type", "checkbox");
+        chk.setAttribute("class", "chk");
+        chk.onclick = chkClick;
+
+        var sel = window.getSelection();
+        var range = sel.getRangeAt(0);
+
+        // range범위를 수정해 가면서 처리하는게 맞을 것 같은데.. 삽입하는 순서를 바로 잡으려면...
+        //range.setStart(sel.anchorNode, sel.anchorOffset+1);
+
+        range.insertNode(document.createTextNode(" ")); // chkbox 뒤에 공백문자 하나 넣어야 하는데 안된다;
+        range.insertNode(chk);
+
+        sel.modify("move", "forward", "character");
+    };
+
+
+    mn.init = function () {
+        $nprogress.start();  // https://github.com/rstacruz/nprogress
+        md = newManageDiff();
+        setShortcut();
+        login();
+        bodyScrollWithNoteContent();
+
+        firebase.database().ref(".info/connected").on("value", function (snap) {
+            if (snap.val() === true) {
+                conOn();
+            } else {
+                conOff();
+            }
+        });
+    };
+
+    mn.showNoteList = function (uid) {
+        //console.log("showNoteList called..");
+        mn.viewList();
+
+        $(".state").text("");
+        $("#list").text("");
+
+        mn.noteRef.limitToLast(visibleRowCnt).once("value").then(function (snapshot) {
+            var noteObj = snapshot.val();
+            for (var key in noteObj) {
+                addItem(key, noteObj[key]);
+            }
+
+            $(".header .title").html(userInfo.data.nickname + "'s " + notes.length + " notes");
+            $nprogress.done();
+        });
+    };
+
+
     mn.removeNote = function (key) {
-        if (mn.userInfo !== null && mn.userInfo.isConnected) {
+        if (userInfo !== null && userInfo.isConnected) {
             if (confirm("삭제하시겠습니까?")) {
-                firebase.database().ref("notes/" + mn.userInfo.uid + "/" + key).remove();
+                firebase.database().ref("notes/" + userInfo.uid + "/" + key).remove();
             }
         } else {
             alert("로그인이 필요합니다");
@@ -541,7 +627,7 @@ define(["jquery"
 
 
     mn.writeNote = function () {
-        if (mn.userInfo !== null && mn.userInfo.isConnected) {
+        if (userInfo !== null && userInfo.isConnected) {
             if ($("#addBtn").html() === "새글") {
 
                 if ($ismobile.any) {
@@ -590,7 +676,7 @@ define(["jquery"
 
 
     mn.searchClick = function () {
-        if (mn.userInfo !== null && mn.userInfo.isConnected) {
+        if (userInfo !== null && userInfo.isConnected) {
             $(".search").css("display", "block");
             $("#input2").val("");
             $("#input2").focus();
@@ -661,71 +747,6 @@ define(["jquery"
     };
 
 
-    setHeader = function () {
-        if (mn.userInfo !== null) {
-            $("#nickname").val(mn.userInfo.data.nickname);
-            $("#fontSize").val(mn.userInfo.data.fontSize.replace("px", ""));
-            $("#iconColor").val(mn.userInfo.data.iconColor);
-        } else {
-            $(".header .title").html("mininote");
-        }
-    };
-
-
-    setContextBtnEvent = function (contextBtn) {
-        contextBtn.bind("click", function () {
-            if (contextBtn.text() === "<<") {
-                contextBtn.parent().animate({left: "-100px"}, 300, function () {
-                    contextBtn.text(">>");
-                });
-            } else {
-                contextBtn.parent().animate({left: "0px"}, 300, function () {
-                    contextBtn.text("<<");
-                });
-            }
-
-            event.stopPropagation();
-            event.preventDefault();
-
-        });
-    };
-
-    setTouchSlider = function (row) {
-        var start_x, diff_x;
-        var start_y, diff_y;
-        var dom_start_x;
-
-        function touchstart(e) {
-            start_x = e.originalEvent.touches ? e.originalEvent.touches[0].pageX : e.pageX;
-            start_y = e.originalEvent.touches ? e.originalEvent.touches[0].pageY : e.pageY;
-            dom_start_x = $(this).position().left;  // 터치시작할 때 최초 dom요소의 x위치를 기억하고 있어야 함
-        }
-
-        function touchmove(e) {
-            diff_x = (e.originalEvent.touches ? e.originalEvent.touches[0].pageX : e.pageX) - start_x;
-            diff_y = (e.originalEvent.touches ? e.originalEvent.touches[0].pageY : e.pageY) - start_y;
-            if (Math.abs(diff_x) > Math.abs(diff_y * 4)) {
-                $(this).css("left", dom_start_x + diff_x);
-            }
-        }
-
-        function touchend() {
-            if (diff_x < -50) {
-                $(this).animate({left: "-100px"}, 300);
-            } else if (diff_x > 150) {
-                //mn.viewNote($(this).attr("id"));
-                $(this).animate({left: "0px"}, 300);
-            } else {
-                $(this).animate({left: "0px"}, 300);
-            }
-        }
-
-        row.bind("touchstart", touchstart);
-        row.bind("touchmove", touchmove);
-        row.bind("touchend", touchend);
-    };
-
-
     mn.menuClick = function () {
         if ($m.qs(".menu").style.left === "0px") {
             $(".menu").animate({left: "-220px"}, 300);
@@ -745,21 +766,21 @@ define(["jquery"
 
 
     mn.setNickname = function (nickname) {
-        mn.userInfo.data.nickname = nickname;
-        firebase.database().ref("users/" + mn.userInfo.uid).update(mn.userInfo.data);
-        $(".header .title").html(mn.userInfo.data.nickname + "'s " + notes.length + " notes");
+        userInfo.data.nickname = nickname;
+        firebase.database().ref("users/" + userInfo.uid).update(userInfo.data);
+        $(".header .title").html(userInfo.data.nickname + "'s " + notes.length + " notes");
     };
 
 
     mn.setFontSize = function (size) {
-        mn.userInfo.data.fontSize = size + "px";
-        firebase.database().ref("users/" + mn.userInfo.uid).update(mn.userInfo.data);
-        $(".txt").css("font-size", mn.userInfo.data.fontSize);
+        userInfo.data.fontSize = size + "px";
+        firebase.database().ref("users/" + userInfo.uid).update(userInfo.data);
+        $(".txt").css("font-size", userInfo.data.fontSize);
     };
 
     mn.setIconColor = function (color) {
-        mn.userInfo.data.iconColor = color;
-        firebase.database().ref("users/" + mn.userInfo.uid).update(mn.userInfo.data);
+        userInfo.data.iconColor = color;
+        firebase.database().ref("users/" + userInfo.uid).update(userInfo.data);
         $("#list i.circle").each(function (i) {
             var bgcolor = $randomcolor({hue: color, luminosity: "dark"});
             $(this).css("background-color", bgcolor);
@@ -817,30 +838,11 @@ define(["jquery"
 
 
     mn.titleClick = function () {
-        if (mn.userInfo) {
-            mn.showNoteList(mn.userInfo.uid);
+        if (userInfo) {
+            mn.showNoteList(userInfo.uid);
         } else {
             firebase.auth().signInWithRedirect(new firebase.auth.GoogleAuthProvider());
         }
-    };
-
-    insertChkbox = function () {
-        var chk = document.createElement("input");
-        chk.setAttribute("type", "checkbox");
-        chk.setAttribute("class", "chk");
-        chk.onclick = chkClick;
-
-        var sel = window.getSelection();
-        var range = sel.getRangeAt(0);
-
-        // range범위를 수정해 가면서 처리하는게 맞을 것 같은데.. 삽입하는 순서를 바로 잡으려면...
-        //range.setStart(sel.anchorNode, sel.anchorOffset+1);
-
-        range.insertNode(document.createTextNode(" ")); // chkbox 뒤에 공백문자 하나 넣어야 하는데 안된다;
-        range.insertNode(chk);
-
-        sel.modify("move", "forward", "character");
-        //sel.modify("move", "forward", "character");
     };
 
     mn.rowClick = function (key) {
