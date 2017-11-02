@@ -130,14 +130,18 @@ function HashTable(obj)
 }
 
 
+define([],function(){
+    $m = {};
+    $m.qs = function(sel) {
+        return document.querySelector(sel);
+    };
+    $m.qsa = function(sel){
+        return document.querySelectorAll(sel);
+    };
 
-$m = {};
-$m.qs = function(sel) {
-    return document.querySelector(sel);
-};
-$m.qsa = function(sel){
-    return document.querySelectorAll(sel);
-};
+    return $m;
 
 // 체이닝을 사용하려면...
+
+});
 
