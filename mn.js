@@ -408,7 +408,7 @@ define(["jquery"
             && $m.qs("#noteContent").getAttribute("key") === key) {
             // 글보기상태이고 외부에서 변경이 발생한 경우 글내용 갱신
             console.log("외부 장비에서 변경사항 발생 ");
-            viewNote(key);
+            mn.viewNote(key);
         }
 
         // 수정한 글목록으로 스크롤 이동
