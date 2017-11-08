@@ -54,6 +54,19 @@ define(["jquery"
             color = 255,
             hasDiff = false;
 
+        function pushDiffColor () {
+            color = color > 10 ? color - 1 : 12;
+            var hex = (color).toString(16);
+            $m.qs("#noteContent").style.backgroundColor = "#" + hex + hex + hex;
+        }
+
+        function flushDiffColor() {
+            color = 255;
+            var hex = (color).toString(16);
+            $m.qs("#noteContent").style.backgroundColor = "#" + hex + hex + hex;
+        }
+
+
         that.checkDiff = function () {
             that.noteKey = $("#noteContent").attr("key");
             if (!that.noteKey) {
@@ -94,17 +107,15 @@ define(["jquery"
             timer = clearTimeout(timer);
         };
 
-        that.pushDiff = function () {
-            color = color > 10 ? color - 1 : 12;
-            var hex = (color).toString(16);
-            $m.qs("#noteContent").style.backgroundColor = "#" + hex + hex + hex;
+        that.pushDiff = function(){
+            var s = $m.qs(".diff").innerHTML;
+            $m.qs(".diff").innerHTML = s + ".";
         };
 
         that.flushDiff = function () {
-            color = 255;
-            var hex = (color).toString(16);
-            $m.qs("#noteContent").style.backgroundColor = "#" + hex + hex + hex;
+            $m.qs(".diff").innerHTML = "";
         };
+
 
         return that;
     };

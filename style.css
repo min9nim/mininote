@@ -364,3 +364,10 @@ body {
     overflow-y: scroll;
     width : 100%;
 }
+
+.diff {
+    top: 20px;
+    right: 10px;
+    position: fixed;
+    z-index: 999;
+}
