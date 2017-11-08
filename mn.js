@@ -244,12 +244,7 @@ define(["jquery"
             userInfo.isConnected = false;
         }
 
-        $m.qsa("#list li").forEach(function (o) {
-            o.style.backgroundColor = "#dddddd";
-        });
-        $m.qs("#noteContent").style.backgroundColor = "#dddddd";
-
-        $("#writeBtn").hide();
+        //$("#writeBtn").hide();
 
         setTimeout(function () {
             if (userInfo.isConnected === false) {
@@ -425,6 +420,12 @@ define(["jquery"
     };
 
     saveNote = function () {
+
+        if(userInfo.isConnected === false ) {
+            alert("로그인이 필요합니다");
+            return;
+        }
+
         var key = $("#noteContent").attr("key");
         $("#noteContent div[placeholder]").removeAttr("placeholder");      // 불필요태그 제거
         var txt = $("#noteContent").html().replace(/(<div><br><\/div>)+$/ig, ""); // 끝에 공백제거
