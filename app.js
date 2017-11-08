@@ -17,9 +17,6 @@ requirejs.config({
         util : "../util"
     },
     shim : {
-        "util" : {
-            exports: "$m"
-        },
         "shortcut" : {
             exports: "shortcut"
         }
