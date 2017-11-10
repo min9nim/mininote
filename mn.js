@@ -123,8 +123,8 @@ define(["jquery"
 
     login = function () {
         firebase.auth().onAuthStateChanged(function (user) {
-            var userRef = firebase.database().ref("users/" + user.uid);
             if (user) {// 인증완료
+                var userRef = firebase.database().ref("users/" + user.uid);
                 userInfo = user;
                 $("#writeBtn").show();
                 userRef.once("value").then(function (snapshot) {
