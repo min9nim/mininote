@@ -816,11 +816,11 @@ define(["jquery"
             $nprogress.start();
             $m.qs("#nprogress .spinner").style.top = "95%";
             var end = notes.length - $m.qsa("#list li").length;
-            var start = end - mn.visibleRowCnt < 0 ? 0 : end - visibleRowCnt;
+            var start = (end - visibleRowCnt) < 0 ? 0 : (end - visibleRowCnt);
             var nextList = notes.getArray().slice(start, end).reverse();
 
             nextList.forEach(function (x) {
-                mn.addItem(x.key, x.val, "append");
+                addItem(x.key, x.val, "append");
             });
             $nprogress.done();
         }
