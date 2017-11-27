@@ -121,18 +121,180 @@ function HashTable(obj)
 }
 
 
+
+
 define([],function(){
-    $m = {};
+    $m = function(sel){
+        return new $m.fn.init(sel);
+    };
+
+    $m.fn = {
+        init :  function(sel){
+            if(typeof sel == "string"){
+                this.sel = sel;
+                this.doms = document.querySelectorAll(sel);
+                this.length = this.doms.length;
+            }else{// dom이 직접 들어올 경우
+                this.doms = [sel];
+                this.length = 1;
+            }
+        },
+
+        html : function (html) {
+            if(this.length == 0) return;
+
+            if(html === undefined){
+                return this.doms[0] && this.doms[0].innerHTML;
+            }
+
+            this.doms.forEach(function (dom) {
+                dom.innerHTML = html;
+            });
+
+            return this;
+        },
+
+        css : function(name, value) {
+            if(this.length == 0) return;
+
+            if(value === undefined){
+                return this.doms[0].style[name];
+            }
+
+            this.doms.forEach(function(dom){
+                dom.style[name] = value;
+            });
+
+            return this;
+        },
+
+        attr : function(name, value) {
+            if(this.length == 0) return;
+
+            if(value === undefined){
+                return this.doms[0].getAttribute(name);
+            }
+
+            this.doms.forEach(function(dom){
+                dom.setAttribute(name, value);
+            });
+
+            return this;
+        },
+
+        addClass : function(name) {
+            this.doms.forEach(function(dom){
+                var cls = dom.getAttribute("class");
+                //cls = cls.split(" ").push(name).join(" ");
+                cls = cls + " " + name;
+                dom.setAttribute("class", cls);
+            });
+
+            return this;
+        },
+
+
+        removeClass : function(name) {
+            this.doms.forEach(function(dom){
+                var cls = dom.getAttribute("class");
+                var arr = cls.split(" ");
+                var idx = arr.indexOf(name);
+                if(idx < 0){
+                    return;
+                }
+                arr.splice(idx, 1);
+                dom.setAttribute("class", arr.join(" "));
+            });
+
+            return this;
+        },
+
+        each : function(func) {
+            this.doms.forEach(function(val, key, arr){
+                func.call(val, val, key, arr);
+            });
+
+            return this;
+        },
+
+        remove : function(){
+            this.doms.forEach(function(dom){
+                dom.parentNode.removeChild( dom );
+            });
+        },
+
+        append : function(elem){
+            this.doms.forEach(function(dom){
+                if ( dom.nodeType === 1 || dom.nodeType === 11 || dom.nodeType === 9 ) {
+                    dom.appendChild($m.clone(elem));
+                }
+            });
+            return this;
+        },
+
+        prepend : function(elem){
+            this.doms.forEach(function(dom){
+                if ( dom.nodeType === 1 || dom.nodeType === 11 || dom.nodeType === 9 ) {
+                    dom.insertBefore($m.clone(elem), dom.firstChild);
+                }
+            });
+            return this;
+        },
+
+        show : function(){
+            this.doms.forEach(function(dom){
+                dom.style.display = "";
+            });
+            return this;
+        },
+
+        hide : function(){
+            this.doms.forEach(function(dom){
+                dom.style.display = "none";
+            });
+            return this;
+        },
+
+        val : function(value){
+            if(value === undefined){
+                return this.doms[0].value;
+            }
+
+            this.doms.forEach(function(dom){
+                dom.value = value;
+            });
+
+            return this;
+        },
+
+        focus : function(){
+            this.doms[0].focus();
+        }
+
+    };
+
+    $m.fn.init.prototype = $m.fn;
+
+    $m.clone = function(elem){
+        var newNode;
+        if(typeof elem === "string"){
+            var tmp = document.createElement("div");
+            tmp.innerHTML = elem;
+            newNode = tmp.firstChild;
+        }else{
+            newNode = elem.cloneNode(true);
+        }
+        return newNode;
+    };
+
     $m.qs = function(sel) {
         return document.querySelector(sel);
     };
+
     $m.qsa = function(sel){
         return document.querySelectorAll(sel);
     };
 
     return $m;
 
-// 체이닝을 사용하려면...
-
 });
-

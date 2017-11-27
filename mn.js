@@ -68,12 +68,12 @@ define(["jquery"
 
 
         that.checkDiff = function () {
-            that.noteKey = $("#noteContent").attr("key");
+            that.noteKey = $m("#noteContent").attr("key");
             if (!that.noteKey) {
                 // 신규인 경우
                 hasDiff = true;
             } else {
-                hasDiff = notes.getItem(that.noteKey).txt !== $("#noteContent").html();
+                hasDiff = notes.getItem(that.noteKey).txt !== $m("#noteContent").html();
             }
 
             // 변경사항 있을 경우 변경사항 표시..
@@ -93,13 +93,12 @@ define(["jquery"
 
         that.save = function () {
             if (hasDiff) {
-                if ($("#noteContent div:first-child").html() === "제목") {
+                if ($m("#noteContent div:first-child").html() === "제목") {
                     // 제목을 수정하지 않을 경우 저장하지 않는다
                 } else {
                     saveNote();
                 }
             }
-            //$m.qs("#diffMark").innerHTML = "";
             that.flushDiff();
         };
 
@@ -109,11 +108,11 @@ define(["jquery"
 
         that.pushDiff = function(){
             var s = $m.qs(".diff").innerHTML;
-            $m.qs(".diff").innerHTML = s + ".";
+            $m(".diff").html(s + ".");
         };
 
         that.flushDiff = function () {
-            $m.qs(".diff").innerHTML = "";
+            $m(".diff").html("");
         };
 
 
@@ -126,7 +125,7 @@ define(["jquery"
             if (user) {// 인증완료
                 var userRef = firebase.database().ref("users/" + user.uid);
                 userInfo = user;
-                $("#writeBtn").show();
+                $m("#writeBtn").show();
                 userRef.once("value").then(function (snapshot) {
                     var userData;
                     if (snapshot.val() !== null) {
@@ -163,13 +162,13 @@ define(["jquery"
         // 글편집 상태일 때 body 스크롤 금지
         // 윈도우에서 스크롤 깜빡임 문제 처리
         var top;
-        $m.qs("#noteContent").onmouseenter = function (e) {
+        $m("#noteContent").doms[0].onmouseenter = function (e) {
             top = document.documentElement.scrollTop;
-            $("body").css("top", -(top) + "px").addClass("noscroll");
+            $m("body").css("top", -(top) + "px").addClass("noscroll");
 
         };
-        $m.qs("#noteContent").onmouseleave = function (e) {
-            $("body").removeClass("noscroll");
+        $m("#noteContent").doms[0].onmouseleave = function (e) {
+            $m("body").removeClass("noscroll");
             $(document).scrollTop(top);
         };
     };
@@ -228,9 +227,9 @@ define(["jquery"
             userInfo.isConnected = true;
         }
 
-        if ($(".dialog").css("display") === "none") {
-            $("#writeBtn").show();
-            $("#addBtn").html("새글");
+        if ($m(".dialog").css("display") === "none") {
+            $m("#writeBtn").show();
+            $m("#addBtn").html("새글");
         }
 
         $m.qsa("#list li").forEach(function (o) {
@@ -244,7 +243,7 @@ define(["jquery"
             userInfo.isConnected = false;
         }
 
-        //$("#writeBtn").hide();
+        //$m("#writeBtn").hide();
 
         setTimeout(function () {
             if (userInfo.isConnected === false) {
@@ -324,10 +323,10 @@ define(["jquery"
         //console.log(diff);
         if (diff < 1000) {// 방금 새로 등록한 글인 경우만
             addItem(data.key, data.val());
-            if ($(".state").html() === "") {
-                $(".header .title").html(userInfo.data.nickname + "'s " + notes.length + " notes");
+            if ($m(".state").html() === "") {
+                $m(".header .title").html(userInfo.data.nickname + "'s " + notes.length + " notes");
             } else {
-                $(".header .title").html(notes.length + " notes");
+                $m(".header .title").html(notes.length + " notes");
             }
         }
     };
@@ -336,9 +335,9 @@ define(["jquery"
         var html = getNoteHtml(key, noteData);
 
         if (how === "append") {
-            $("#list").append(html.li);
+            $m("#list").append(html.li);
         } else {
-            $("#list").prepend(html.li);
+            $m("#list").prepend(html.li);
         }
 
         // 오른쪽 끝 컨텍스트버튼 이벤트 처리
@@ -392,7 +391,7 @@ define(["jquery"
         $("#" + key).animate({left: "0px"}, 300);
 
         // 오른쪽 끝 컨텍스트버튼 이벤트 처리
-        setContextBtnEvent($("#" + key + " .btnContext"));
+        setContextBtnEvent($m("#" + key + " .btnContext"));
 
         // notes 갱신
         notes.setItem(key, noteData);
@@ -413,10 +412,10 @@ define(["jquery"
     onChildRemoved = function (data) {
 //  console.log("## onChildRemoved called..");
         var key = data.key;
-        $("#" + key).remove();
+        $m("#" + key).remove();
         //noteList.splice(noteList.indexOf(data), 1);  // noteList에서 삭제된 요소 제거
         notes.removeItem(key);
-        $(".header .title").html(userInfo.data.nickname + "'s " + notes.length + " notes");
+        $m(".header .title").html(userInfo.data.nickname + "'s " + notes.length + " notes");
     };
 
     saveNote = function () {
@@ -426,9 +425,9 @@ define(["jquery"
             return;
         }
 
-        var key = $("#noteContent").attr("key");
-        $("#noteContent div[placeholder]").removeAttr("placeholder");      // 불필요태그 제거
-        var txt = $("#noteContent").html().replace(/(<div><br><\/div>)+$/ig, ""); // 끝에 공백제거
+        var key = $m("#noteContent").attr("key");
+        $m("#noteContent div[placeholder]").removeAttr("placeholder");      // 불필요태그 제거
+        var txt = $m("#noteContent").html().replace(/(<div><br><\/div>)+$/ig, ""); // 끝에 공백제거
         txt = txt.replace(/<span style="background-color:yellow;">|<\/span>/gi, "");    // 하이라이트 스타일 제거
         txt = txt.autoLink({target: "_blank"}); // 링크 설정
 
@@ -449,7 +448,7 @@ define(["jquery"
                 updateDate: Date.now(),
                 userAgent: navigator.userAgent
             });
-            $("#noteContent").attr("key", res.key);
+            $m("#noteContent").attr("key", res.key);
         } else {// 수정
             firebase.database().ref("notes/" + userInfo.uid + "/" + key).update({
                 txt: txt,
@@ -462,11 +461,11 @@ define(["jquery"
 
     setHeader = function () {
         if (userInfo !== null) {
-            $("#nickname").val(userInfo.data.nickname);
-            $("#fontSize").val(userInfo.data.fontSize.replace("px", ""));
-            $("#iconColor").val(userInfo.data.iconColor);
+            $m("#nickname").val(userInfo.data.nickname);
+            $m("#fontSize").val(userInfo.data.fontSize.replace("px", ""));
+            $m("#iconColor").val(userInfo.data.iconColor);
         } else {
-            $(".header .title").html("mininote");
+            $m(".header .title").html("mininote");
         }
     };
 
@@ -504,7 +503,7 @@ define(["jquery"
             diff_x = (e.originalEvent.touches ? e.originalEvent.touches[0].pageX : e.pageX) - start_x;
             diff_y = (e.originalEvent.touches ? e.originalEvent.touches[0].pageY : e.pageY) - start_y;
             if (Math.abs(diff_x) > Math.abs(diff_y * 4)) {
-                $(this).css("left", dom_start_x + diff_x);
+                $m(this).css("left", dom_start_x + diff_x);
             }
         }
 
@@ -573,7 +572,7 @@ define(["jquery"
                 addItem(key, noteObj[key]);
             }
 
-            $(".header .title").html(userInfo.data.nickname + "'s " + notes.length + " notes");
+            $m(".header .title").html(userInfo.data.nickname + "'s " + notes.length + " notes");
             $nprogress.done();
         });
     };
@@ -601,23 +600,23 @@ define(["jquery"
         }
         var txt = notes.getItem(key).txt;
 
-        $(".dialog").css("display", "block");
-        $("#noteContent").attr("key", key);
-        $("#list li.selected").removeClass("selected");
-        $("#" + key).addClass("selected");
+        $m(".dialog").css("display", "block");
+        $m("#noteContent").attr("key", key);
+        $m("#list li.selected").removeClass("selected");
+        $m("#" + key).addClass("selected");
 
-        var searchWord = $(".state span").html();
+        var searchWord = $m(".state span").html();
         if (searchWord) {
             // 검색결과일 경우라면 매칭단어 하이라이트닝
             var reg = new RegExp(searchWord, "gi");
             txt = txt.replace(reg, `<span style="background-color:yellow;">${searchWord}</span>`); // html태그 내용까지 매치되면 치환하는 문제가 있음
         }
 
-        $("#noteContent").html(txt);
-        $("#addBtn").html("저장");
-        $("#writeBtn").hide();
-        $("#topNavi").removeClass("navi");
-        $("#topNavi").addClass("list");
+        $m("#noteContent").html(txt);
+        $m("#addBtn").html("저장");
+        $m("#writeBtn").hide();
+        $m("#topNavi").removeClass("navi")
+                                .addClass("list");
         $m.qs("#topNavi").innerHTML = "목록";
         $m.qs("#topBtn a").style.opacity = "";
 
@@ -640,7 +639,7 @@ define(["jquery"
 
     mn.writeNote = function () {
         if (userInfo !== null && userInfo.isConnected) {
-            if ($("#addBtn").html() === "새글") {
+            if ($m("#addBtn").html() === "새글") {
 
                 if ($ismobile.any) {
                     $m.qs(".dialog").style.position = "absolute";
@@ -649,21 +648,21 @@ define(["jquery"
 
                 // 쓰기버튼 일때
                 $m.qs(".dialog").style.display = "block";
-                $("#noteContent").attr("key", "");
+                $m("#noteContent").attr("key", "");
                 $m.qs("#noteContent").innerHTML = "<div class='title' placeholder='제목'>제목</div><div><br/></div><div placeholder='내용'><br/></div>";
-                $("#noteContent .title").focus();   // 파폭에서 해당 지점으로 포커스 들어가지 않음
+                $m("#noteContent .title").focus();   // 파폭에서 해당 지점으로 포커스 들어가지 않음
 
                 // 저장버튼 처리
-                $("#addBtn").html("저장");
-                $("#writeBtn").addClass("disable");
-                $("#writeBtn").hide();
+                $m("#addBtn").html("저장");
+                $m("#writeBtn").addClass("disable");
+                $m("#writeBtn").hide();
 
-                $("#topNavi").removeClass("navi");
-                $("#topNavi").addClass("list");
-                $("#topNavi").html("목록");
-                $("#topBtn a").css("opacity", "");
+                $m("#topNavi").removeClass("navi");
+                $m("#topNavi").addClass("list");
+                $m("#topNavi").html("목록");
+                $m("#topBtn a").css("opacity", "");
 
-                $("#writeBtn").addClass("disable");
+                $m("#writeBtn").addClass("disable");
 
                 // 포커스 처리
                 var title = $m.qs("#noteContent .title");
@@ -673,7 +672,7 @@ define(["jquery"
                 range.selectNode(title.firstChild); // firstChild 로 세팅하지 않으면 파폭에서는 div 태그까지 통째로 선택영역으로 잡힌다
                 s.addRange(range);
 
-            } else if ($("#addBtn").html() === "로긴") {
+            } else if ($m("#addBtn").html() === "로긴") {
                 alert("로그인이 필요합니다");
             } else {
                 console.log("기타 경우..");
@@ -689,9 +688,9 @@ define(["jquery"
 
     mn.searchClick = function () {
         if (userInfo !== null && userInfo.isConnected) {
-            $(".search").css("display", "block");
-            $("#input2").val("");
-            $("#input2").focus();
+            $m(".search").css("display", "block");
+            $m("#input2").val("");
+            $m("#input2").focus();
         } else {
             alert("로그인이 필요합니다");
             //firebase.auth().signInWithRedirect(new firebase.auth.GoogleAuthProvider());
@@ -700,7 +699,7 @@ define(["jquery"
 
 
     mn.searchNote = function () {
-        var txt = $("#input2").val().trim();
+        var txt = $m("#input2").val().trim();
 
         if (txt.length > 100) {
             alert("100자 이내로 입력 가능");
@@ -711,8 +710,8 @@ define(["jquery"
             return;
         }
 
-        $(".search").css("display", "none");
-        $("#list").html("");
+        $m(".search").css("display", "none");
+        $m("#list").html("");
 
         notes.each(function (key, val) {
             var noTagTxt = val.txt.replace(/<([^>]+)>/gi, "");   // 태그제거
@@ -722,8 +721,8 @@ define(["jquery"
         });
 
 
-        $(".header .title").html(notes.length + " notes");
-        $(".header .state").html(`> <span style="font-style:italic;">${txt}</span> 's ${$("#list li").length} results`);
+        $m(".header .title").html(notes.length + " notes");
+        $m(".header .state").html(`> <span style="font-style:italic;">${txt}</span> 's ${$m("#list li").length} results`);
 
         mn.viewList();
     };
@@ -780,22 +779,22 @@ define(["jquery"
     mn.setNickname = function (nickname) {
         userInfo.data.nickname = nickname;
         firebase.database().ref("users/" + userInfo.uid).update(userInfo.data);
-        $(".header .title").html(userInfo.data.nickname + "'s " + notes.length + " notes");
+        $m(".header .title").html(userInfo.data.nickname + "'s " + notes.length + " notes");
     };
 
 
     mn.setFontSize = function (size) {
         userInfo.data.fontSize = size + "px";
         firebase.database().ref("users/" + userInfo.uid).update(userInfo.data);
-        $(".txt").css("font-size", userInfo.data.fontSize);
+        $m(".txt").css("font-size", userInfo.data.fontSize);
     };
 
     mn.setIconColor = function (color) {
         userInfo.data.iconColor = color;
         firebase.database().ref("users/" + userInfo.uid).update(userInfo.data);
-        $("#list i.circle").each(function (i) {
+        $m("#list i.circle").each(function (val, key, arr) {
             var bgcolor = $randomcolor({hue: color, luminosity: "dark"});
-            $(this).css("background-color", bgcolor);
+            $m(val).css("background-color", bgcolor);
         });
     };
 
@@ -804,7 +803,7 @@ define(["jquery"
     };
 
     mn.bodyScroll = function () {
-        if ($(".state").html() !== "") {// 검색결과 화면일 때
+        if ($m(".state").html() !== "") {// 검색결과 화면일 때
             return;
         }
         if (window.scrollY === 0) {// 처음 글쓰기 시작할때(스크롤이 아예 없을 때)
@@ -837,15 +836,12 @@ define(["jquery"
     };
 
     mn.viewList = function () {
-        $m.qs(".dialog").style.display = "none";
-        $m.qs("#topNavi").innerHTML = "arrow_upward";
-        $("#topNavi").removeClass("list");
-        $("#topNavi").addClass("navi");
-        $m.qs("#topBtn a").style.opacity = "0.3";
-        $("#addBtn").html("새글");
-        $("#writeBtn").removeClass("disable");
-        $("#writeBtn").show();
-        $("#list li").removeClass("selected");
+        $m(".dialog").hide();
+        $m("#topNavi").html("arrow_upward").removeClass("list").addClass("navi");
+        $m("#topBtn a").css("opacity", "0.3")
+        $m("#addBtn").html("새글");
+        $m("#writeBtn").removeClass("disable").show();
+        $m("#list li").removeClass("selected");
     };
 
 
@@ -861,7 +857,6 @@ define(["jquery"
         md.save();
         mn.viewNote(key)
     };
-
 
     mn.cancelSearch = function () {
         $m.qs(".search").style.display = "none";
