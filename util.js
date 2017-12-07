@@ -1,3 +1,4 @@
+
 Function.prototype.method = function(name, func){
     this.prototype[name] = func;
     return this;
@@ -103,7 +104,6 @@ function HashTable(obj)
         return arr;
     }
 
-
     this.each = function(fn) {
         for (var k in this.items) {
             if (this.hasItem(k)) {
@@ -112,15 +112,12 @@ function HashTable(obj)
         }
     }
 
-
     this.clear = function()
     {
         this.items = {}
         this.length = 0;
     }
 }
-
-
 
 
 define([],function(){
@@ -138,13 +135,16 @@ define([],function(){
                 this.doms = [sel];
                 this.length = 1;
             }
+            if(this.length === 1){
+                this.dom = this.doms[0];
+            }
         },
 
         html : function (html) {
             if(this.length == 0) return;
 
             if(html === undefined){
-                return this.doms[0] && this.doms[0].innerHTML;
+                return this.doms[0].innerHTML;
             }
 
             this.doms.forEach(function (dom) {
@@ -161,12 +161,34 @@ define([],function(){
                 return this.doms[0].style[name];
             }
 
+            if(typeof value === "number"){
+                var arr = ["left", "top", "right", "bottom", "width", "height"];
+                if(arr.indexOf(name) >= 0){
+                    value = value + "px";
+                }
+            }
+
             this.doms.forEach(function(dom){
                 dom.style[name] = value;
             });
 
             return this;
         },
+
+
+        position : function() {
+            if(this.length == 0) return;
+
+            var top = this.doms[0].style["top"];
+            top = Number(top.substring(0, top.length-2));
+
+            var left = this.doms[0].style["left"];
+            left = Number(left.substring(0, left.length-2));
+
+            return {"top" : top, "left" : left};
+        },
+
+
 
         attr : function(name, value) {
             if(this.length == 0) return;
@@ -254,7 +276,7 @@ define([],function(){
 
         show : function(){
             this.doms.forEach(function(dom){
-                dom.style.display = "";
+                dom.style.display = "block";
             });
             return this;
         },
@@ -267,6 +289,8 @@ define([],function(){
         },
 
         val : function(value){
+            if(this.length == 0) return;
+
             if(value === undefined){
                 return this.doms[0].value;
             }
@@ -279,6 +303,8 @@ define([],function(){
         },
 
         focus : function(){
+            if(this.length == 0) return;
+
             this.doms[0].focus();
         }
 
@@ -297,6 +323,7 @@ define([],function(){
         }
         return newNode;
     };
+/*
 
     $m.qs = function(sel) {
         return document.querySelector(sel);
@@ -305,7 +332,99 @@ define([],function(){
     $m.qsa = function(sel){
         return document.querySelectorAll(sel);
     };
+*/
+
+
+    // 유틸
+    $m.scrollTo = function(x, y){
+        window.scrollTo(x,y);
+    };
+
+
+
+    // 함수형 프로그래밍 라이브러리
+    $m._curry = function(fn){
+        return function(a,b){
+            return arguments.length === 2 ? fn(a,b) : b => fn(a,b);
+        }
+    };
+
+    $m._curryr = function(fn){
+        return function(a,b){
+            return arguments.length === 2 ? fn(a,b) : b => fn(b,a);
+        }
+    };
+
+    $m._each = $m._curryr(function(list, fn) {
+        if(typeof list !==  "object" || !list){
+            return [];
+        }
+        var keys = Object.keys(list);
+        for(var i=0; i<keys.length; i++){
+            fn(list[keys[i]], keys[i], list);
+        }
+        return list;
+    });
+
+    $m._map = $m._curryr(function(list, mapper){
+        var res = [];
+        $m._each(list, function(val, key, list){
+            res.push(mapper(val, key, list));
+        });
+        return res;
+    });
+
+    $m._filter = $m._curryr(function(list, predi){
+        var res = [];
+        $m._each(list, function(val, key, list){
+            if(predi(val, key, list)){
+                res.push(val);
+            }
+        });
+        return res;
+    });
+
+    $m._reduce = function(list, iter, init){
+        var res = init;
+        if(init === undefined){
+            res = list && list[0];      // null 체크
+            list = list && list.slice(1);
+        }
+        $m._each(list, function(val, key, list){
+                res = iter(val, res, key, list);
+        });
+        return res;
+    };
+
+    $m._slice = function(list, begin, end){
+        if(typeof arguments[0] === "number"){
+            var begin = arguments[0];
+            var end = arguments[1];
+            return function(list){
+                return Array.prototype.slice.call(list, begin, end);
+            };
+        }else{
+            return Array.prototype.slice.call(list, begin, end);
+        }
+    };
+
+    $m._go = function () {
+        var args = arguments;
+        var fns = $m._slice(args, 1);
+        return $m._pipe(fns)(args[0]);
+    };
+
+    $m._pipe = function () {
+        var fns = Array.isArray(arguments[0]) ? arguments[0] : arguments;
+        return function(){
+            return $m._reduce(fns, function(val, res, key, list){
+                return val(res);
+            }, arguments[0]);
+        }
+    };
+
+
 
     return $m;
-
 });
+
