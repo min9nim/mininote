@@ -24,6 +24,8 @@ define(["jquery"
         , notes = new HashTable();
     ;
 
+    mn.notes = notes;
+
     // local function
     var addItem
         , autoReplace
@@ -593,6 +595,24 @@ define(["jquery"
     };
 
 
+
+    function highlight(txt, word){
+        var start = txt.indexOf(word);
+        if(start < 0) return;
+        var closeTag = txt.indexOf(">", start+1);
+        var openTag = txt.indexOf("<", start+1);
+        if(openTag < closeTag  ){
+            // 이때 하이라이트 표시
+            return txt.substring(0,start) +
+                "<span style='color:yellow'>'" + txt.substr(start, word.length) + "</span>" +
+                txt.substring(start+word.length, txt.length);
+        }else{
+            // 태그 안에서 매칭된 경우
+            return txt;
+        }
+    }
+
+
     mn.viewNote = function (key) {
         // 모바일 fixed div 에서 커서가 이상하게 동작되는 문제 회피
         if ($ismobile.any) {
@@ -610,14 +630,15 @@ define(["jquery"
         if (searchWord) {
             // 검색결과일 경우라면 매칭단어 하이라이트닝
             var reg = new RegExp(searchWord, "gi");
+
+            // txt에서 태그의 값들은 replace 되어서는 안되는데... 어떻게 처리해야 하나 이건 또...
             txt = txt.replace(reg, `<span style="background-color:yellow;">${searchWord}</span>`); // html태그 내용까지 매치되면 치환하는 문제가 있음
         }
 
         $m("#noteContent").html(txt);
         $m("#addBtn").html("저장");
         $m("#writeBtn").hide();
-        $m("#topNavi").removeClass("navi").addClass("list");
-        $m("#topNavi").html("목록");
+        $m("#topNavi").removeClass("navi").addClass("list").html("목록");
         $m("#topBtn a").css("opacity", "");
 
         // 링크 처리
@@ -648,18 +669,14 @@ define(["jquery"
 
                 // 쓰기버튼 일때
                 $m(".dialog").show();
-                $m("#noteContent").attr("key", "");
-                $m("#noteContent").html("<div class='title' placeholder='제목'>제목</div><div><br/></div><div placeholder='내용'><br/></div>");
+                $m("#noteContent").attr("key", "").html("<div class='title' placeholder='제목'>제목</div><div><br/></div><div placeholder='내용'><br/></div>");
                 $m("#noteContent .title").focus();   // 파폭에서 해당 지점으로 포커스 들어가지 않음
 
                 // 저장버튼 처리
                 $m("#addBtn").html("저장");
-                $m("#writeBtn").addClass("disable");
-                $m("#writeBtn").hide();
+                $m("#writeBtn").addClass("disable").hide();
 
-                $m("#topNavi").removeClass("navi");
-                $m("#topNavi").addClass("list");
-                $m("#topNavi").html("목록");
+                $m("#topNavi").removeClass("navi").addClass("list").html("목록");
                 $m("#topBtn a").css("opacity", "");
 
                 $m("#writeBtn").addClass("disable");
@@ -689,8 +706,7 @@ define(["jquery"
     mn.searchClick = function () {
         if (userInfo !== null && userInfo.isConnected) {
             $m(".search").css("display", "block");
-            $m("#input2").val("");
-            $m("#input2").focus();
+            $m("#input2").val("").focus();
         } else {
             alert("로그인이 필요합니다");
             //firebase.auth().signInWithRedirect(new firebase.auth.GoogleAuthProvider());
@@ -714,7 +730,8 @@ define(["jquery"
         $m("#list").html("");
 
         notes.each(function (key, val) {
-            var noTagTxt = val.txt.replace(/<([^>]+)>/gi, "");   // 태그제거
+            var noTagTxt = val.txt.replace(/<([^>]+)>/gi, "")   // 태그제거
+                                                    .replace(/&nbsp;/gi, " ");  // &nbsp; 제거
             if ((new RegExp(txt, "gi")).test(noTagTxt)) {
                 addItem(key, val);
             }
