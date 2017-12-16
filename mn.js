@@ -597,20 +597,26 @@ define(["jquery"
 
 
     function highlight(txt, word){
+        var res = txt;
         var start = txt.indexOf(word);
-        if(start < 0) return;
-        var closeTag = txt.indexOf(">", start+1);
-        var openTag = txt.indexOf("<", start+1);
-        if(openTag < closeTag  ){
-            // 이때 하이라이트 표시
-            return txt.substring(0,start) +
-                "<span style='color:yellow'>'" + txt.substr(start, word.length) + "</span>" +
-                txt.substring(start+word.length, txt.length);
-        }else{
-            // 태그 안에서 매칭된 경우
-            return txt;
+        while(start >= 0){
+            var closeTag = txt.indexOf(">", start + word.length);
+            var openTag = txt.indexOf("<", start + word.length);
+            if(closeTag == -1 || (openTag >= 0 && openTag < closeTag ) ){
+                // 이때 하이라이트 표시
+                res = txt.substring(0,start) +
+                    "<span style='color:yellow'>" + txt.substr(start, word.length) + "</span>" +
+                    txt.substring(start+word.length, txt.length);
+                txt = res;
+                start = txt.indexOf(word, start + 27 + word.length + 7);
+            }else{
+                start = txt.indexOf(word, start + word.length);
+            }
         }
+        return res;
     }
+
+    mn.highlight = highlight;
 
 
     mn.viewNote = function (key) {
@@ -627,6 +633,7 @@ define(["jquery"
         $m("#" + key).addClass("selected");
 
         var searchWord = $m(".state span").html();
+        /*
         if (searchWord) {
             // 검색결과일 경우라면 매칭단어 하이라이트닝
             var reg = new RegExp(searchWord, "gi");
@@ -634,6 +641,10 @@ define(["jquery"
             // txt에서 태그의 값들은 replace 되어서는 안되는데... 어떻게 처리해야 하나 이건 또...
             txt = txt.replace(reg, `<span style="background-color:yellow;">${searchWord}</span>`); // html태그 내용까지 매치되면 치환하는 문제가 있음
         }
+        */
+
+        //txt = highlight(txt, searchWord);
+
 
         $m("#noteContent").html(txt);
         $m("#addBtn").html("저장");
