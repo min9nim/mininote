@@ -566,8 +566,9 @@ define(["jquery"
         //console.log("showNoteList called..");
         mn.viewList();
 
-        $(".state").text("");
-        $("#list").text("");
+        $m(".state").html("");
+        $m("#list").html("");
+        //$m(".state span").html(""); // 검색어초기화
 
         mn.noteRef.limitToLast(visibleRowCnt).once("value").then(function (snapshot) {
             var noteObj = snapshot.val();
@@ -605,7 +606,7 @@ define(["jquery"
             if(closeTag == -1 || (openTag >= 0 && openTag < closeTag ) ){
                 // 이때 하이라이트 표시
                 res = txt.substring(0,start) +
-                    "<span style='color:yellow'>" + txt.substr(start, word.length) + "</span>" +
+                    "<span style='color:#bfc902'>" + txt.substr(start, word.length) + "</span>" +
                     txt.substring(start+word.length, txt.length);
                 txt = res;
                 start = txt.indexOf(word, start + 27 + word.length + 7);
@@ -625,33 +626,41 @@ define(["jquery"
             $m(".dialog").css("position", "absolute");
             $m(".dialog").css("top", (window.scrollY + 10 ) + "px");
         }
-        var txt = notes.getItem(key).txt;
 
         $m(".dialog").show();
         $m("#noteContent").attr("key", key);
         $m("#list li.selected").removeClass("selected");
         $m("#" + key).addClass("selected");
-
-        var searchWord = $m(".state span").html();
-        /*
-        if (searchWord) {
-            // 검색결과일 경우라면 매칭단어 하이라이트닝
-            var reg = new RegExp(searchWord, "gi");
-
-            // txt에서 태그의 값들은 replace 되어서는 안되는데... 어떻게 처리해야 하나 이건 또...
-            txt = txt.replace(reg, `<span style="background-color:yellow;">${searchWord}</span>`); // html태그 내용까지 매치되면 치환하는 문제가 있음
-        }
-        */
-
-        //txt = highlight(txt, searchWord);
-
-
-        $m("#noteContent").html(txt);
         $m("#addBtn").html("저장");
         $m("#writeBtn").hide();
         $m("#topNavi").removeClass("navi").addClass("list").html("목록");
         $m("#topBtn a").css("opacity", "");
 
+
+        var originTxt = notes.getItem(key).txt;
+        var searchWord = $m(".state span").html();
+        var txt = highlight(originTxt, searchWord);
+        $m("#noteContent").html(txt);
+        link_chk();
+
+        if(searchWord !== undefined){
+            // 보기/편집 모드에 따른 검색어 하이라이트 표시 처리
+            $m("#noteContent").dom.onfocus = function(){
+                // 편집모드로 들어갈 땐 하이라이트 표시 제거
+                $m("#noteContent").html(originTxt);
+                link_chk();
+                console.log("onfocus");
+            };
+            $m("#noteContent").dom.onblur = function(){
+                // onblur 처리는 생략하겠음.. 데이터 꼬이는 현상이 발생할 수 있음...
+                //$m("#noteContent").html(txt);
+                //link_chk();
+                //console.log("onblur");
+            };
+        }
+    };
+
+    function link_chk(){
         // 링크 처리
         $m("#noteContent a").each(function (a) {
             a.onmouseleave = function (e) {
@@ -666,7 +675,7 @@ define(["jquery"
         $m("#noteContent input.chk").each(function (chk) {
             chk.onclick = chkClick;
         });
-    };
+    }
 
 
     mn.writeNote = function () {
@@ -742,7 +751,7 @@ define(["jquery"
 
         notes.each(function (key, val) {
             var noTagTxt = val.txt.replace(/<([^>]+)>/gi, "")   // 태그제거
-                                                    .replace(/&nbsp;/gi, " ");  // &nbsp; 제거
+                .replace(/&nbsp;/gi, " ");  // &nbsp; 제거
             if ((new RegExp(txt, "gi")).test(noTagTxt)) {
                 addItem(key, val);
             }
