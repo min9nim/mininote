@@ -26,31 +26,8 @@ define(["jquery"
 
     mn.notes = notes;
 
-    // local function
-    var addItem
-        , autoReplace
-        , bodyScrollWithNoteContent
-        , chkClick
-        , conOn
-        , conOff
-        , deleteMapKey
-        , getNoteHtml
-        , initNoteList
-        , insertChkbox
-        , login
-        , onChildAdded
-        , onChildChanged
-        , onChildRemoved
-        , saveNote
-        , newManageDiff
-        , setContextBtnEvent
-        , setHeader
-        , setTouchSlider
-        , setShortcut
-    ;
 
-
-    newManageDiff = function () {
+    var newManageDiff = function () {
         var that = {},
             timer,
             color = 255,
@@ -122,7 +99,7 @@ define(["jquery"
     };
 
 
-    login = function () {
+    var login = function () {
         firebase.auth().onAuthStateChanged(function (user) {
             if (user) {// 인증완료
                 var userRef = firebase.database().ref("users/" + user.uid);
@@ -160,7 +137,7 @@ define(["jquery"
         });
     };
 
-    bodyScrollWithNoteContent = function () {
+    var bodyScrollWithNoteContent = function () {
         // 글편집 상태일 때 body 스크롤 금지
         // 윈도우에서 스크롤 깜빡임 문제 처리
         var top;
@@ -176,7 +153,7 @@ define(["jquery"
     };
 
 
-    setShortcut = function () {
+    var setShortcut = function () {
         if ($ismobile.any) {
             return;//  PC환경에서만 단축키 설정
         }
@@ -224,7 +201,7 @@ define(["jquery"
 
     };
 
-    conOn = function () {
+    var conOn = function () {
         if (userInfo !== null) {
             userInfo.isConnected = true;
         }
@@ -241,7 +218,7 @@ define(["jquery"
         $m("#noteContent").css("backgroundColor", "#ffffff");
     };
 
-    conOff = function () {
+    var conOff = function () {
         if (userInfo) {
             userInfo.isConnected = false;
         }
@@ -256,7 +233,7 @@ define(["jquery"
     };
 
 
-    chkClick = function () {
+    var chkClick = function () {
         if (event.target.checked) {
             event.target.setAttribute("checked", "");
         } else {
@@ -265,7 +242,7 @@ define(["jquery"
         md.checkDiff();
     };
 
-    deleteMapKey = function (s, e) {
+    var deleteMapKey = function (s, e) {
         // 현재 커서로 부터 앞에 s ~ e 글자 지우고
         var sel = window.getSelection();
         var range = document.createRange();
@@ -274,7 +251,7 @@ define(["jquery"
         range.deleteContents();
     };
 
-    autoReplace = function (keycode) {
+    var autoReplace = function (keycode) {
         if (keycode !== 32) {
             return;
         }
@@ -306,7 +283,7 @@ define(["jquery"
     };
 
 
-    initNoteList = function (uid) {
+    var initNoteList = function (uid) {
         //var mn.noteRef = firebase.database().ref("notes/" + uid).limitToLast(100);
         // 이벤트 등록용..
         mn.noteRef = firebase.database().ref("notes/" + uid);
@@ -316,7 +293,7 @@ define(["jquery"
         mn.showNoteList(uid);
     };
 
-    onChildAdded = function (data) {
+    var onChildAdded = function (data) {
         //console.log("## onChildAdded called " + data.key);
         //noteList.push(data);
         notes.setItem(data.key, data.val());
@@ -334,7 +311,7 @@ define(["jquery"
         }
     };
 
-    addItem = function (key, noteData, how) {
+    var addItem = function (key, noteData, how) {
         var html = getNoteHtml(key, noteData);
 
         if (how === "append") {
@@ -349,7 +326,7 @@ define(["jquery"
     };
 
 
-    getNoteHtml = function (key, noteData) {
+    var getNoteHtml = function (key, noteData) {
         var idx = noteData.txt.indexOf("<div>");
         var title, content, createDate, removeBtn = "", editBtn = "", liChild, li, html;
         var color = $randomcolor({hue: userInfo.data.iconColor, luminosity: "dark"});  // https://randomcolor.llllll.li/
@@ -385,7 +362,7 @@ define(["jquery"
     };
 
 
-    onChildChanged = function (data) {
+    var onChildChanged = function (data) {
         //console.log("## onChildChanged called..");
         var key = data.key;
         var noteData = data.val();
@@ -412,7 +389,7 @@ define(["jquery"
         //window.scrollTo("", document.getElementById(key).offsetTop + document.getElementById("list").offsetTop);
     };
 
-    onChildRemoved = function (data) {
+    var onChildRemoved = function (data) {
 //  console.log("## onChildRemoved called..");
         var key = data.key;
         $m("#" + key).remove();
@@ -421,7 +398,7 @@ define(["jquery"
         $m(".header .title").html(userInfo.data.nickname + "'s " + notes.length + " notes");
     };
 
-    saveNote = function () {
+    var saveNote = function () {
 
         if(userInfo.isConnected === false ) {
             alert("로그인이 필요합니다");
@@ -462,7 +439,7 @@ define(["jquery"
     };
 
 
-    setHeader = function () {
+    var setHeader = function () {
         if (userInfo !== null) {
             $m("#nickname").val(userInfo.data.nickname);
             $m("#fontSize").val(userInfo.data.fontSize.replace("px", ""));
@@ -473,7 +450,7 @@ define(["jquery"
     };
 
 
-    setContextBtnEvent = function (contextBtn) {
+    var setContextBtnEvent = function (contextBtn) {
         contextBtn.bind("click", function () {
             if (contextBtn.text() === "<<") {
                 contextBtn.parent().animate({left: "-100px"}, 300, function () {
@@ -491,7 +468,7 @@ define(["jquery"
         });
     };
 
-    setTouchSlider = function (row) {
+    var setTouchSlider = function (row) {
         var start_x, diff_x;
         var start_y, diff_y;
         var dom_start_x;
@@ -527,7 +504,7 @@ define(["jquery"
     };
 
 
-    insertChkbox = function () {
+    var insertChkbox = function () {
         var chk = document.createElement("input");
         chk.setAttribute("type", "checkbox");
         chk.setAttribute("class", "chk");
@@ -643,13 +620,17 @@ define(["jquery"
         $m("#noteContent").html(txt);
         link_chk();
 
+
+
         if(searchWord !== undefined){
             // 보기/편집 모드에 따른 검색어 하이라이트 표시 처리
             $m("#noteContent").dom.onfocus = function(){
-                // 편집모드로 들어갈 땐 하이라이트 표시 제거
-                $m("#noteContent").html(originTxt);
-                link_chk();
-                console.log("onfocus");
+                if($m("#input2").val() !== "") {
+                    // 편집모드로 들어갈 땐 하이라이트 표시 제거
+                    $m("#noteContent").html(originTxt);
+                    link_chk();
+                    console.log("onfocus");
+                }
             };
             $m("#noteContent").dom.onblur = function(){
                 // onblur 처리는 생략하겠음.. 데이터 꼬이는 현상이 발생할 수 있음...
@@ -658,6 +639,9 @@ define(["jquery"
                 //console.log("onblur");
             };
         }
+
+
+
     };
 
     function link_chk(){
@@ -690,7 +674,7 @@ define(["jquery"
                 // 쓰기버튼 일때
                 $m(".dialog").show();
                 $m("#noteContent").attr("key", "").html("<div class='title' placeholder='제목'>제목</div><div><br/></div><div placeholder='내용'><br/></div>");
-                $m("#noteContent .title").focus();   // 파폭에서 해당 지점으로 포커스 들어가지 않음
+                //$m("#noteContent .title").focus();   // 파폭에서 해당 지점으로 포커스 들어가지 않음
 
                 // 저장버튼 처리
                 $m("#addBtn").html("저장");
@@ -762,6 +746,9 @@ define(["jquery"
         $m(".header .state").html(`> <span style="font-style:italic;">${txt}</span> 's ${$m("#list li").length} results`);
 
         mn.viewList();
+
+        $m("#input2").val(""); // 검색어 초기화
+
     };
 
 
