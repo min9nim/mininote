@@ -625,11 +625,12 @@ define(["jquery"
         if(searchWord !== undefined){
             // 보기/편집 모드에 따른 검색어 하이라이트 표시 처리
             $m("#noteContent").dom.onfocus = function(){
+                console.log("onfocus");
                 if($m("#input2").val() !== "") {
                     // 편집모드로 들어갈 땐 하이라이트 표시 제거
                     $m("#noteContent").html(originTxt);
                     link_chk();
-                    console.log("onfocus");
+
                 }
             };
             $m("#noteContent").dom.onblur = function(){
@@ -860,6 +861,9 @@ define(["jquery"
     };
 
     mn.viewList = function () {
+        //  검색후 하이라이트 관련 처리 onfocus 이벤트 초기화
+        $m("#noteContent").dom.onfocus = null;
+
         $m(".dialog").hide();
         $m("#topNavi").html("arrow_upward").removeClass("list").addClass("navi");
         $m("#topBtn a").css("opacity", "0.3")
