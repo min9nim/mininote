@@ -1,38 +1,50 @@
-"use strict";
-
-define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "autolink"
-//, "materialize"       // 이거 없어도 렌더링에 문제가 없네?
-], function ($, $nprogress, $randomcolor, $ismobile, $m, $shortcut, $autolink // undefined
+define(["jquery"
+    , "nprogress"
+    , "randomColor"
+    , "isMobile"
+    , "util"
+    , "shortcut"
+    , "autolink"
+    //, "materialize"       // 이거 없어도 렌더링에 문제가 없네?
+], function ($
+    , $nprogress
+    , $randomcolor
+    , $ismobile
+    , $m
+    , $shortcut
+    , $autolink       // undefined
 ) {
     // export
     var mn = {};
 
     // local variable
-    var visibleRowCnt = 30,
-        userInfo,
-        md,
-        notes = new HashTable();
+    var visibleRowCnt = 30
+        , userInfo
+        , md
+        , notes = new HashTable();
     ;
 
     mn.notes = notes;
 
-    var newManageDiff = function newManageDiff() {
+
+    var newManageDiff = function () {
         var that = {},
             timer,
             color = 255,
             hasDiff = false;
 
-        function pushDiffColor() {
+        function pushDiffColor () {
             color = color > 10 ? color - 1 : 12;
-            var hex = color.toString(16);
+            var hex = (color).toString(16);
             $m("#noteContent").css("backgroundColor", "#" + hex + hex + hex);
         }
 
         function flushDiffColor() {
             color = 255;
-            var hex = color.toString(16);
+            var hex = (color).toString(16);
             $m("#noteContent").css("backgroundColor", "#" + hex + hex + hex);
         }
+
 
         that.checkDiff = function () {
             that.noteKey = $m("#noteContent").attr("key");
@@ -49,7 +61,7 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
             }
 
             if (timer) {
-                that.end(); // 수정 중인 상황에는 타이머 초기화
+                that.end();   // 수정 중인 상황에는 타이머 초기화
             }
 
             timer = setTimeout(function () {
@@ -73,7 +85,7 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
             timer = clearTimeout(timer);
         };
 
-        that.pushDiff = function () {
+        that.pushDiff = function(){
             var s = $m(".diff").html();
             $m(".diff").html(s + ".");
         };
@@ -82,13 +94,14 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
             $m(".diff").html("");
         };
 
+
         return that;
     };
 
-    var login = function login() {
+
+    var login = function () {
         firebase.auth().onAuthStateChanged(function (user) {
-            if (user) {
-                // 인증완료
+            if (user) {// 인증완료
                 var userRef = firebase.database().ref("users/" + user.uid);
                 userInfo = user;
                 $m("#writeBtn").show();
@@ -98,8 +111,7 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
                         userInfo.data = snapshot.val();
                         setHeader();
                         initNoteList(userInfo.uid);
-                    } else {
-                        // 신규 로그인 경우
+                    } else {// 신규 로그인 경우
                         userData = {
                             fontSize: "18px",
                             iconColor: "green",
@@ -125,13 +137,14 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
         });
     };
 
-    var bodyScrollWithNoteContent = function bodyScrollWithNoteContent() {
+    var bodyScrollWithNoteContent = function () {
         // 글편집 상태일 때 body 스크롤 금지
         // 윈도우에서 스크롤 깜빡임 문제 처리
         var top;
         $m("#noteContent").doms[0].onmouseenter = function (e) {
             top = document.documentElement.scrollTop;
-            $m("body").css("top", -top + "px").addClass("noscroll");
+            $m("body").css("top", -(top) + "px").addClass("noscroll");
+
         };
         $m("#noteContent").doms[0].onmouseleave = function (e) {
             $m("body").removeClass("noscroll");
@@ -139,9 +152,10 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
         };
     };
 
-    var setShortcut = function setShortcut() {
+
+    var setShortcut = function () {
         if ($ismobile.any) {
-            return; //  PC환경에서만 단축키 설정
+            return;//  PC환경에서만 단축키 설정
         }
 
         $shortcut.add("Alt+W", function () {
@@ -156,19 +170,19 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
 
         $shortcut.add("Alt+U", function () {
             document.execCommand("insertunorderedlist");
-        }, { "target": "noteContent" });
+        }, {"target": "noteContent"});
 
         $shortcut.add("Alt+T", function () {
             insertChkbox();
-        }, { "target": "noteContent" });
+        }, {"target": "noteContent"});
 
         $shortcut.add("tab", function () {
             document.execCommand("indent");
-        }, { "target": "noteContent" });
+        }, {"target": "noteContent"});
 
         $shortcut.add("Shift+tab", function () {
             document.execCommand("outdent");
-        }, { "target": "noteContent" });
+        }, {"target": "noteContent"});
 
         $shortcut.add("meta+L", function () {
             md.save();
@@ -182,10 +196,12 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
 
         $shortcut.add("meta+enter", function () {
             mn.searchNote();
-        }, { "target": "input2" });
+        }, {"target": "input2"});
+
+
     };
 
-    var conOn = function conOn() {
+    var conOn = function () {
         if (userInfo !== null) {
             userInfo.isConnected = true;
         }
@@ -202,7 +218,7 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
         $m("#noteContent").css("backgroundColor", "#ffffff");
     };
 
-    var conOff = function conOff() {
+    var conOff = function () {
         if (userInfo) {
             userInfo.isConnected = false;
         }
@@ -216,7 +232,8 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
         }, 20000);
     };
 
-    var chkClick = function chkClick() {
+
+    var chkClick = function () {
         if (event.target.checked) {
             event.target.setAttribute("checked", "");
         } else {
@@ -225,7 +242,7 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
         md.checkDiff();
     };
 
-    var deleteMapKey = function deleteMapKey(s, e) {
+    var deleteMapKey = function (s, e) {
         // 현재 커서로 부터 앞에 s ~ e 글자 지우고
         var sel = window.getSelection();
         var range = document.createRange();
@@ -234,7 +251,7 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
         range.deleteContents();
     };
 
-    var autoReplace = function autoReplace(keycode) {
+    var autoReplace = function (keycode) {
         if (keycode !== 32) {
             return;
         }
@@ -261,11 +278,12 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
         } else if (["mo", "tu", "we", "th", "fr", "sa", "su"].indexOf(keymap) >= 0) {
             deleteMapKey(3, 0);
             sel.getRangeAt(0).insertNode(document.createTextNode(keymap.toUpperCase() + " Todolist"));
-            sel.modify("move", "forward", "word"); // 모바일에서는 이게 안 먹히네..
+            sel.modify("move", "forward", "word");  // 모바일에서는 이게 안 먹히네..
         }
     };
 
-    var initNoteList = function initNoteList(uid) {
+
+    var initNoteList = function (uid) {
         //var mn.noteRef = firebase.database().ref("notes/" + uid).limitToLast(100);
         // 이벤트 등록용..
         mn.noteRef = firebase.database().ref("notes/" + uid);
@@ -275,7 +293,7 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
         mn.showNoteList(uid);
     };
 
-    var onChildAdded = function onChildAdded(data) {
+    var onChildAdded = function (data) {
         //console.log("## onChildAdded called " + data.key);
         //noteList.push(data);
         notes.setItem(data.key, data.val());
@@ -283,8 +301,7 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
         var createDate = data.val().createDate;
         var diff = curDate - createDate;
         //console.log(diff);
-        if (diff < 1000) {
-            // 방금 새로 등록한 글인 경우만
+        if (diff < 1000) {// 방금 새로 등록한 글인 경우만
             addItem(data.key, data.val());
             if ($m(".state").html() === "") {
                 $m(".header .title").html(userInfo.data.nickname + "'s " + notes.length + " notes");
@@ -294,7 +311,7 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
         }
     };
 
-    var addItem = function addItem(key, noteData, how) {
+    var addItem = function (key, noteData, how) {
         var html = getNoteHtml(key, noteData);
 
         if (how === "append") {
@@ -308,17 +325,11 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
         setTouchSlider($("#" + key));
     };
 
-    var getNoteHtml = function getNoteHtml(key, noteData) {
+
+    var getNoteHtml = function (key, noteData) {
         var idx = noteData.txt.indexOf("<div>");
-        var title,
-            content,
-            createDate,
-            removeBtn = "",
-            editBtn = "",
-            liChild,
-            li,
-            html;
-        var color = $randomcolor({ hue: userInfo.data.iconColor, luminosity: "dark" }); // https://randomcolor.llllll.li/
+        var title, content, createDate, removeBtn = "", editBtn = "", liChild, li, html;
+        var color = $randomcolor({hue: userInfo.data.iconColor, luminosity: "dark"});  // https://randomcolor.llllll.li/
 
 
         if (idx > 0) {
@@ -330,32 +341,34 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
         }
 
         content = content.replace(/<\/div><div>/gi, " "); // html새줄문자를 공백문자로 변경
-        content = content.replace(/<([^>]+)>/gi, ""); // 태그제거
+        content = content.replace(/<([^>]+)>/gi, "");   // 태그제거
         content = content.substr(0, 100); // 100자까지만 보여주기
-        createDate = new Date(noteData.createDate).toString().substr(4, 17);
+        createDate = (new Date(noteData.createDate)).toString().substr(4, 17);
 
-        if (typeof userInfo !== null) {
-            // 내가 작성한 글인 경우만 수정/삭제버튼이 표시
-            removeBtn = "<i id=\"btn_delete\" onclick='mn.removeNote(\"" + key + "\")' class=\"material-icons\">delete</i>";
-            editBtn = "<i id=\"btn_edit\" onclick='editNote(\"" + key + "\")' class=\"material-icons\">edit</i>";
+        if (typeof userInfo !== null) {// 내가 작성한 글인 경우만 수정/삭제버튼이 표시
+            removeBtn = `<i id="btn_delete" onclick='mn.removeNote("${key}")' class="material-icons">delete</i>`;
+            editBtn = `<i id="btn_edit" onclick='editNote("${key}")' class="material-icons">edit</i>`;
         }
 
-        liChild = "<i class=\"createDate\">" + createDate + "</i><i class=\"btnContext\"><<</i>\n                <div class=\"title\" >" + title + "</div>\n                <div class=\"content\" >" + content + "</div></p>" + removeBtn + editBtn;
+        liChild = `<i class="createDate">${createDate}</i><i class="btnContext"><<</i>
+                <div class="title" >${title}</div>
+                <div class="content" >${content}</div></p>${removeBtn}${editBtn}`;
 
-        li = "<li id=\"" + key + "\" class=\"collection-item avatar\" onclick=\"mn.rowClick('" + key + "')\">" + liChild + "</li>";
+        li = `<li id="${key}" class="collection-item avatar" onclick="mn.rowClick('${key}')">${liChild}</li>`;
         html = {};
         html.li = li;
         html.liChild = liChild;
         return html;
     };
 
-    var onChildChanged = function onChildChanged(data) {
+
+    var onChildChanged = function (data) {
         //console.log("## onChildChanged called..");
         var key = data.key;
         var noteData = data.val();
         var html = getNoteHtml(key, noteData);
         $m("#" + key).html(html.liChild);
-        $("#" + key).animate({ left: "0px" }, 300);
+        $("#" + key).animate({left: "0px"}, 300);
 
         // 오른쪽 끝 컨텍스트버튼 이벤트 처리
         setContextBtnEvent($("#" + key + " .btnContext"));
@@ -364,7 +377,9 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
         notes.setItem(key, noteData);
         //console.log(noteData);
 
-        if ($m(".dialog").css("display") !== "none" && noteData.userAgent !== navigator.userAgent && $m("#noteContent").attr("key") === key) {
+        if ($m(".dialog").css("display") !== "none"
+            && noteData.userAgent !== navigator.userAgent
+            && $m("#noteContent").attr("key") === key) {
             // 글보기상태이고 외부에서 변경이 발생한 경우 글내용 갱신
             console.log("외부 장비에서 변경사항 발생 ");
             mn.viewNote(key);
@@ -374,8 +389,8 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
         //window.scrollTo("", document.getElementById(key).offsetTop + document.getElementById("list").offsetTop);
     };
 
-    var onChildRemoved = function onChildRemoved(data) {
-        //  console.log("## onChildRemoved called..");
+    var onChildRemoved = function (data) {
+//  console.log("## onChildRemoved called..");
         var key = data.key;
         $m("#" + key).remove();
         //noteList.splice(noteList.indexOf(data), 1);  // noteList에서 삭제된 요소 제거
@@ -383,18 +398,18 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
         $m(".header .title").html(userInfo.data.nickname + "'s " + notes.length + " notes");
     };
 
-    var saveNote = function saveNote() {
+    var saveNote = function () {
 
-        if (userInfo.isConnected === false) {
+        if(userInfo.isConnected === false ) {
             alert("로그인이 필요합니다");
             return;
         }
 
         var key = $m("#noteContent").attr("key");
-        $m("#noteContent div[placeholder]").removeAttr("placeholder"); // 불필요태그 제거
+        $m("#noteContent div[placeholder]").removeAttr("placeholder");      // 불필요태그 제거
         var txt = $m("#noteContent").html().replace(/(<div><br><\/div>)+$/ig, ""); // 끝에 공백제거
-        txt = txt.replace(/<span style="background-color:yellow;">|<\/span>/gi, ""); // 하이라이트 스타일 제거
-        txt = txt.autoLink({ target: "_blank" }); // 링크 설정
+        txt = txt.replace(/<span style="background-color:yellow;">|<\/span>/gi, "");    // 하이라이트 스타일 제거
+        txt = txt.autoLink({target: "_blank"}); // 링크 설정
 
         if (txt.length > 30000) {
             alert("30000자 이내로 입력 가능");
@@ -405,8 +420,8 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
             return;
         }
 
-        if (key === "") {
-            // 저장
+
+        if (key === "") {// 저장
             var res = firebase.database().ref("notes/" + userInfo.uid).push({
                 txt: txt,
                 createDate: Date.now(),
@@ -414,8 +429,7 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
                 userAgent: navigator.userAgent
             });
             $m("#noteContent").attr("key", res.key);
-        } else {
-            // 수정
+        } else {// 수정
             firebase.database().ref("notes/" + userInfo.uid + "/" + key).update({
                 txt: txt,
                 updateDate: Date.now(),
@@ -424,7 +438,8 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
         }
     };
 
-    var setHeader = function setHeader() {
+
+    var setHeader = function () {
         if (userInfo !== null) {
             $m("#nickname").val(userInfo.data.nickname);
             $m("#fontSize").val(userInfo.data.fontSize.replace("px", ""));
@@ -434,24 +449,26 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
         }
     };
 
-    var setContextBtnEvent = function setContextBtnEvent(contextBtn) {
+
+    var setContextBtnEvent = function (contextBtn) {
         contextBtn.bind("click", function () {
             if (contextBtn.text() === "<<") {
-                contextBtn.parent().animate({ left: "-100px" }, 300, function () {
+                contextBtn.parent().animate({left: "-100px"}, 300, function () {
                     contextBtn.text(">>");
                 });
             } else {
-                contextBtn.parent().animate({ left: "0px" }, 300, function () {
+                contextBtn.parent().animate({left: "0px"}, 300, function () {
                     contextBtn.text("<<");
                 });
             }
 
             event.stopPropagation();
             event.preventDefault();
+
         });
     };
 
-    var setTouchSlider = function setTouchSlider(row) {
+    var setTouchSlider = function (row) {
         var start_x, diff_x;
         var start_y, diff_y;
         var dom_start_x;
@@ -459,7 +476,7 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
         function touchstart(e) {
             start_x = e.originalEvent.touches ? e.originalEvent.touches[0].pageX : e.pageX;
             start_y = e.originalEvent.touches ? e.originalEvent.touches[0].pageY : e.pageY;
-            dom_start_x = $(this).position().left; // 터치시작할 때 최초 dom요소의 x위치를 기억하고 있어야 함
+            dom_start_x = $(this).position().left;  // 터치시작할 때 최초 dom요소의 x위치를 기억하고 있어야 함
         }
 
         function touchmove(e) {
@@ -472,12 +489,12 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
 
         function touchend() {
             if (diff_x < -50) {
-                $(this).animate({ left: "-100px" }, 300);
+                $(this).animate({left: "-100px"}, 300);
             } else if (diff_x > 150) {
                 //mn.viewNote($(this).attr("id"));
-                $(this).animate({ left: "0px" }, 300);
+                $(this).animate({left: "0px"}, 300);
             } else {
-                $(this).animate({ left: "0px" }, 300);
+                $(this).animate({left: "0px"}, 300);
             }
         }
 
@@ -486,7 +503,8 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
         row.bind("touchend", touchend);
     };
 
-    var insertChkbox = function insertChkbox() {
+
+    var insertChkbox = function () {
         var chk = document.createElement("input");
         chk.setAttribute("type", "checkbox");
         chk.setAttribute("class", "chk");
@@ -504,8 +522,9 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
         sel.modify("move", "forward", "character");
     };
 
+
     mn.init = function () {
-        $nprogress.start(); // https://github.com/rstacruz/nprogress
+        $nprogress.start();  // https://github.com/rstacruz/nprogress
         md = newManageDiff();
         setShortcut();
         login();
@@ -539,6 +558,7 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
         });
     };
 
+
     mn.removeNote = function (key) {
         if (userInfo !== null && userInfo.isConnected) {
             if (confirm("삭제하시겠습니까?")) {
@@ -552,18 +572,22 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
         event.stopPropagation();
     };
 
-    function highlight(txt, word) {
+
+
+    function highlight(txt, word){
         var res = txt;
         var start = txt.indexOf(word);
-        while (start >= 0) {
+        while(start >= 0){
             var closeTag = txt.indexOf(">", start + word.length);
             var openTag = txt.indexOf("<", start + word.length);
-            if (closeTag == -1 || openTag >= 0 && openTag < closeTag) {
+            if(closeTag == -1 || (openTag >= 0 && openTag < closeTag ) ){
                 // 이때 하이라이트 표시
-                res = txt.substring(0, start) + "<span style='color:#bfc902'>" + txt.substr(start, word.length) + "</span>" + txt.substring(start + word.length, txt.length);
+                res = txt.substring(0,start) +
+                    "<span style='color:#bfc902'>" + txt.substr(start, word.length) + "</span>" +
+                    txt.substring(start+word.length, txt.length);
                 txt = res;
                 start = txt.indexOf(word, start + 27 + word.length + 7);
-            } else {
+            }else{
                 start = txt.indexOf(word, start + word.length);
             }
         }
@@ -572,11 +596,12 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
 
     mn.highlight = highlight;
 
+
     mn.viewNote = function (key) {
         // 모바일 fixed div 에서 커서가 이상하게 동작되는 문제 회피
         if ($ismobile.any) {
             $m(".dialog").css("position", "absolute");
-            $m(".dialog").css("top", window.scrollY + 10 + "px");
+            $m(".dialog").css("top", (window.scrollY + 10 ) + "px");
         }
 
         $m(".dialog").show();
@@ -588,32 +613,39 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
         $m("#topNavi").removeClass("navi").addClass("list").html("목록");
         $m("#topBtn a").css("opacity", "");
 
+
         var originTxt = notes.getItem(key).txt;
         var searchWord = $m(".state span").html();
         var txt = highlight(originTxt, searchWord);
         $m("#noteContent").html(txt);
         link_chk();
 
-        if (searchWord !== undefined) {
+
+
+        if(searchWord !== undefined){
             // 보기/편집 모드에 따른 검색어 하이라이트 표시 처리
-            $m("#noteContent").dom.onfocus = function () {
+            $m("#noteContent").dom.onfocus = function(){
                 console.log("onfocus");
-                if ($m("#input2").val() !== "") {
+                if($m("#input2").val() !== "") {
                     // 편집모드로 들어갈 땐 하이라이트 표시 제거
                     $m("#noteContent").html(originTxt);
                     link_chk();
+
                 }
             };
-            $m("#noteContent").dom.onblur = function () {
+            $m("#noteContent").dom.onblur = function(){
                 // onblur 처리는 생략하겠음.. 데이터 꼬이는 현상이 발생할 수 있음...
                 //$m("#noteContent").html(txt);
                 //link_chk();
                 //console.log("onblur");
             };
         }
+
+
+
     };
 
-    function link_chk() {
+    function link_chk(){
         // 링크 처리
         $m("#noteContent a").each(function (a) {
             a.onmouseleave = function (e) {
@@ -630,13 +662,14 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
         });
     }
 
+
     mn.writeNote = function () {
         if (userInfo !== null && userInfo.isConnected) {
             if ($m("#addBtn").html() === "새글") {
 
                 if ($ismobile.any) {
                     $m(".dialog").css("position", "absolute");
-                    $m(".dialog").css("top", window.scrollY + 10 + "px");
+                    $m(".dialog").css("top", (window.scrollY + 10 ) + "px");
                 }
 
                 // 쓰기버튼 일때
@@ -660,17 +693,20 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
                 var range = document.createRange();
                 range.selectNode(title.firstChild); // firstChild 로 세팅하지 않으면 파폭에서는 div 태그까지 통째로 선택영역으로 잡힌다
                 s.addRange(range);
+
             } else if ($m("#addBtn").html() === "로긴") {
                 alert("로그인이 필요합니다");
             } else {
                 console.log("기타 경우..");
             }
+
         } else {
             if (confirm("로그인이 필요합니다")) {
                 firebase.auth().signInWithRedirect(new firebase.auth.GoogleAuthProvider());
             }
         }
     };
+
 
     mn.searchClick = function () {
         if (userInfo !== null && userInfo.isConnected) {
@@ -681,6 +717,7 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
             //firebase.auth().signInWithRedirect(new firebase.auth.GoogleAuthProvider());
         }
     };
+
 
     mn.searchNote = function () {
         var txt = $m("#input2").val().trim();
@@ -698,20 +735,23 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
         $m("#list").html("");
 
         notes.each(function (key, val) {
-            var noTagTxt = val.txt.replace(/<([^>]+)>/gi, "") // 태그제거
-            .replace(/&nbsp;/gi, " "); // &nbsp; 제거
-            if (new RegExp(txt, "gi").test(noTagTxt)) {
+            var noTagTxt = val.txt.replace(/<([^>]+)>/gi, "")   // 태그제거
+                .replace(/&nbsp;/gi, " ");  // &nbsp; 제거
+            if ((new RegExp(txt, "gi")).test(noTagTxt)) {
                 addItem(key, val);
             }
         });
 
+
         $m(".header .title").html(notes.length + " notes");
-        $m(".header .state").html("> <span style=\"font-style:italic;\">" + txt + "</span> 's " + $m("#list li").length + " results");
+        $m(".header .state").html(`> <span style="font-style:italic;">${txt}</span> 's ${$m("#list li").length} results`);
 
         mn.viewList();
 
         $m("#input2").val(""); // 검색어 초기화
+
     };
+
 
     mn.keyupCheck = function (event) {
         var keycode = event.which || event.keyCode;
@@ -742,13 +782,15 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
         }
     };
 
+
     mn.menuClick = function () {
         if ($m(".menu").css("left") === "0px") {
-            $(".menu").animate({ left: "-220px" }, 300);
+            $(".menu").animate({left: "-220px"}, 300);
         } else {
-            $(".menu").animate({ left: "0px" }, 300);
+            $(".menu").animate({left: "0px"}, 300);
         }
     };
+
 
     mn.signout = function () {
         firebase.auth().signOut().then(function () {
@@ -758,11 +800,13 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
         });
     };
 
+
     mn.setNickname = function (nickname) {
         userInfo.data.nickname = nickname;
         firebase.database().ref("users/" + userInfo.uid).update(userInfo.data);
         $m(".header .title").html(userInfo.data.nickname + "'s " + notes.length + " notes");
     };
+
 
     mn.setFontSize = function (size) {
         userInfo.data.fontSize = size + "px";
@@ -774,30 +818,29 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
         userInfo.data.iconColor = color;
         firebase.database().ref("users/" + userInfo.uid).update(userInfo.data);
         $m("#list i.circle").each(function (val, key, arr) {
-            var bgcolor = $randomcolor({ hue: color, luminosity: "dark" });
+            var bgcolor = $randomcolor({hue: color, luminosity: "dark"});
             $m(val).css("background-color", bgcolor);
         });
     };
 
     mn.listClick = function () {
-        $(".menu").animate({ left: "-220px" }, 300);
+        $(".menu").animate({left: "-220px"}, 300);
     };
 
     mn.bodyScroll = function () {
-        if ($m(".state").html() !== "") {
-            // 검색결과 화면일 때
+        if ($m(".state").html() !== "") {// 검색결과 화면일 때
             return;
         }
-        if (window.scrollY === 0) {
-            // 처음 글쓰기 시작할때(스크롤이 아예 없을 때)
+        if (window.scrollY === 0) {// 처음 글쓰기 시작할때(스크롤이 아예 없을 때)
             return;
         }
+
 
         if (window.scrollY === $(document).height() - $(window).height()) {
             $nprogress.start();
             $m("#nprogress .spinner").css("top", "95%");
             var end = notes.length - $m("#list li").length;
-            var start = end - visibleRowCnt < 0 ? 0 : end - visibleRowCnt;
+            var start = (end - visibleRowCnt) < 0 ? 0 : (end - visibleRowCnt);
             var nextList = notes.getArray().slice(start, end).reverse();
 
             nextList.forEach(function (x) {
@@ -823,11 +866,12 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
 
         $m(".dialog").hide();
         $m("#topNavi").html("arrow_upward").removeClass("list").addClass("navi");
-        $m("#topBtn a").css("opacity", "0.3");
+        $m("#topBtn a").css("opacity", "0.3")
         $m("#addBtn").html("새글");
         $m("#writeBtn").removeClass("disable").show();
         $m("#list li").removeClass("selected");
     };
+
 
     mn.titleClick = function () {
         if (userInfo) {
@@ -839,7 +883,7 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
 
     mn.rowClick = function (key) {
         md.save();
-        mn.viewNote(key);
+        mn.viewNote(key)
     };
 
     mn.cancelSearch = function () {
@@ -848,3 +892,4 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
 
     return mn;
 });
+
