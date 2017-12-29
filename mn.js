@@ -590,9 +590,14 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
 
         var originTxt = notes.getItem(key).txt;
         var searchWord = $m(".state span").html();
-        var txt = highlight(originTxt, searchWord);
+
+        //var txt = highlight(originTxt, searchWord);
+        var txt = originTxt;
+
         $m("#noteContent").html(txt);
         link_chk();
+
+        return;
 
         if (searchWord !== undefined) {
             // 보기/편집 모드에 따른 검색어 하이라이트 표시 처리

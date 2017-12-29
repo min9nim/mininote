@@ -616,11 +616,14 @@ define(["jquery"
 
         var originTxt = notes.getItem(key).txt;
         var searchWord = $m(".state span").html();
-        var txt = highlight(originTxt, searchWord);
+
+        //var txt = highlight(originTxt, searchWord);
+        var txt = originTxt;
+
         $m("#noteContent").html(txt);
         link_chk();
 
-
+        return;
 
         if(searchWord !== undefined){
             // 보기/편집 모드에 따른 검색어 하이라이트 표시 처리
@@ -630,7 +633,6 @@ define(["jquery"
                     // 편집모드로 들어갈 땐 하이라이트 표시 제거
                     $m("#noteContent").html(originTxt);
                     link_chk();
-
                 }
             };
             $m("#noteContent").dom.onblur = function(){
@@ -640,9 +642,6 @@ define(["jquery"
                 //console.log("onblur");
             };
         }
-
-
-
     };
 
     function link_chk(){
