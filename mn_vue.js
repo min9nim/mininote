@@ -47,13 +47,16 @@ define(["jquery"
 
 
         that.checkDiff = function () {
-            that.noteKey = $m("#noteContent").attr("key");
+            //that.noteKey = $m("#noteContent").attr("key");
+            that.noteKey = app.note.key;
             if (!that.noteKey) {
                 // 신규인 경우
                 hasDiff = true;
             } else {
                 hasDiff = notes.getItem(that.noteKey).txt !== $m("#noteContent").html();
             }
+
+            console.log(hasDiff);
 
             // 변경사항 있을 경우 변경사항 표시..
             if (hasDiff) {
@@ -160,7 +163,8 @@ define(["jquery"
         }
 
         $shortcut.add("Alt+W", function () {
-            if ($m(".dialog").css("display") === "none") {
+            //if ($m(".dialog").css("display") === "none") {
+            if (app.topNavi === "arrow_upward") {
                 mn.writeNote();
             }
         });
@@ -169,6 +173,8 @@ define(["jquery"
             mn.searchClick();
         });
 
+
+/*
         $shortcut.add("Alt+U", function () {
             document.execCommand("insertunorderedlist");
         }, {"target": "noteContent"});
@@ -184,6 +190,8 @@ define(["jquery"
         $shortcut.add("Shift+tab", function () {
             document.execCommand("outdent");
         }, {"target": "noteContent"});
+
+*/
 
         $shortcut.add("meta+L", function () {
             md.save();
@@ -207,9 +215,10 @@ define(["jquery"
             userInfo.isConnected = true;
         }
 
-        if ($m(".dialog").css("display") === "none") {
-            $m("#writeBtn").show();
-            $m("#addBtn").html("새글");
+        if (app.topNavi === "arrow_upward") {
+            //$m("#writeBtn").show();
+            //$m("#addBtn").html("새글");
+            app.addBtn = "새글";
         }
 
         $m("#list li").each(function (val) {
@@ -313,12 +322,43 @@ define(["jquery"
     };
 
     var addItem = function (key, noteData, how) {
-        var html = getNoteHtml(key, noteData);
+        //var html = getNoteHtml(key, noteData);
+
+        var idx = noteData.txt.indexOf("<div>");
+        var title, content, createDate, removeBtn = "", editBtn = "", liChild, li, html;
+        var color = $randomcolor({hue: userInfo.data.iconColor, luminosity: "dark"});  // https://randomcolor.llllll.li/
+
+
+        if (idx > 0) {
+            title = noteData.txt.substr(0, idx);
+            content = noteData.txt.substr(idx);
+        } else {
+            title = noteData.txt;
+            content = "";
+        }
+
+        content = content.replace(/<\/div><div>/gi, " "); // html새줄문자를 공백문자로 변경
+        content = content.replace(/<([^>]+)>/gi, "");   // 태그제거
+        content = content.substr(0, 100); // 100자까지만 보여주기
+        createDate = (new Date(noteData.createDate)).toString().substr(4, 17);
+
+
+        var todo = {
+            key : key,
+            createDate : createDate,
+            title : title,
+            content : content
+        };
+
+        //console.log(createDate);
+
 
         if (how === "append") {
-            $m("#list").append(html.li);
+            //$m("#list").append(html.li);
+            app.todos.push(todo);
         } else {
-            $m("#list").prepend(html.li);
+            //$m("#list").prepend(html.li);
+            app.todos.splice(0,0,todo);
         }
 
         // 오른쪽 끝 컨텍스트버튼 이벤트 처리
@@ -345,6 +385,16 @@ define(["jquery"
         content = content.replace(/<([^>]+)>/gi, "");   // 태그제거
         content = content.substr(0, 100); // 100자까지만 보여주기
         createDate = (new Date(noteData.createDate)).toString().substr(4, 17);
+
+
+        var todo = {
+            key : key,
+            createDate : createDate,
+            title : title,
+            content : content
+        };
+        app.todos.push(todo);
+
 
         if (typeof userInfo !== null) {// 내가 작성한 글인 경우만 수정/삭제버튼이 표시
             removeBtn = `<i id="btn_delete" onclick='mn.removeNote("${key}")' class="material-icons">delete</i>`;
@@ -378,9 +428,11 @@ define(["jquery"
         notes.setItem(key, noteData);
         //console.log(noteData);
 
-        if ($m(".dialog").css("display") !== "none"
+        //if ($m(".dialog").css("display") !== "none"
+        if (app.topNavi === "목록"
             && noteData.userAgent !== navigator.userAgent
-            && $m("#noteContent").attr("key") === key) {
+            //&& $m("#noteContent").attr("key") === key) {
+            && app.note.key === key) {
             // 글보기상태이고 외부에서 변경이 발생한 경우 글내용 갱신
             console.log("외부 장비에서 변경사항 발생 ");
             mn.viewNote(key);
@@ -529,7 +581,7 @@ define(["jquery"
         md = newManageDiff();
         setShortcut();
         login();
-        bodyScrollWithNoteContent();
+        //bodyScrollWithNoteContent();
 
         firebase.database().ref(".info/connected").on("value", function (snap) {
             if (snap.val() === true) {
@@ -550,9 +602,12 @@ define(["jquery"
 
         mn.noteRef.limitToLast(visibleRowCnt).once("value").then(function (snapshot) {
             var noteObj = snapshot.val();
+            mn.data = noteObj;
+
             for (var key in noteObj) {
                 addItem(key, noteObj[key]);
             }
+
 
             $m(".header .title").html(userInfo.data.nickname + "'s " + notes.length + " notes");
             $nprogress.done();
@@ -605,13 +660,18 @@ define(["jquery"
             $m(".dialog").css("top", (window.scrollY + 10 ) + "px");
         }
 
-        $m(".dialog").show();
-        $m("#noteContent").attr("key", key);
+        app.topNavi = "목록";
+
+        //$m(".dialog").show();
+        //$m("#noteContent").attr("key", key);
+        app.note.key = key;
         $m("#list li.selected").removeClass("selected");
         $m("#" + key).addClass("selected");
-        $m("#addBtn").html("저장");
-        $m("#writeBtn").hide();
-        $m("#topNavi").removeClass("navi").addClass("list").html("목록");
+        //$m("#addBtn").html("저장");
+        app.addBtn = "저장";
+        //$m("#writeBtn").hide();
+        $m("#topNavi").removeClass("navi").addClass("list");
+
         $m("#topBtn a").css("opacity", "");
 
 
@@ -621,7 +681,8 @@ define(["jquery"
         //var txt = highlight(originTxt, searchWord);
         var txt = originTxt;
 
-        $m("#noteContent").html(txt);
+        //$m("#noteContent").html(txt);
+        app.note.txt = txt;
         link_chk();
 
         return;
@@ -629,10 +690,10 @@ define(["jquery"
         if(searchWord !== undefined){
             // 보기/편집 모드에 따른 검색어 하이라이트 표시 처리
             $m("#noteContent").dom.onfocus = function(){
-                console.log("onfocus");
                 if($m("#input2").val() !== "") {
                     // 편집모드로 들어갈 땐 하이라이트 표시 제거
-                    $m("#noteContent").html(originTxt);
+                    //$m("#noteContent").html(originTxt);
+                    app.note.txt = originTxt;
                     link_chk();
                 }
             };
@@ -665,35 +726,39 @@ define(["jquery"
 
     mn.writeNote = function () {
         if (userInfo !== null && userInfo.isConnected) {
-            if ($m("#addBtn").html() === "새글") {
-
+            if (app.addBtn === "새글") {
                 if ($ismobile.any) {
                     $m(".dialog").css("position", "absolute");
                     $m(".dialog").css("top", (window.scrollY + 10 ) + "px");
                 }
-
                 // 쓰기버튼 일때
-                $m(".dialog").show();
-                $m("#noteContent").attr("key", "").html("<div class='title' placeholder='제목'>제목</div><div><br/></div><div placeholder='내용'><br/></div>");
+
+                //$m(".dialog").show();
+                app.addBtn = "저장";
+                app.topNavi = "목록";
+                app.note.key = "";
+                app.note.txt = "<div class='title' placeholder='제목'>제목</div><div><br/></div><div placeholder='내용'><br/></div>";
+                //$m("#noteContent").attr("key", "").html("<div class='title' placeholder='제목'>제목</div><div><br/></div><div placeholder='내용'><br/></div>");
                 //$m("#noteContent .title").focus();   // 파폭에서 해당 지점으로 포커스 들어가지 않음
 
                 // 저장버튼 처리
-                $m("#addBtn").html("저장");
-                $m("#writeBtn").addClass("disable").hide();
+                //$m("#addBtn").html("저장");
+                //$m("#writeBtn").addClass("disable");
 
-                $m("#topNavi").removeClass("navi").addClass("list").html("목록");
+                $m("#topNavi").removeClass("navi").addClass("list");
                 $m("#topBtn a").css("opacity", "");
 
-
                 // 포커스 처리
-                var title = $m("#noteContent .title").dom;
-                var s = window.getSelection();
-                s.removeAllRanges();
-                var range = document.createRange();
-                range.selectNode(title.firstChild); // firstChild 로 세팅하지 않으면 파폭에서는 div 태그까지 통째로 선택영역으로 잡힌다
-                s.addRange(range);
+                setTimeout(function(){
+                    var title = $m("#noteContent .title").dom;
+                    var s = window.getSelection();
+                    s.removeAllRanges();
+                    var range = document.createRange();
+                    range.selectNode(title.firstChild); // firstChild 로 세팅하지 않으면 파폭에서는 div 태그까지 통째로 선택영역으로 잡힌다
+                    s.addRange(range);
+                },500);
 
-            } else if ($m("#addBtn").html() === "로긴") {
+            } else if (app.addBtn === "로긴") {
                 alert("로그인이 필요합니다");
             } else {
                 console.log("기타 경우..");
@@ -827,6 +892,10 @@ define(["jquery"
     };
 
     mn.bodyScroll = function () {
+
+        return;
+
+
         if ($m(".state").html() !== "") {// 검색결과 화면일 때
             return;
         }
@@ -861,13 +930,15 @@ define(["jquery"
 
     mn.viewList = function () {
         //  검색후 하이라이트 관련 처리 onfocus 이벤트 초기화
-        $m("#noteContent").dom.onfocus = null;
+        //$m("#noteContent").dom.onfocus = null;
 
-        $m(".dialog").hide();
-        $m("#topNavi").html("arrow_upward").removeClass("list").addClass("navi");
+        //$m(".dialog").hide();
+        app.topNavi = "arrow_upward";
+        $m("#topNavi").removeClass("list").addClass("navi");
         $m("#topBtn a").css("opacity", "0.3")
-        $m("#addBtn").html("새글");
-        $m("#writeBtn").removeClass("disable").show();
+        //$m("#addBtn").html("새글");
+        app.addBtn = "새글";
+        $m("#writeBtn").removeClass("disable")
         $m("#list li").removeClass("selected");
     };
 
