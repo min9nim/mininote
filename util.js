@@ -225,10 +225,10 @@ define([],function(){
             $m._each(this.doms, function(dom){
                 var cls = dom.getAttribute("class");
                 if(cls === null){
-                    return this;
+                    cls = name;
+                }else{
+                    cls = cls + " " + name;
                 }
-                //cls = cls.split(" ").push(name).join(" ");
-                cls = cls + " " + name;
                 dom.setAttribute("class", cls);
             });
 
