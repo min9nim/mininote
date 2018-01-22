@@ -108,7 +108,7 @@ define(["jquery"
             if (user) {// 인증완료
                 var userRef = firebase.database().ref("users/" + user.uid);
                 userInfo = user;
-                $m("#writeBtn").show();
+                //$m("#writeBtn").show();
                 userRef.once("value").then(function (snapshot) {
                     var userData;
                     if (snapshot.val() !== null) {
@@ -140,38 +140,6 @@ define(["jquery"
             }
         });
     };
-
-    var bodyScrollWithNoteContent = function () {
-        // 글편집 상태일 때 body 스크롤 금지
-        // 윈도우에서 스크롤 깜빡임 문제 처리
-        var top;
-        /*
-        $m("#noteContent").doms[0].onmouseenter = function (e) {
-            top = document.documentElement.scrollTop;
-            $m("body").css("top", -(top) + "px").addClass("noscroll");
-
-        };
-        $m("#noteContent").doms[0].onmouseleave = function (e) {
-            $m("body").removeClass("noscroll");
-            $(document).scrollTop(top);
-        };
-        */
-
-        mn.noscroll = function(e){
-            top = document.documentElement.scrollTop;
-            $m("body").css("top", -(top) + "px").addClass("noscroll");
-
-        };
-
-        mn.usescroll = function(e){
-            $m("body").removeClass("noscroll");
-            $(document).scrollTop(top);
-
-        };
-    };
-
-
-
 
     var setShortcut = function () {
         if ($ismobile.any) {
@@ -337,34 +305,35 @@ define(["jquery"
         }
     };
 
-    var addItem = function (key, noteData, how) {
 
-        var idx = noteData.txt.indexOf("<div>");
-        var title, content, createDate, removeBtn = "", editBtn = "", liChild, li, html;
-        var color = $randomcolor({hue: userInfo.data.iconColor, luminosity: "dark"});  // https://randomcolor.llllll.li/
-
+    function getTitle(txt){
+        var title, content;
+        var idx = txt.indexOf("<div>");
 
         if (idx > 0) {
-            title = noteData.txt.substr(0, idx);
-            content = noteData.txt.substr(idx);
+            title = txt.substr(0, idx);
+            content = txt.substr(idx);
         } else {
-            title = noteData.txt;
+            title = txt;
             content = "";
         }
 
         content = content.replace(/<\/div><div>/gi, " "); // html새줄문자를 공백문자로 변경
         content = content.replace(/<([^>]+)>/gi, "");   // 태그제거
         content = content.substr(0, 100); // 100자까지만 보여주기
-        createDate = (new Date(noteData.createDate)).toString().substr(4, 17);
 
+        return {title: title, content: content};
+    }
+
+    var addItem = function (key, noteData, how) {
+        var tmp = getTitle(noteData.txt);
 
         var todo = {
             key : key,
-            createDate : createDate,
-            title : title,
-            content : content
+            createDate : (new Date(noteData.createDate)).toString().substr(4, 17),
+            title : tmp.title,
+            content : tmp.content
         };
-
 
         if (how === "append") {
             //$m("#list").append(html.li);
@@ -376,18 +345,17 @@ define(["jquery"
         }
 
         // 오른쪽 끝 컨텍스트버튼 이벤트 처리
-        setContextBtnEvent($("#" + key + " .btnContext"));
         setTouchSlider($("#" + key));
     };
 
     var onChildChanged = function (data) {
-        //console.log("## onChildChanged called..");
         var key = data.key;
         var noteData = data.val();
+        var tmp = getTitle(noteData.txt);
 
         var index = app.todos.findIndex(function(el){return el.key === key;});
-        var idx = noteData.txt.indexOf("<div>");
-        app.todos[index].title = noteData.txt.substr(0, idx);
+        app.todos[index].title = tmp.title;
+        app.todos[index].content = tmp.content;
 
         $("#" + key).animate({left: "0px"}, 300);
 
@@ -415,7 +383,11 @@ define(["jquery"
     var onChildRemoved = function (data) {
 //  console.log("## onChildRemoved called..");
         var key = data.key;
-        $m("#" + key).remove();
+        //$m("#" + key).remove();
+
+        var idx = app.todos.findIndex(function(el){return el.key === key;});
+        app.todos.splice(idx,1);
+
         //noteList.splice(noteList.indexOf(data), 1);  // noteList에서 삭제된 요소 제거
         notes.removeItem(key);
         $m(".header .title").html(userInfo.data.nickname + "'s " + notes.length + " notes");
@@ -455,7 +427,8 @@ define(["jquery"
                 updateDate: Date.now(),
                 userAgent: navigator.userAgent
             });
-            $m("#noteContent").attr("key", res.key);
+            //$m("#noteContent").attr("key", res.key);
+            app.note.key = res.key;
         } else {// 수정
             firebase.database().ref("notes/" + userInfo.uid + "/" + key).update({
                 txt: txt,
@@ -476,24 +449,6 @@ define(["jquery"
         }
     };
 
-
-    var setContextBtnEvent = function (contextBtn) {
-        contextBtn.bind("click", function () {
-            if (contextBtn.text() === "<<") {
-                contextBtn.parent().animate({left: "-100px"}, 300, function () {
-                    contextBtn.text(">>");
-                });
-            } else {
-                contextBtn.parent().animate({left: "0px"}, 300, function () {
-                    contextBtn.text("<<");
-                });
-            }
-
-            event.stopPropagation();
-            event.preventDefault();
-
-        });
-    };
 
     var setTouchSlider = function (row) {
         var start_x, diff_x;
@@ -555,7 +510,7 @@ define(["jquery"
         md = newManageDiff();
         setShortcut();
         login();
-        bodyScrollWithNoteContent();
+
 
         firebase.database().ref(".info/connected").on("value", function (snap) {
             if (snap.val() === true) {
@@ -597,9 +552,6 @@ define(["jquery"
         } else {
             alert("로그인이 필요합니다");
         }
-
-        event.preventDefault();
-        event.stopPropagation();
     };
 
 

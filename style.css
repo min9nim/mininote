@@ -21,7 +21,6 @@
     position: fixed;
     width: calc(100% - 98px);
     height: calc(100% - 20px);
-    display: none;
     font-size: 12px;
     background-color: #fff;
     border: 2px solid #bbb;
@@ -31,7 +30,6 @@
     overflow: auto;
 }
 
-}
 
 #dragbar {
     width: 3px;
@@ -370,4 +368,8 @@ body {
     right: 10px;
     position: fixed;
     z-index: 999;
+}
+
+[v-cloak] {
+  display: none;
 }

@@ -24,7 +24,7 @@ requirejs.config({
     }
 });
 
-require(["mn"], function(mn) {
+require(["mn", "util"], function(mn, $m) {
     window.mn = mn;
 
     window.app = new Vue({
@@ -37,12 +37,42 @@ require(["mn"], function(mn) {
                 key : "",
                 txt : "",
             },
-            mn : mn
+            mn : mn,
+            top : "",       // noteContent 의 스크롤 위치
         },
         methods: {
+            me : function(){
+                this.top = document.documentElement.scrollTop;
+                $m("body").css("top", -(this.top) + "px").addClass("noscroll");
+            },
+            ml : function(){
+                $m("body").removeClass("noscroll");
+                $(document).scrollTop(this.top);
+            },
+            contextClick : function(event){
+                var contextBtn = $(event.target);
+                if (contextBtn.text() === "<<") {
+                    contextBtn.parent().animate({left: "-100px"}, 300, function () {
+                        contextBtn.text(">>");
+                    });
+                } else {
+                    contextBtn.parent().animate({left: "0px"}, 300, function () {
+                        contextBtn.text("<<");
+                    });
+                }
+            },
+            removeNote : function(){
+                alert(1);
+            }
+        },
+        computed : {
+            dialogVisible : function(){
+                return this.topNavi === '목록';
+            }
+        },
+        watch: {
 
         }
-
     });
 
     //window.onload = mn.init;      // 모바일 사파리에서 실행시점이 안 맞을 때가 있는 거 같음..

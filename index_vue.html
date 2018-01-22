@@ -12,7 +12,7 @@
         <link rel="stylesheet" href="style.css" />
         <title>miniNote project :)</title>
         <script type="text/javascript" src='ext/firebase.js'></script>
-        <script src="https://unpkg.com/vue/dist/vue.js"></script>
+        <script type="text/javascript" src='ext/vue.js'></script>
         <script type="text/javascript" data-main="app_vue" src="ext/require.js"></script>
     </head>
 
@@ -49,26 +49,27 @@
             <div>
                 <ul id="list" class="collection" @click="mn.listClick" @touchstart="mn.listClick">
                     <li v-for="todo in todos" :id="todo.key" class="collection-item avatar" @click="mn.rowClick(todo.key)">
-                        <i class="createDate" v-html="todo.createDate"></i><i class="btnContext"><<</i>
-                        <div class="title">
-                            <div class="title" v-html="todo.title"></div>
-                        </div>
-                        <div class="content" v-html="todo.content"></div> <i id="btn_delete" @onclick='mn.removeNote(todo.key)' class="material-icons">delete</i> </li>
+                        <i class="createDate" v-html="todo.createDate"></i><i class="btnContext" @click.stop.prevent="contextClick"><<</i>
+                        <div v-html="todo.title"></div>
+                        <div class="content" v-html="todo.content"></div> <i id="btn_delete" @click.stop.prevent='mn.removeNote(todo.key)' class="material-icons">delete</i>
+                    </li>
                 </ul>
             </div>
             <div class="diff"></div>
             <div id="topBtn" class="fixed-action-btn" style="bottom: 110px; right: 24px;">
-                <a class="btn-floating btn-large waves-effect waves-light" style="opacity: 0.3" onclick="mn.topNavi();">
+                <a class="btn-floating btn-large waves-effect waves-light" style="opacity: 0.3" @click="mn.topNavi">
                     <i id="topNavi" class="navi material-icons">{{topNavi}}</i>
                 </a>
             </div>
-            <div id="writeBtn" class="fixed-action-btn" v-if="addBtn !== '저장'"><a class="btn-floating btn-large waves-effect waves-light" @click="mn.writeNote">
-                <i id="addBtn" class="material-icons">{{addBtn}}</i></a></div>
-            <div class="dialog" v-if="topNavi === '목록'">
+
+            <div v-if="dialogVisible" class="dialog" v-cloak>
                 <div id="div_write">
-                    <div id="noteContent" :key="note.key" class="noteContent" contenteditable="true" @keyup="mn.keyupCheck" @mouseenter="mn.noscroll" @mouseleave="mn.usescroll" v-html="note.txt"></div>
+                    <div id="noteContent" :key="note.key" class="noteContent" contenteditable="true" @keyup="mn.keyupCheck" @mouseenter="me" @mouseleave="ml" v-html="note.txt"></div>
                 </div>
             </div>
+            <div v-else id="writeBtn" class="fixed-action-btn"><a class="btn-floating btn-large waves-effect waves-light" @click="mn.writeNote">
+                <i id="addBtn" class="material-icons">{{addBtn}}</i></a></div>
+
             <div class="search">
                 <div class="modal"></div>
                 <div id="div_search"><textarea id="input2" class="input" placeholder=""></textarea>
