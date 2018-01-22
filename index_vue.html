@@ -57,13 +57,16 @@
                 </ul>
             </div>
             <div class="diff"></div>
-            <div id="topBtn" class="fixed-action-btn" style="bottom: 110px; right: 24px;"> <a class="btn-floating btn-large waves-effect waves-light" style="opacity: 0.3" onclick="mn.topNavi();"> <i
-            id="topNavi" class="navi material-icons">{{topNavi}}</i> </a> </div>
+            <div id="topBtn" class="fixed-action-btn" style="bottom: 110px; right: 24px;">
+                <a class="btn-floating btn-large waves-effect waves-light" style="opacity: 0.3" onclick="mn.topNavi();">
+                    <i id="topNavi" class="navi material-icons">{{topNavi}}</i>
+                </a>
+            </div>
             <div id="writeBtn" class="fixed-action-btn" v-if="addBtn !== '저장'"><a class="btn-floating btn-large waves-effect waves-light" @click="mn.writeNote">
                 <i id="addBtn" class="material-icons">{{addBtn}}</i></a></div>
             <div class="dialog" v-if="topNavi === '목록'">
                 <div id="div_write">
-                    <div id="noteContent" :key="note.key" class="noteContent" contenteditable="true" @keyup="mn.keyupCheck" v-html="note.txt"></div>
+                    <div id="noteContent" :key="note.key" class="noteContent" contenteditable="true" @keyup="mn.keyupCheck" @mouseenter="mn.noscroll" @mouseleave="mn.usescroll" v-html="note.txt"></div>
                 </div>
             </div>
             <div class="search">

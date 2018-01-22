@@ -56,7 +56,7 @@ define(["jquery"
                 hasDiff = notes.getItem(that.noteKey).txt !== $m("#noteContent").html();
             }
 
-            console.log(hasDiff);
+            //console.log(hasDiff);
 
             // 변경사항 있을 경우 변경사항 표시..
             if (hasDiff) {
@@ -145,6 +145,7 @@ define(["jquery"
         // 글편집 상태일 때 body 스크롤 금지
         // 윈도우에서 스크롤 깜빡임 문제 처리
         var top;
+        /*
         $m("#noteContent").doms[0].onmouseenter = function (e) {
             top = document.documentElement.scrollTop;
             $m("body").css("top", -(top) + "px").addClass("noscroll");
@@ -154,7 +155,22 @@ define(["jquery"
             $m("body").removeClass("noscroll");
             $(document).scrollTop(top);
         };
+        */
+
+        mn.noscroll = function(e){
+            top = document.documentElement.scrollTop;
+            $m("body").css("top", -(top) + "px").addClass("noscroll");
+
+        };
+
+        mn.usescroll = function(e){
+            $m("body").removeClass("noscroll");
+            $(document).scrollTop(top);
+
+        };
     };
+
+
 
 
     var setShortcut = function () {
@@ -195,12 +211,12 @@ define(["jquery"
 
         $shortcut.add("meta+L", function () {
             md.save();
-            mn.viewList();
+            mn.toggleView();
         });
 
         $shortcut.add("Alt+L", function () {
             md.save();
-            mn.viewList();
+            mn.toggleView();
         });
 
         $shortcut.add("meta+enter", function () {
@@ -322,7 +338,6 @@ define(["jquery"
     };
 
     var addItem = function (key, noteData, how) {
-        //var html = getNoteHtml(key, noteData);
 
         var idx = noteData.txt.indexOf("<div>");
         var title, content, createDate, removeBtn = "", editBtn = "", liChild, li, html;
@@ -350,14 +365,13 @@ define(["jquery"
             content : content
         };
 
-        //console.log(createDate);
-
 
         if (how === "append") {
             //$m("#list").append(html.li);
             app.todos.push(todo);
         } else {
             //$m("#list").prepend(html.li);
+            //console.log(todo.key);
             app.todos.splice(0,0,todo);
         }
 
@@ -366,59 +380,15 @@ define(["jquery"
         setTouchSlider($("#" + key));
     };
 
-
-    var getNoteHtml = function (key, noteData) {
-        var idx = noteData.txt.indexOf("<div>");
-        var title, content, createDate, removeBtn = "", editBtn = "", liChild, li, html;
-        var color = $randomcolor({hue: userInfo.data.iconColor, luminosity: "dark"});  // https://randomcolor.llllll.li/
-
-
-        if (idx > 0) {
-            title = noteData.txt.substr(0, idx);
-            content = noteData.txt.substr(idx);
-        } else {
-            title = noteData.txt;
-            content = "";
-        }
-
-        content = content.replace(/<\/div><div>/gi, " "); // html새줄문자를 공백문자로 변경
-        content = content.replace(/<([^>]+)>/gi, "");   // 태그제거
-        content = content.substr(0, 100); // 100자까지만 보여주기
-        createDate = (new Date(noteData.createDate)).toString().substr(4, 17);
-
-
-        var todo = {
-            key : key,
-            createDate : createDate,
-            title : title,
-            content : content
-        };
-        app.todos.push(todo);
-
-
-        if (typeof userInfo !== null) {// 내가 작성한 글인 경우만 수정/삭제버튼이 표시
-            removeBtn = `<i id="btn_delete" onclick='mn.removeNote("${key}")' class="material-icons">delete</i>`;
-            editBtn = `<i id="btn_edit" onclick='editNote("${key}")' class="material-icons">edit</i>`;
-        }
-
-        liChild = `<i class="createDate">${createDate}</i><i class="btnContext"><<</i>
-                <div class="title" >${title}</div>
-                <div class="content" >${content}</div></p>${removeBtn}${editBtn}`;
-
-        li = `<li id="${key}" class="collection-item avatar" onclick="mn.rowClick('${key}')">${liChild}</li>`;
-        html = {};
-        html.li = li;
-        html.liChild = liChild;
-        return html;
-    };
-
-
     var onChildChanged = function (data) {
         //console.log("## onChildChanged called..");
         var key = data.key;
         var noteData = data.val();
-        var html = getNoteHtml(key, noteData);
-        $m("#" + key).html(html.liChild);
+
+        var index = app.todos.findIndex(function(el){return el.key === key;});
+        var idx = noteData.txt.indexOf("<div>");
+        app.todos[index].title = noteData.txt.substr(0, idx);
+
         $("#" + key).animate({left: "0px"}, 300);
 
         // 오른쪽 끝 컨텍스트버튼 이벤트 처리
@@ -458,9 +428,13 @@ define(["jquery"
             return;
         }
 
-        var key = $m("#noteContent").attr("key");
+        //var key = $m("#noteContent").attr("key");
+        var key = app.note.key;
+
         $m("#noteContent div[placeholder]").removeAttr("placeholder");      // 불필요태그 제거
-        var txt = $m("#noteContent").html().replace(/(<div><br><\/div>)+$/ig, ""); // 끝에 공백제거
+        //var txt = $m("#noteContent").html().replace(/(<div><br><\/div>)+$/ig, ""); // 끝에 공백제거
+        app.note.txt = $m("#noteContent").html();
+        var txt = app.note.txt.replace(/(<div><br><\/div>)+$/ig, ""); // 끝에 공백제거
         txt = txt.replace(/<span style="background-color:yellow;">|<\/span>/gi, "");    // 하이라이트 스타일 제거
         txt = txt.autoLink({target: "_blank"}); // 링크 설정
 
@@ -581,7 +555,7 @@ define(["jquery"
         md = newManageDiff();
         setShortcut();
         login();
-        //bodyScrollWithNoteContent();
+        bodyScrollWithNoteContent();
 
         firebase.database().ref(".info/connected").on("value", function (snap) {
             if (snap.val() === true) {
@@ -594,7 +568,7 @@ define(["jquery"
 
     mn.showNoteList = function (uid) {
         //console.log("showNoteList called..");
-        mn.viewList();
+        mn.toggleView();
 
         $m(".state").html("");
         $m("#list").html("");
@@ -652,59 +626,6 @@ define(["jquery"
 
     mn.highlight = highlight;
 
-
-    mn.viewNote = function (key) {
-        // 모바일 fixed div 에서 커서가 이상하게 동작되는 문제 회피
-        if ($ismobile.any) {
-            $m(".dialog").css("position", "absolute");
-            $m(".dialog").css("top", (window.scrollY + 10 ) + "px");
-        }
-
-        app.topNavi = "목록";
-
-        //$m(".dialog").show();
-        //$m("#noteContent").attr("key", key);
-        app.note.key = key;
-        $m("#list li.selected").removeClass("selected");
-        $m("#" + key).addClass("selected");
-        //$m("#addBtn").html("저장");
-        app.addBtn = "저장";
-        //$m("#writeBtn").hide();
-        $m("#topNavi").removeClass("navi").addClass("list");
-
-        $m("#topBtn a").css("opacity", "");
-
-
-        var originTxt = notes.getItem(key).txt;
-        var searchWord = $m(".state span").html();
-
-        //var txt = highlight(originTxt, searchWord);
-        var txt = originTxt;
-
-        //$m("#noteContent").html(txt);
-        app.note.txt = txt;
-        link_chk();
-
-        return;
-
-        if(searchWord !== undefined){
-            // 보기/편집 모드에 따른 검색어 하이라이트 표시 처리
-            $m("#noteContent").dom.onfocus = function(){
-                if($m("#input2").val() !== "") {
-                    // 편집모드로 들어갈 땐 하이라이트 표시 제거
-                    //$m("#noteContent").html(originTxt);
-                    app.note.txt = originTxt;
-                    link_chk();
-                }
-            };
-            $m("#noteContent").dom.onblur = function(){
-                // onblur 처리는 생략하겠음.. 데이터 꼬이는 현상이 발생할 수 있음...
-                //$m("#noteContent").html(txt);
-                //link_chk();
-                //console.log("onblur");
-            };
-        }
-    };
 
     function link_chk(){
         // 링크 처리
@@ -810,7 +731,7 @@ define(["jquery"
         $m(".header .title").html(notes.length + " notes");
         $m(".header .state").html(`> <span style="font-style:italic;">${txt}</span> 's ${$m("#list li").length} results`);
 
-        mn.viewList();
+        mn.toggleView();
 
         $m("#input2").val(""); // 검색어 초기화
 
@@ -893,16 +814,12 @@ define(["jquery"
 
     mn.bodyScroll = function () {
 
-        return;
-
-
         if ($m(".state").html() !== "") {// 검색결과 화면일 때
             return;
         }
         if (window.scrollY === 0) {// 처음 글쓰기 시작할때(스크롤이 아예 없을 때)
             return;
         }
-
 
         if (window.scrollY === $(document).height() - $(window).height()) {
             $nprogress.start();
@@ -921,26 +838,75 @@ define(["jquery"
     mn.topNavi = function () {
         if ($m("#topNavi").html() === "목록") {
             // 목록버튼 누른 경우
-            mn.viewList();
+            mn.toggleView();
         } else {
             // top 버튼 누른경우
             $(window).scrollTop(0);
         }
     };
 
-    mn.viewList = function () {
+    mn.toggleView = function (key) {
         //  검색후 하이라이트 관련 처리 onfocus 이벤트 초기화
         //$m("#noteContent").dom.onfocus = null;
-
-        //$m(".dialog").hide();
-        app.topNavi = "arrow_upward";
-        $m("#topNavi").removeClass("list").addClass("navi");
-        $m("#topBtn a").css("opacity", "0.3")
-        //$m("#addBtn").html("새글");
-        app.addBtn = "새글";
-        $m("#writeBtn").removeClass("disable")
-        $m("#list li").removeClass("selected");
+        if(key === undefined){
+            app.topNavi = "arrow_upward";
+            app.addBtn = "새글";
+            //app.note.key = "";
+            $m("#topNavi").removeClass("list").addClass("navi");
+            $m("#topBtn a").css("opacity", "0.3");
+            $m("#list li").removeClass("selected");
+        }else{
+            app.topNavi = "목록";
+            app.addBtn = "저장";
+            app.note.key = key;
+            $m("#topNavi").removeClass("navi").addClass("list");
+            $m("#topBtn a").css("opacity", "");
+            $m("#list li.selected").removeClass("selected");
+            $m("#" + key).addClass("selected");
+        }
     };
+
+
+    mn.viewNote = function (key) {
+        // 모바일 fixed div 에서 커서가 이상하게 동작되는 문제 회피
+        if ($ismobile.any) {
+            $m(".dialog").css("position", "absolute");
+            $m(".dialog").css("top", (window.scrollY + 10 ) + "px");
+        }
+
+        mn.toggleView(key);
+
+        var originTxt = notes.getItem(key).txt;
+        var searchWord = $m(".state span").html();
+
+        //var txt = highlight(originTxt, searchWord);
+        var txt = originTxt;
+
+        //$m("#noteContent").html(txt);
+        app.note.txt = txt;
+        link_chk();
+
+        return;
+
+        if(searchWord !== undefined){
+            // 보기/편집 모드에 따른 검색어 하이라이트 표시 처리
+            $m("#noteContent").dom.onfocus = function(){
+                if($m("#input2").val() !== "") {
+                    // 편집모드로 들어갈 땐 하이라이트 표시 제거
+                    //$m("#noteContent").html(originTxt);
+                    app.note.txt = originTxt;
+                    link_chk();
+                }
+            };
+            $m("#noteContent").dom.onblur = function(){
+                // onblur 처리는 생략하겠음.. 데이터 꼬이는 현상이 발생할 수 있음...
+                //$m("#noteContent").html(txt);
+                //link_chk();
+                //console.log("onblur");
+            };
+        }
+    };
+
 
 
     mn.titleClick = function () {
