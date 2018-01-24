@@ -1,3 +1,4 @@
+
 // Initialize Firebase
 var config = {
     apiKey: "AIzaSyCA7fmVSWpyP0MPpw1QRU6h9OZ7hrr6sGA",
@@ -24,8 +25,9 @@ requirejs.config({
     }
 });
 
-require(["mn", "util"], function(mn, $m) {
+require(["vue", "mn", "util"], function(Vue, mn, $m) {
     window.mn = mn;
+    window.Vue = Vue;
 
     window.app = new Vue({
         el: '#app',

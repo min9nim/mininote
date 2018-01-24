@@ -360,7 +360,7 @@ define(["jquery"
         $("#" + key).animate({left: "0px"}, 300);
 
         // 오른쪽 끝 컨텍스트버튼 이벤트 처리
-        setContextBtnEvent($("#" + key + " .btnContext"));
+        //setContextBtnEvent($("#" + key + " .btnContext"));
 
         // notes 갱신
         notes.setItem(key, noteData);
