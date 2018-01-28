@@ -17,7 +17,7 @@
 
     <body onscroll="mn.bodyScroll();">
         <div id="app">
-            <div class="header"> <i id="btnMenu" class='material-icons' @click="mn.menuClick">menu</i>
+            <div class="header" v-cloak> <i id="btnMenu" class='material-icons' @click="mn.menuClick">menu</i>
                 <div class="title" @click="mn.titleClick">{{title}}</div>
                 <div class="state"></div>
                 <div class="message"></div> <i id="btnSearch" class='material-icons' @click="mn.searchClick">search</i> </div>
