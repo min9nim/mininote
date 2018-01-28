@@ -18,7 +18,7 @@
     <body onscroll="mn.bodyScroll();">
         <div id="app">
             <div class="header"> <i id="btnMenu" class='material-icons' @click="mn.menuClick">menu</i>
-                <div class="title" @click="mn.titleClick">mininote is loading..</div>
+                <div class="title" @click="mn.titleClick">{{title}}</div>
                 <div class="state"></div>
                 <div class="message"></div> <i id="btnSearch" class='material-icons' @click="mn.searchClick">search</i> </div>
             <ul class="menu collection">
@@ -50,7 +50,8 @@
                     <li v-for="todo in todos" :id="todo.key" class="collection-item avatar" @click="mn.rowClick(todo.key)">
                         <i class="createDate" v-html="todo.createDate"></i><i class="btnContext" @click.stop.prevent="contextClick"><<</i>
                         <div v-html="todo.title"></div>
-                        <div class="content" v-html="todo.content"></div> <i id="btn_delete" @click.stop.prevent='mn.removeNote(todo.key)' class="material-icons">delete</i>
+                        <div class="content" v-html="todo.content"></div>
+                        <i id="btn_delete" @click.stop.prevent='mn.removeNote(todo.key)' class="material-icons">delete</i>
                     </li>
                 </ul>
             </div>
@@ -61,7 +62,7 @@
                 </a>
             </div>
 
-            <div v-if="dialogVisible" class="dialog" v-cloak>
+            <div v-if="editMode" class="dialog" v-cloak>
                 <div id="div_write">
                     <div id="noteContent" :key="note.key" class="noteContent" contenteditable="true" @keyup="mn.keyupCheck" @mouseenter="me" @mouseleave="ml" v-html="note.txt"></div>
                 </div>

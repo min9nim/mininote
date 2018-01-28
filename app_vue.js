@@ -28,10 +28,12 @@ requirejs.config({
 require(["vue", "mn", "util"], function(Vue, mn, $m) {
     window.mn = mn;
     window.Vue = Vue;
+    window.$m = $m;
 
     window.app = new Vue({
         el: '#app',
         data: {
+            title : "mininote is loading..",
             todos : [],
             topNavi : "arrow_upward",
             addBtn : "새글",
@@ -68,7 +70,7 @@ require(["vue", "mn", "util"], function(Vue, mn, $m) {
             }
         },
         computed : {
-            dialogVisible : function(){
+            editMode : function(){
                 return this.topNavi === '목록';
             }
         },

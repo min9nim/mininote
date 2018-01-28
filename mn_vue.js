@@ -68,8 +68,10 @@ define(["jquery"
             }
 
             timer = setTimeout(function () {
-                that.save();
-                that.end();
+                if(app.editMode){
+                    that.save();
+                    that.end();
+                }
             }, 1000);
         };
 
@@ -298,9 +300,11 @@ define(["jquery"
         if (diff < 1000) {// 방금 새로 등록한 글인 경우만
             addItem(data.key, data.val());
             if ($m(".state").html() === "") {
-                $m(".header .title").html(userInfo.data.nickname + "'s " + notes.length + " notes");
+                //$m(".header .title").html(userInfo.data.nickname + "'s " + notes.length + " notes");
+                app.title = userInfo.data.nickname + "'s " + notes.length + " notes";
             } else {
-                $m(".header .title").html(notes.length + " notes");
+                //$m(".header .title").html(notes.length + " notes");
+                app.title = notes.length + " notes";
             }
         }
     };
@@ -381,16 +385,19 @@ define(["jquery"
     };
 
     var onChildRemoved = function (data) {
-//  console.log("## onChildRemoved called..");
         var key = data.key;
-        //$m("#" + key).remove();
-
         var idx = app.todos.findIndex(function(el){return el.key === key;});
         app.todos.splice(idx,1);
-
-        //noteList.splice(noteList.indexOf(data), 1);  // noteList에서 삭제된 요소 제거
         notes.removeItem(key);
-        $m(".header .title").html(userInfo.data.nickname + "'s " + notes.length + " notes");
+
+        $m("#list li").each(function(dom){
+            if($m(dom).css("left") === "-100px"){
+                $(dom).animate({left: "0px"}, 300);
+            }
+        });
+
+        //$m(".header .title").html(userInfo.data.nickname + "'s " + notes.length + " notes");
+        app.title = userInfo.data.nickname + "'s " + notes.length + " notes";
     };
 
     var saveNote = function () {
@@ -445,7 +452,9 @@ define(["jquery"
             $m("#fontSize").val(userInfo.data.fontSize.replace("px", ""));
             $m("#iconColor").val(userInfo.data.iconColor);
         } else {
-            $m(".header .title").html("mininote");
+            //$m(".header .title").html("mininote");
+            app.title = "mininote";
+
         }
     };
 
@@ -523,7 +532,7 @@ define(["jquery"
 
     mn.showNoteList = function (uid) {
         //console.log("showNoteList called..");
-        mn.toggleView();
+        //mn.toggleView();  // 이게 왜 필요한지 모르겠음
 
         $m(".state").html("");
         $m("#list").html("");
@@ -538,7 +547,8 @@ define(["jquery"
             }
 
 
-            $m(".header .title").html(userInfo.data.nickname + "'s " + notes.length + " notes");
+            //$m(".header .title").html(userInfo.data.nickname + "'s " + notes.length + " notes");
+            app.title = userInfo.data.nickname + "'s " + notes.length + " notes";
             $nprogress.done();
         });
     };
@@ -788,8 +798,8 @@ define(["jquery"
     };
 
     mn.topNavi = function () {
-        if ($m("#topNavi").html() === "목록") {
-            // 목록버튼 누른 경우
+        //if ($m("#topNavi").html() === "목록") {
+        if (app.editMode) {
             mn.toggleView();
         } else {
             // top 버튼 누른경우
@@ -800,7 +810,8 @@ define(["jquery"
     mn.toggleView = function (key) {
         //  검색후 하이라이트 관련 처리 onfocus 이벤트 초기화
         //$m("#noteContent").dom.onfocus = null;
-        if(key === undefined){
+        if(app.editMode){
+            md.save();
             app.topNavi = "arrow_upward";
             app.addBtn = "새글";
             //app.note.key = "";
