@@ -347,9 +347,6 @@ define(["jquery"
             //console.log(todo.key);
             app.todos.splice(0,0,todo);
         }
-
-        // 오른쪽 끝 컨텍스트버튼 이벤트 처리
-        setTouchSlider($("#" + key));
     };
 
     var onChildChanged = function (data) {
@@ -458,43 +455,6 @@ define(["jquery"
         }
     };
 
-
-    var setTouchSlider = function (row) {
-        var start_x, diff_x;
-        var start_y, diff_y;
-        var dom_start_x;
-
-        function touchstart(e) {
-            start_x = e.originalEvent.touches ? e.originalEvent.touches[0].pageX : e.pageX;
-            start_y = e.originalEvent.touches ? e.originalEvent.touches[0].pageY : e.pageY;
-            dom_start_x = $(this).position().left;  // 터치시작할 때 최초 dom요소의 x위치를 기억하고 있어야 함
-        }
-
-        function touchmove(e) {
-            diff_x = (e.originalEvent.touches ? e.originalEvent.touches[0].pageX : e.pageX) - start_x;
-            diff_y = (e.originalEvent.touches ? e.originalEvent.touches[0].pageY : e.pageY) - start_y;
-            if (Math.abs(diff_x) > Math.abs(diff_y * 4)) {
-                $m(this).css("left", dom_start_x + diff_x);
-            }
-        }
-
-        function touchend() {
-            if (diff_x < -50) {
-                $(this).animate({left: "-100px"}, 300);
-            } else if (diff_x > 150) {
-                //mn.viewNote($(this).attr("id"));
-                $(this).animate({left: "0px"}, 300);
-            } else {
-                $(this).animate({left: "0px"}, 300);
-            }
-        }
-
-        row.bind("touchstart", touchstart);
-        row.bind("touchmove", touchmove);
-        row.bind("touchend", touchend);
-    };
-
-
     var insertChkbox = function () {
         var chk = document.createElement("input");
         chk.setAttribute("type", "checkbox");
@@ -545,6 +505,10 @@ define(["jquery"
             for (var key in noteObj) {
                 addItem(key, noteObj[key]);
             }
+
+
+            // 오른쪽 끝 컨텍스트버튼 이벤트 처리
+
 
 
             //$m(".header .title").html(userInfo.data.nickname + "'s " + notes.length + " notes");

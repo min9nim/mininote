@@ -47,7 +47,7 @@
             </ul>
             <div>
                 <ul id="list" class="collection" @click="mn.listClick" @touchstart="mn.listClick">
-                    <li v-for="todo in todos" :id="todo.key" class="collection-item avatar" @click="mn.rowClick(todo.key)">
+                    <li v-for="todo in todos" :id="todo.key" class="collection-item avatar" @click="mn.rowClick(todo.key)" @touchstart="touchstart" @touchmove="touchmove" @touchend="touchend">
                         <i class="createDate" v-html="todo.createDate"></i><i class="btnContext" @click.stop.prevent="contextClick"><<</i>
                         <div v-html="todo.title"></div>
                         <div class="content" v-html="todo.content"></div>
