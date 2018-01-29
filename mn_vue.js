@@ -774,7 +774,8 @@ define(["jquery"
     mn.toggleView = function (key) {
         //  검색후 하이라이트 관련 처리 onfocus 이벤트 초기화
         //$m("#noteContent").dom.onfocus = null;
-        if(app.editMode){
+        //if(app.editMode){
+        if(key === undefined){
             md.save();
             app.topNavi = "arrow_upward";
             app.addBtn = "새글";
