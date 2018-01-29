@@ -47,7 +47,7 @@
             </ul>
             <div>
                 <ul id="list" class="collection" @click="mn.listClick" @touchstart="mn.listClick">
-                    <li v-for="todo in todos" :id="todo.key" class="collection-item avatar" @click="mn.rowClick(todo.key)" @touchstart="touchstart" @touchmove="touchmove" @touchend="touchend">
+                    <li v-for="todo in todos" :id="todo.key" class="collection-item avatar" @click.stop.prevent="mn.rowClick(todo.key)" @touchstart.stop.prevent="touchstart" @touchmove.stop.prevent="touchmove" @touchend="touchend">
                         <i class="createDate" v-html="todo.createDate"></i><i class="btnContext" @click.stop.prevent="contextClick"><<</i>
                         <div v-html="todo.title"></div>
                         <div class="content" v-html="todo.content"></div>
@@ -64,7 +64,7 @@
 
             <div v-if="editMode" class="dialog" v-cloak>
                 <div id="div_write">
-                    <div id="noteContent" :key="note.key" class="noteContent" contenteditable="true" @keyup="mn.keyupCheck" @mouseenter="me" @mouseleave="ml" v-html="note.txt"></div>
+                    <div id="noteContent" :key="note.key" class="noteContent" contenteditable="true" @keyup="mn.keyupCheck" @mouseenter="mouseenter" @mouseleave="mouseleave" v-html="note.txt"></div>
                 </div>
             </div>
             <div v-else id="writeBtn" class="fixed-action-btn">
