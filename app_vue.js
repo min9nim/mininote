@@ -45,11 +45,11 @@ require(["vue", "mn", "util"], function(Vue, mn, $m) {
             top : "",       // noteContent 의 스크롤 위치
         },
         methods: {
-            me : function(){
+            mouseenter : function(){
                 this.top = document.documentElement.scrollTop;
                 $m("body").css("top", -(this.top) + "px").addClass("noscroll");
             },
-            ml : function(){
+            mouseleave : function(){
                 $m("body").removeClass("noscroll");
                 $(document).scrollTop(this.top);
             },
