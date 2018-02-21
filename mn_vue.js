@@ -180,12 +180,12 @@ define(["jquery"
 */
 
         $shortcut.add("meta+L", function () {
-            md.save();
+            //md.save();
             mn.toggleView();
         });
 
         $shortcut.add("Alt+L", function () {
-            md.save();
+            //md.save();
             mn.toggleView();
         });
 
@@ -772,13 +772,19 @@ define(["jquery"
         //$m("#noteContent").dom.onfocus = null;
         //if(app.editMode){
         if(key === undefined){
-            md.save();
+            //md.save();
             app.topNavi = "arrow_upward";
             app.addBtn = "새글";
-            //app.note.key = "";
+            app.note.key = "";
+
             $m("#topNavi").removeClass("list").addClass("navi");
             $m("#topBtn a").css("opacity", "0.3");
             $m("#list li").removeClass("selected");
+
+            $m("body").removeClass("noscroll");
+            $(document).scrollTop(app.top);
+
+
         }else{
             app.topNavi = "목록";
             app.addBtn = "저장";
@@ -835,7 +841,8 @@ define(["jquery"
 
     mn.titleClick = function () {
         if (userInfo) {
-            mn.showNoteList(userInfo.uid);
+            //mn.showNoteList(userInfo.uid);
+            mn.toggleView();
         } else {
             firebase.auth().signInWithRedirect(new firebase.auth.GoogleAuthProvider());
         }
