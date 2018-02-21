@@ -180,12 +180,12 @@ define(["jquery"
 */
 
         $shortcut.add("meta+L", function () {
-            //md.save();
+            //md.save();          // noteContent 가 사라지기 전에 저장을 해야하므로 여기서 저장해야 함
             mn.toggleView();
         });
 
         $shortcut.add("Alt+L", function () {
-            //md.save();
+            //md.save();           // noteContent 가 사라지기 전에 저장을 해야하므로 여기서 저장해야 함
             mn.toggleView();
         });
 
@@ -772,7 +772,7 @@ define(["jquery"
         //$m("#noteContent").dom.onfocus = null;
         //if(app.editMode){
         if(key === undefined){
-            //md.save();
+            md.save();
             app.topNavi = "arrow_upward";
             app.addBtn = "새글";
             app.note.key = "";
