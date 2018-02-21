@@ -495,7 +495,8 @@ define(["jquery"
         //mn.toggleView();  // 이게 왜 필요한지 모르겠음
 
         $m(".state").html("");
-        $m("#list").html("");
+        //$m("#list").html("");
+        app.todos = [];
         //$m(".state span").html(""); // 검색어초기화
 
         mn.noteRef.limitToLast(visibleRowCnt).once("value").then(function (snapshot) {
@@ -505,12 +506,7 @@ define(["jquery"
             for (var key in noteObj) {
                 addItem(key, noteObj[key]);
             }
-
-
             // 오른쪽 끝 컨텍스트버튼 이벤트 처리
-
-
-
             //$m(".header .title").html(userInfo.data.nickname + "'s " + notes.length + " notes");
             app.title = userInfo.data.nickname + "'s " + notes.length + " notes";
             $nprogress.done();
