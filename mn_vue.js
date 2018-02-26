@@ -47,7 +47,6 @@ define(["jquery"
 
 
         that.checkDiff = function () {
-            //that.noteKey = $m("#noteContent").attr("key");
             that.noteKey = app.note.key;
             if (!that.noteKey) {
                 // 신규인 경우
@@ -230,6 +229,7 @@ define(["jquery"
 
 
     var chkClick = function () {
+        console.log("chkClick..");
         if (event.target.checked) {
             event.target.setAttribute("checked", "");
         } else {
@@ -237,6 +237,9 @@ define(["jquery"
         }
         md.checkDiff();
     };
+
+    mn.chkClick = chkClick;
+
 
     var deleteMapKey = function (s, e) {
         // 현재 커서로 부터 앞에 s ~ e 글자 지우고
@@ -254,7 +257,6 @@ define(["jquery"
 
         var sel = window.getSelection();
         var str = sel.anchorNode.textContent;
-        //console.log(str);
         var keymap = str.substr(sel.anchorOffset - 3, 2);
 
         if (keymap === "!!") {
@@ -290,13 +292,11 @@ define(["jquery"
     };
 
     var onChildAdded = function (data) {
-        //console.log("## onChildAdded called " + data.key);
-        //noteList.push(data);
         notes.setItem(data.key, data.val());
         var curDate = Date.now();
         var createDate = data.val().createDate;
         var diff = curDate - createDate;
-        //console.log(diff);
+
         if (diff < 1000) {// 방금 새로 등록한 글인 경우만
             addItem(data.key, data.val());
             if ($m(".state").html() === "") {
@@ -340,11 +340,8 @@ define(["jquery"
         };
 
         if (how === "append") {
-            //$m("#list").append(html.li);
             app.todos.push(todo);
         } else {
-            //$m("#list").prepend(html.li);
-            //console.log(todo.key);
             app.todos.splice(0,0,todo);
         }
     };
@@ -456,6 +453,7 @@ define(["jquery"
     };
 
     var insertChkbox = function () {
+        debugger;
         var chk = document.createElement("input");
         chk.setAttribute("type", "checkbox");
         chk.setAttribute("class", "chk");
@@ -807,14 +805,19 @@ define(["jquery"
         mn.toggleView(key);
 
         var originTxt = notes.getItem(key).txt;
-        var searchWord = $m(".state span").html();
-
-        //var txt = highlight(originTxt, searchWord);
         var txt = originTxt;
-
-        //$m("#noteContent").html(txt);
         app.note.txt = txt;
-        link_chk();
+
+        Vue.nextTick(function() {
+            link_chk();
+        });
+
+
+        var searchWord = $m(".state span").html();
+        //var txt = highlight(originTxt, searchWord);
+
+
+
 
         return;
 

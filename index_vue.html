@@ -61,7 +61,6 @@
                     <i id="topNavi" class="navi material-icons" v-html="topNavi"></i>
                 </a>
             </div>
-
             <div v-if="editMode" class="dialog" v-cloak>
                 <div id="div_write">
                     <div id="noteContent" :key="note.key" class="noteContent" contenteditable="true" @keyup="mn.keyupCheck" @mouseenter="mouseenter" @mouseleave="mouseleave" v-html="note.txt"></div>
