@@ -780,7 +780,9 @@ define(["jquery"
             $m("#list li").removeClass("selected");
 
             $m("body").removeClass("noscroll");
-            $(document).scrollTop(app.top);
+            //$(document).scrollTop(app.top);
+            document.documentElement.scrollTop = app.top;
+
 
 
         }else{
