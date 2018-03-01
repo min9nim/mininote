@@ -4,11 +4,11 @@ mininote 는 가볍고 빠른 일정관리 툴입니다
 
 
 #### 기능설명
-1. 단축키
+* 단축키
   * Alt(or meta) + W : 글쓰기
   * Alt(or meta) + L : 목록보기
   * Alt(or meta) + Enter : 저장/조회
-2. 예약어 autoReplace
+* 예약어 autoReplace
   * mo + "띄어쓰기" :  MO todolist
   * tu + "띄어쓰기" :  TU todolist
   * we + "띄어쓰기" :  WE todolist
@@ -18,7 +18,7 @@ mininote 는 가볍고 빠른 일정관리 툴입니다
   * @@ + "띄어쓰기" : 들여쓰기
 
 
-  
+
   순서없는 목록(글머리 기호)
 
   ```
