@@ -47,6 +47,7 @@ define(["jquery"
 
 
         that.checkDiff = function () {
+
             that.noteKey = app.note.key;
             if (!that.noteKey) {
                 // 신규인 경우
@@ -72,9 +73,12 @@ define(["jquery"
                     that.end();
                 }
             }, 1000);
+
+
         };
 
         that.save = function () {
+
             if (hasDiff) {
                 if ($m("#noteContent div:first-child").html() === "제목") {
                     // 제목을 수정하지 않을 경우 저장하지 않는다
@@ -406,8 +410,16 @@ define(["jquery"
 
         $m("#noteContent div[placeholder]").removeAttr("placeholder");      // 불필요태그 제거
         //var txt = $m("#noteContent").html().replace(/(<div><br><\/div>)+$/ig, ""); // 끝에 공백제거
-        app.note.txt = $m("#noteContent").html();
-        var txt = app.note.txt.replace(/(<div><br><\/div>)+$/ig, ""); // 끝에 공백제거
+
+
+
+        /*여기서 app.note.txt 를 갱신하면 포커스가 위로 옮겨지는 문제발생, noteContent가 app.note.txt를 바라보고 있기 때문에*/
+        //app.note.txt = $m("#noteContent").html();
+        //var txt = app.note.txt.replace(/(<div><br><\/div>)+$/ig, ""); // 끝에 공백제거
+
+        var tmp = $m("#noteContent").html();
+        var txt = tmp.replace(/(<div><br><\/div>)+$/ig, ""); // 끝에 공백제거
+
         txt = txt.replace(/<span style="background-color:yellow;">|<\/span>/gi, "");    // 하이라이트 스타일 제거
         txt = txt.autoLink({target: "_blank"}); // 링크 설정
 
@@ -421,6 +433,8 @@ define(["jquery"
         }
 
 
+
+
         if (key === "") {// 저장
             var res = firebase.database().ref("notes/" + userInfo.uid).push({
                 txt: txt,
@@ -431,11 +445,13 @@ define(["jquery"
             //$m("#noteContent").attr("key", res.key);
             app.note.key = res.key;
         } else {// 수정
+
             firebase.database().ref("notes/" + userInfo.uid + "/" + key).update({
                 txt: txt,
                 updateDate: Date.now(),
                 userAgent: navigator.userAgent
             });
+
         }
     };
 
@@ -448,7 +464,6 @@ define(["jquery"
         } else {
             //$m(".header .title").html("mininote");
             app.title = "mininote";
-
         }
     };
 
