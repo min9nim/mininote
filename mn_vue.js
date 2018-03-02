@@ -48,7 +48,7 @@ define(["jquery"
 
         that.checkDiff = function () {
 
-            that.noteKey = app.note.key;
+            that.noteKey = $m("#noteContent").attr("key");
             if (!that.noteKey) {
                 // 신규인 경우
                 hasDiff = true;
@@ -184,12 +184,12 @@ define(["jquery"
 
         $shortcut.add("meta+L", function () {
             //md.save();          // noteContent 가 사라지기 전에 저장을 해야하므로 여기서 저장해야 함
-            mn.toggleView();
+            mn.hideNote();
         });
 
         $shortcut.add("Alt+L", function () {
             //md.save();           // noteContent 가 사라지기 전에 저장을 해야하므로 여기서 저장해야 함
-            mn.toggleView();
+            mn.hideNote();
         });
 
         $shortcut.add("meta+enter", function () {
@@ -372,10 +372,10 @@ define(["jquery"
         if (app.topNavi === "목록"
             && noteData.userAgent !== navigator.userAgent
             //&& $m("#noteContent").attr("key") === key) {
-            && app.note.key === key) {
+            && $m("#noteContent").attr("key") === key) {
             // 글보기상태이고 외부에서 변경이 발생한 경우 글내용 갱신
             console.log("외부 장비에서 변경사항 발생 ");
-            mn.viewNote(key);
+            mn.showNote(key);
         }
 
         // 수정한 글목록으로 스크롤 이동
@@ -405,8 +405,8 @@ define(["jquery"
             return;
         }
 
-        //var key = $m("#noteContent").attr("key");
-        var key = app.note.key;
+        var key = $m("#noteContent").attr("key");
+        //var key = app.note.key;
 
         $m("#noteContent div[placeholder]").removeAttr("placeholder");      // 불필요태그 제거
         //var txt = $m("#noteContent").html().replace(/(<div><br><\/div>)+$/ig, ""); // 끝에 공백제거
@@ -433,8 +433,6 @@ define(["jquery"
         }
 
 
-
-
         if (key === "") {// 저장
             var res = firebase.database().ref("notes/" + userInfo.uid).push({
                 txt: txt,
@@ -442,8 +440,7 @@ define(["jquery"
                 updateDate: Date.now(),
                 userAgent: navigator.userAgent
             });
-            //$m("#noteContent").attr("key", res.key);
-            app.note.key = res.key;
+            $m("#noteContent").attr("key", res.key);
         } else {// 수정
 
             firebase.database().ref("notes/" + userInfo.uid + "/" + key).update({
@@ -505,7 +502,7 @@ define(["jquery"
 
     mn.showNoteList = function (uid) {
         //console.log("showNoteList called..");
-        //mn.toggleView();  // 이게 왜 필요한지 모르겠음
+        //mn.hideNote();  // 이게 왜 필요한지 모르겠음
 
         $m(".state").html("");
         //$m("#list").html("");
@@ -587,14 +584,14 @@ define(["jquery"
                     $m(".dialog").css("position", "absolute");
                     $m(".dialog").css("top", (window.scrollY + 10 ) + "px");
                 }
-                // 쓰기버튼 일때
 
-                //$m(".dialog").show();
-                app.addBtn = "저장";
-                app.topNavi = "목록";
-                app.note.key = "";
-                app.note.txt = "<div class='title' placeholder='제목'>제목</div><div><br/></div><div placeholder='내용'><br/></div>";
-                //$m("#noteContent").attr("key", "").html("<div class='title' placeholder='제목'>제목</div><div><br/></div><div placeholder='내용'><br/></div>");
+                mn.showNote();
+
+                $m("#noteContent")
+                  .attr("key", "")
+                  .html("<div class='title' placeholder='제목'>제목</div><div><br/></div><div placeholder='내용'><br/></div>");
+
+
                 //$m("#noteContent .title").focus();   // 파폭에서 해당 지점으로 포커스 들어가지 않음
 
                 // 저장버튼 처리
@@ -666,7 +663,7 @@ define(["jquery"
         $m(".header .title").html(notes.length + " notes");
         $m(".header .state").html(`> <span style="font-style:italic;">${txt}</span> 's ${$m("#list li").length} results`);
 
-        mn.toggleView();
+        mn.hideNote();
 
         $m("#input2").val(""); // 검색어 초기화
 
@@ -773,78 +770,61 @@ define(["jquery"
     mn.topNavi = function () {
         //if ($m("#topNavi").html() === "목록") {
         if (app.editMode) {
-            mn.toggleView();
+            mn.hideNote();
         } else {
             // top 버튼 누른경우
             $(window).scrollTop(0);
         }
     };
 
-    mn.toggleView = function (key) {
-        //  검색후 하이라이트 관련 처리 onfocus 이벤트 초기화
-        //$m("#noteContent").dom.onfocus = null;
-        //if(app.editMode){
-        if(key === undefined){
-            md.save();
-            app.topNavi = "arrow_upward";
-            app.addBtn = "새글";
-            app.note.key = "";
-
-            $m("#topNavi").removeClass("list").addClass("navi");
-            $m("#topBtn a").css("opacity", "0.3");
-            $m("#list li").removeClass("selected");
-
-            $m("body").removeClass("noscroll");
-            //$(document).scrollTop(app.top);
-            document.documentElement.scrollTop = app.top;
-
-
-
-        }else{
-            app.topNavi = "목록";
-            app.addBtn = "저장";
-            app.note.key = key;
-            $m("#topNavi").removeClass("navi").addClass("list");
-            $m("#topBtn a").css("opacity", "");
-            $m("#list li.selected").removeClass("selected");
-            $m("#" + key).addClass("selected");
-        }
+    mn.hideNote = function () {
+      md.save();
+      $m("#noteContent").attr("key", "");
+      $m("#noteDiv").hide();
+      app.topNavi = "arrow_upward";
+      app.addBtn = "새글";
+      $m("#topNavi").removeClass("list").addClass("navi");
+      $m("#topBtn a").css("opacity", "0.3");
+      $m("#list li").removeClass("selected");
+      $m("body").removeClass("noscroll");
+      //$(document).scrollTop(app.top);
+      document.documentElement.scrollTop = app.top;
     };
 
 
-    mn.viewNote = function (key) {
+    mn.showNote = function (key) {
         // 모바일 fixed div 에서 커서가 이상하게 동작되는 문제 회피
         if ($ismobile.any) {
             $m(".dialog").css("position", "absolute");
             $m(".dialog").css("top", (window.scrollY + 10 ) + "px");
         }
 
-        mn.toggleView(key);
+        app.topNavi = "목록";
+        app.addBtn = "저장";
 
-        var originTxt = notes.getItem(key).txt;
-        var txt = originTxt;
-        app.note.txt = txt;
+        $m("#topNavi").removeClass("navi").addClass("list");
+        $m("#topBtn a").css("opacity", "");
+        $m("#list li.selected").removeClass("selected");
+        $m("#noteDiv").show();
+        if(key){
+          $m("#noteContent").attr("key", key);
+          $m("#noteContent").html(notes.getItem(key).txt);
+          $m("#" + key).addClass("selected");
+          link_chk();
+        }
 
-        Vue.nextTick(function() {
-            link_chk();
-        });
+
+        return;// 검색 기능 추후 개발 예정
 
 
         var searchWord = $m(".state span").html();
         //var txt = highlight(originTxt, searchWord);
-
-
-
-
-        return;
-
         if(searchWord !== undefined){
             // 보기/편집 모드에 따른 검색어 하이라이트 표시 처리
             $m("#noteContent").dom.onfocus = function(){
                 if($m("#input2").val() !== "") {
                     // 편집모드로 들어갈 땐 하이라이트 표시 제거
-                    //$m("#noteContent").html(originTxt);
-                    app.note.txt = originTxt;
+                    $m("#noteContent").html(originTxt);
                     link_chk();
                 }
             };
@@ -862,7 +842,7 @@ define(["jquery"
     mn.titleClick = function () {
         if (userInfo) {
             //mn.showNoteList(userInfo.uid);
-            mn.toggleView();
+            mn.hideNote();
         } else {
             firebase.auth().signInWithRedirect(new firebase.auth.GoogleAuthProvider());
         }
@@ -870,7 +850,7 @@ define(["jquery"
 
     mn.rowClick = function (key) {
         md.save();
-        mn.viewNote(key)
+        mn.showNote(key)
     };
 
     mn.cancelSearch = function () {

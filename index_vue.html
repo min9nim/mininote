@@ -61,12 +61,12 @@
                     <i id="topNavi" class="navi material-icons" v-html="topNavi"></i>
                 </a>
             </div>
-            <div v-if="editMode" class="dialog" v-cloak>
+            <div id="noteDiv" style="display: none;" class="dialog">
                 <div id="div_write">
-                    <div id="noteContent" :key="note.key" class="noteContent" contenteditable="true" @keyup="mn.keyupCheck" @mouseenter="mouseenter" @mouseleave="mouseleave" v-html="note.txt"></div>
+                    <div id="noteContent" key="" class="noteContent" contenteditable="true" @keyup="mn.keyupCheck" @mouseenter="mouseenter" @mouseleave="mouseleave"></div>
                 </div>
             </div>
-            <div v-else id="writeBtn" class="fixed-action-btn">
+            <div id="writeBtn" class="fixed-action-btn">
                 <a class="btn-floating btn-large waves-effect waves-light" @click="mn.writeNote">
                 <i id="addBtn" class="material-icons" v-html="addBtn"></i>
             </a></div>

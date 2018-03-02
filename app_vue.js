@@ -37,10 +37,6 @@ require(["vue", "mn", "util"], function(Vue, mn, $m) {
             todos : [],
             topNavi : "arrow_upward",
             addBtn : "새글",
-            note : {
-                key : "",
-                txt : "",
-            },
             mn : mn,
             top : "",       // noteContent 의 스크롤 위치
         },
@@ -91,7 +87,6 @@ require(["vue", "mn", "util"], function(Vue, mn, $m) {
                 if (dom.diff_x < -50) {
                     $(dom).animate({left: "-100px"}, 300);
                 } else if (dom.diff_x > 150) {
-                    //mn.viewNote($(this).attr("id"));
                     $(dom).animate({left: "0px"}, 300);
                 } else {
                     $(dom).animate({left: "0px"}, 300);
