@@ -162,8 +162,6 @@ define(["jquery"
             mn.searchClick();
         });
 
-
-/*
         $shortcut.add("Alt+U", function () {
             document.execCommand("insertunorderedlist");
         }, {"target": "noteContent"});
@@ -180,7 +178,7 @@ define(["jquery"
             document.execCommand("outdent");
         }, {"target": "noteContent"});
 
-*/
+
 
         $shortcut.add("meta+L", function () {
             //md.save();          // noteContent 가 사라지기 전에 저장을 해야하므로 여기서 저장해야 함
@@ -465,7 +463,6 @@ define(["jquery"
     };
 
     var insertChkbox = function () {
-        debugger;
         var chk = document.createElement("input");
         chk.setAttribute("type", "checkbox");
         chk.setAttribute("class", "chk");
@@ -813,9 +810,7 @@ define(["jquery"
           link_chk();
         }
 
-
         return;// 검색 기능 추후 개발 예정
-
 
         var searchWord = $m(".state span").html();
         //var txt = highlight(originTxt, searchWord);
