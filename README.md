@@ -13,13 +13,15 @@ mininote 는 가볍고 빠른 일정관리 툴입니다
   * Alt(or meta) + W : 글쓰기
   * Alt(or meta) + L : 목록보기
   * Alt(or meta) + Enter : 저장/조회
+  * Alt + T : 체크박스 추가
+  * Alt + U : 순서없는 목록
 * 예약어 autoReplace
   * mo + "띄어쓰기" :  MO todolist
   * tu + "띄어쓰기" :  TU todolist
   * we + "띄어쓰기" :  WE todolist
   * th + "띄어쓰기" :  TH todolist
   * fr + "띄어쓰기" :  FR todolist
-  * !! + "띄어쓰기" : 체크박스 하나 추가
+  * !! + "띄어쓰기" : 체크박스 추가
   * @@ + "띄어쓰기" : 순서없는 목록
   * )) + "띄어쓰기" : 들여쓰기
   * (( + "띄어쓰기" : 내어쓰기
