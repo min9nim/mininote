@@ -231,7 +231,6 @@ define(["jquery"
 
 
     var chkClick = function () {
-        console.log("chkClick..");
         if (event.target.checked) {
             event.target.setAttribute("checked", "");
         } else {
@@ -475,8 +474,16 @@ define(["jquery"
         //range.setStart(sel.anchorNode, sel.anchorOffset+1);
 
         range.insertNode(document.createTextNode(" ")); // chkbox 뒤에 공백문자 하나 넣어야 하는데 안된다;
-        range.insertNode(chk);
-
+        if(navigator.userAgent.match("Firefox")){
+            // 아래 문제 때문에 firefox 얘외처리 추가
+            // http://minq.tistory.com/671
+            var span = document.createElement("span");
+            span.setAttribute("contenteditable", "false");
+            span.appendChild(chk);
+            range.insertNode(span);
+        }else{
+            range.insertNode(chk);
+        }
         sel.modify("move", "forward", "character");
     };
 
@@ -486,7 +493,6 @@ define(["jquery"
         md = newManageDiff();
         setShortcut();
         login();
-
 
         firebase.database().ref(".info/connected").on("value", function (snap) {
             if (snap.val() === true) {

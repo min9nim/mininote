@@ -1,0 +1,9 @@
+<div id="noteContent" class="noteContent" style="background-color: rgb(255, 255, 255);" key="-L7jJBPgWQrbF2n-x-gJ" contenteditable="true">
+contenteditable 안에 포함된 체크박스:
+    <input id="chk" type="checkbox">
+</div>
+밖에 있는 건 정상: <input id="chk2" type="checkbox">
+<script>
+document.getElementById("chk").onclick = function(){alert(11);}
+document.getElementById("chk2").onclick = function(){alert(22);}
+</script>
