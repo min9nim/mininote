@@ -162,6 +162,12 @@ define(["jquery"
             mn.searchClick();
         });
 
+        $shortcut.add("meta+S", function () {
+            // 브라우져의 페이지 저장 기능 비활성화 처리
+            return;
+        });
+
+
         $shortcut.add("Alt+U", function () {
             document.execCommand("insertunorderedlist");
         }, {"target": "noteContent"});
@@ -193,6 +199,7 @@ define(["jquery"
         $shortcut.add("meta+enter", function () {
             mn.searchNote();
         }, {"target": "input2"});
+
 
 
     };
@@ -387,7 +394,10 @@ define(["jquery"
 
         $m("#list li").each(function(dom){
             if($m(dom).css("left") === "-100px"){
-                $(dom).animate({left: "0px"}, 300);
+                $(dom).animate({left: "0px"}, 300, function () {
+                    var btnContext = $m(dom).dom.childNodes[1];
+                    $m(btnContext).text("<<");
+                });
             }
         });
 
@@ -417,7 +427,10 @@ define(["jquery"
         var tmp = $m("#noteContent").html();
         var txt = tmp.replace(/(<div><br><\/div>)+$/ig, ""); // 끝에 공백제거
 
+        /*
         txt = txt.replace(/<span style="background-color:yellow;">|<\/span>/gi, "");    // 하이라이트 스타일 제거
+        이렇게 하면 checkbox에 span으로 감싼 로직이랑 충돌 발생
+        */
         txt = txt.autoLink({target: "_blank"}); // 링크 설정
 
         if (txt.length > 30000) {
@@ -429,7 +442,7 @@ define(["jquery"
             return;
         }
 
-
+console.log("###" + txt);
         if (key === "") {// 저장
             var res = firebase.database().ref("notes/" + userInfo.uid).push({
                 txt: txt,
@@ -439,7 +452,6 @@ define(["jquery"
             });
             $m("#noteContent").attr("key", res.key);
         } else {// 수정
-
             firebase.database().ref("notes/" + userInfo.uid + "/" + key).update({
                 txt: txt,
                 updateDate: Date.now(),
@@ -472,15 +484,16 @@ define(["jquery"
 
         // range범위를 수정해 가면서 처리하는게 맞을 것 같은데.. 삽입하는 순서를 바로 잡으려면...
         //range.setStart(sel.anchorNode, sel.anchorOffset+1);
-        range.insertNode(document.createTextNode("  ")); // chkbox 뒤에 공백문자 하나 넣어야 하는데 안된다;
+        range.insertNode(document.createTextNode(" ")); // chkbox 뒤에 공백문자 하나 넣어야 하는데 안된다;
 
         // 아래 문제 때문에 checkbox를 span으로 감쌈
         // http://localhost:4000/toubleshooting/2018/03/17/checkbox.html
-        var span = document.createElement("span");
-        span.setAttribute("contenteditable", "false");
-        span.appendChild(chk);
-        range.insertNode(span);
+        var spanNode = document.createElement("span");
+        spanNode.setAttribute("contenteditable", "false");
+        spanNode.appendChild(chk);
+        range.insertNode(spanNode);
 
+        //range.insertNode(document.createTextNode("x")); // chkbox 뒤에 공백문자 하나 넣어야 하는데 안된다;
         sel.modify("move", "forward", "character");
     };
 
