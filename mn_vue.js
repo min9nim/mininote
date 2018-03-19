@@ -472,18 +472,15 @@ define(["jquery"
 
         // range범위를 수정해 가면서 처리하는게 맞을 것 같은데.. 삽입하는 순서를 바로 잡으려면...
         //range.setStart(sel.anchorNode, sel.anchorOffset+1);
+        range.insertNode(document.createTextNode("  ")); // chkbox 뒤에 공백문자 하나 넣어야 하는데 안된다;
 
-        range.insertNode(document.createTextNode(" ")); // chkbox 뒤에 공백문자 하나 넣어야 하는데 안된다;
-        if(navigator.userAgent.match("Firefox")){
-            // 아래 문제 때문에 firefox 얘외처리 추가
-            // http://minq.tistory.com/671
-            var span = document.createElement("span");
-            span.setAttribute("contenteditable", "false");
-            span.appendChild(chk);
-            range.insertNode(span);
-        }else{
-            range.insertNode(chk);
-        }
+        // 아래 문제 때문에 checkbox를 span으로 감쌈
+        // http://localhost:4000/toubleshooting/2018/03/17/checkbox.html
+        var span = document.createElement("span");
+        span.setAttribute("contenteditable", "false");
+        span.appendChild(chk);
+        range.insertNode(span);
+
         sel.modify("move", "forward", "character");
     };
 
