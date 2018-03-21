@@ -238,6 +238,7 @@ define(["jquery"
 
 
     var chkClick = function (e) {
+        // http://localhost:4000/toubleshooting/2018/03/21/eventBinding.html
         if (e.target.checked) {
             e.target.setAttribute("checked", "");
         } else {
