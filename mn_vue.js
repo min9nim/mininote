@@ -139,9 +139,12 @@ define(["jquery"
                 userInfo = null;
                 setHeader();
                 $nprogress.done();
+                /*
                 if (confirm("로그인이 필요합니다")) {
                     firebase.auth().signInWithRedirect(new firebase.auth.GoogleAuthProvider());
                 }
+                */
+                location.href = "/login.html";
             }
         });
     };
@@ -723,7 +726,7 @@ define(["jquery"
     };
 
 
-    mn.signout = function () {
+    mn.signOut = function () {
         firebase.auth().signOut().then(function () {
             // 로그아웃 처리
         }, function (error) {

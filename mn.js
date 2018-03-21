@@ -233,12 +233,12 @@ define(["jquery"
         }, 20000);
     };
 
-
-    var chkClick = function () {
-        if (event.target.checked) {
-            event.target.setAttribute("checked", "");
+    var chkClick = function (e) {
+        // http://localhost:4000/toubleshooting/2018/03/21/eventBinding.html
+        if (e.target.checked) {
+            e.target.setAttribute("checked", "");
         } else {
-            event.target.removeAttribute("checked");
+            e.target.removeAttribute("checked");
         }
         md.checkDiff();
     };
