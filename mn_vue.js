@@ -237,11 +237,11 @@ define(["jquery"
     };
 
 
-    var chkClick = function () {
-        if (event.target.checked) {
-            event.target.setAttribute("checked", "");
+    var chkClick = function (e) {
+        if (e.target.checked) {
+            e.target.setAttribute("checked", "");
         } else {
-            event.target.removeAttribute("checked");
+            e.target.removeAttribute("checked");
         }
         md.checkDiff();
     };
@@ -442,7 +442,7 @@ define(["jquery"
             return;
         }
 
-console.log("###" + txt);
+//console.log("###" + txt);
         if (key === "") {// 저장
             var res = firebase.database().ref("notes/" + userInfo.uid).push({
                 txt: txt,
