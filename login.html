@@ -1,6 +1,7 @@
 <html>
 
     <head>
+        <link rel="icon" type="image/png" href="/favicon.ico">
         <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap.css" rel="stylesheet" id="bootstrap-css">
         <script type="text/javascript" src='ext/jquery.js'></script>
         <script src="//netdna.bootstrapcdn.com/bootstrap/3.0.0/js/bootstrap.js"></script>
@@ -136,6 +137,7 @@
         </style>
         <script>
 
+
     firebase.auth().onAuthStateChanged(function(user) {
         if (user) {
             console.log("로그인 성공");
@@ -146,8 +148,33 @@
         }
     });
 
+
+/*
+    var loginCheck = (function(){
+        var chkcnt = 2;
+        return function(){
+            var user = firebase.auth().currentUser;
+            if (user) {
+                console.log("로그인 성공");
+                location.href = "/index_vue.html";
+            } else {
+                console.log("로그인 실패 " + chkcnt);
+                if(chkcnt > 0){
+                    setTimeout(loginCheck, 500);
+                    chkcnt--;
+                }
+            }
+        }
+    })();
+    loginCheck();
+*/
+
     function googleLogin(){
-        firebase.auth().signInWithRedirect(new firebase.auth.GoogleAuthProvider());
+        // 18.03.23
+        // redirect 방법은 로그인 끝나고 이 페이지로 돌아왔을 때 firebase를 초기화하는데 시간이 오래 걸려서 팝업 방식으로 변경함
+        //firebase.auth().signInWithRedirect(new firebase.auth.GoogleAuthProvider());
+
+        firebase.auth().signInWithPopup(new firebase.auth.GoogleAuthProvider());
     }
 
 
@@ -162,11 +189,11 @@
                 <form class="form-signin" data-ember-action="2">
                     <h2 class="form-signin-heading">Sign in</h2> <small class="text-muted">Connect Mininote with your favorite social network</small> <br><br>
                     <p>
-                        <a class="btn btn-primary social-login-btn social-facebook" href="/auth/facebook"><i class="fa fa-facebook"></i></a>
-                        <a class="btn btn-primary social-login-btn social-twitter" href="/auth/twitter"><i class="fa fa-twitter"></i></a>
+                        <a class="btn btn-primary social-login-btn social-facebook" onclick="alert('Only Google supported')"><i class="fa fa-facebook"></i></a>
+                        <a class="btn btn-primary social-login-btn social-twitter" onclick="alert('Only Google supported')"><i class="fa fa-twitter"></i></a>
                     </p>
                     <p>
-                        <a class="btn btn-primary social-login-btn social-linkedin" href="/auth/linkedin"><i class="fa fa-linkedin"></i></a>
+                        <a class="btn btn-primary social-login-btn social-linkedin" onclick="alert('Only Google supported')"><i class="fa fa-linkedin"></i></a>
                         <a class="btn btn-primary social-login-btn social-google" onclick="googleLogin()"><i class="fa fa-google-plus"></i></a>
                     </p>
                     <!--div class="btn-group social-login-more">
@@ -189,7 +216,7 @@
                             <li><a href="#"><span class="zocial-wordpress"></span>   Wordpress</a></li>
                         </ul>
                     </div-->
-                    <br><br> <small class="text-muted">SNS계정 로그인만 지원합니다</small> <br><br>
+                    <br><br> <small class="text-muted">구글 로그인만 지원합니다</small> <br><br>
 
 <!--
                     <input id="ember360" class="ember-view ember-text-field form-control login-input" placeholder="Email Address" type="text">

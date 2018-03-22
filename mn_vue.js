@@ -187,8 +187,6 @@ define(["jquery"
             document.execCommand("outdent");
         }, {"target": "noteContent"});
 
-
-
         $shortcut.add("meta+L", function () {
             //md.save();          // noteContent 가 사라지기 전에 저장을 해야하므로 여기서 저장해야 함
             mn.hideNote();
@@ -213,8 +211,6 @@ define(["jquery"
         }
 
         if (app.topNavi === "arrow_upward") {
-            //$m("#writeBtn").show();
-            //$m("#addBtn").html("새글");
             app.addBtn = "새글";
         }
 
@@ -229,8 +225,6 @@ define(["jquery"
         if (userInfo) {
             userInfo.isConnected = false;
         }
-
-        //$m("#writeBtn").hide();
 
         setTimeout(function () {
             if (userInfo.isConnected === false) {
