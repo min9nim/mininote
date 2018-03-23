@@ -864,6 +864,49 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
     };
 
 
+    (function(){
+        var start_x, diff_x;
+        var start_y, diff_y;
+        var dom_start_x;
+        var row;
+
+        mn.touchstart = function(e) {
+            diff_x = undefined;
+            start_x = e.touches ? e.touches[0].pageX : e.pageX;
+            start_y = e.touches ? e.touches[0].pageY : e.pageY;
+            row = e.target.tagName === "LI" ? e.target : $m(e.target).parent("li");
+            dom_start_x = $m(row).position().left;  // 터치시작할 때 최초 dom요소의 x위치를 기억하고 있어야 함
+        }
+
+        mn.touchmove = function(e) {
+            diff_x = (e.touches ? e.touches[0].pageX : e.pageX) - start_x;
+            diff_y = (e.touches ? e.touches[0].pageY : e.pageY) - start_y;
+            if (Math.abs(diff_x) > Math.abs(diff_y * 4)) {
+                $m(row).css("left", dom_start_x + diff_x);
+            }
+        }
+
+        mn.touchend = function() {
+            if(diff_x === undefined){
+                // 컨텍스트 버튼을 클릭한 경우 contextClick 이벤트와 충돌에 대한 예외처리
+                // 클릭만할 경우에는 touchmove이벤트가 발생하지 않는 점을 이용함
+                return;
+            }
+
+            var btnContext = $m("#" + $m(row).attr("id") + " .btnContext");
+            if (diff_x < -50) {
+                $(row).animate({left: "-100px"}, 300);
+                btnContext.text(">>");
+            } else {
+                $(row).animate({left: "0px"}, 300);
+                btnContext.text("<<");
+            }
+        }
+    })()
+
+
+
+
 
     mn.titleClick = function() {
         if (userInfo) {

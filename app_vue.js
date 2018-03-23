@@ -48,37 +48,6 @@ require(["vue", "mn", "util"], function(Vue, mn, $m) {
                     });
                 }
             },
-            removeNote : function(){
-                //
-            },
-            touchstart : function(e) {
-                var dom = e.target;
-                //dom.start_x = e.originalEvent.touches ? e.originalEvent.touches[0].pageX : e.pageX;
-                dom.start_x = e.pageX;  // 모바일사파리에서 e.originalEvent 가 undefined 임
-                //dom.start_y = e.originalEvent.touches ? e.originalEvent.touches[0].pageY : e.pageY;
-                dom.start_y = e.pageY;
-                dom.dom_start_x = $m(dom).position().left;  // 터치시작할 때 최초 dom요소의 x위치를 기억하고 있어야 함
-            },
-            touchmove : function(e) {
-                var dom = e.target;
-                //dom.diff_x = (e.originalEvent.touches ? e.originalEvent.touches[0].pageX : e.pageX) - dom.start_x;
-                dom.diff_x = e.pageX - dom.start_x;
-                //dom.diff_y = (e.originalEvent.touches ? e.originalEvent.touches[0].pageY : e.pageY) - dom.start_y;
-                dom.diff_y = e.pageY - dom.start_y;
-                if (Math.abs(dom.diff_x) > Math.abs(dom.diff_y * 4)) {
-                    $m(dom).css("left", dom.dom_start_x + dom.diff_x);
-                }
-            },
-            touchend : function(e) {
-                var dom = e.target;
-                if (dom.diff_x < -50) {
-                    $(dom).animate({left: "-100px"}, 300);
-                } else if (dom.diff_x > 150) {
-                    $(dom).animate({left: "0px"}, 300);
-                } else {
-                    $(dom).animate({left: "0px"}, 300);
-                }
-            },
         },
         computed : {
             editMode : function(){

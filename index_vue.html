@@ -54,20 +54,21 @@
             </div>
             <div>
 
-                <ul id="list" class="collection" @click="mn.listClick" @touchstart="mn.listClick">
-                    <li v-for="todo in todos" :id="todo.key" class="collection-item avatar" @click.stop.prevent="mn.rowClick(todo.key)" @touchstart="touchstart" @touchmove="touchmove" @touchend="touchend"> <i class="createDate" v-html="todo.createDate"></i> <i class="btnContext" @click.stop.prevent="contextClick"><<</i>
+                <ul id="list" class="collection" onclick="mn.listClick" ontouchstart="mn.listClick">
+                    <li v-for="todo in todos" :id="todo.key" class="collection-item avatar" @click="mn.rowClick(todo.key)" @touchstart="mn.touchstart" @touchmove="mn.touchmove" @touchend="mn.touchend">
+                        <i class="createDate" v-html="todo.createDate"></i>
+                        <i class="btnContext" @click.stop.prevent="contextClick"><<</i>
                         <div v-html="todo.title"></div>
                         <div class="content" v-html="todo.content"></div>
                         <i id="btn_delete" @click.stop.prevent='mn.removeNote(todo.key)' class="material-icons">delete</i>
                     </li>
                 </ul>
-
             </div>
             <div class="diff"></div>
             <div id="topBtn" class="fixed-action-btn" style="bottom: 110px; right: 24px;">
                 <a class="btn-floating btn-large waves-effect waves-light" style="opacity: 0.3" @click="mn.topNavi">
-                    <i id="topNavi" class="navi
-                            material-icons" v-html="topNavi"></i> </a> </div>
+                    <i id="topNavi" class="navi material-icons" v-html="topNavi"></i>
+                        </a> </div>
             <div id="noteDiv" style="display: none;" class="dialog">
                 <div id="div_write">
                     <div id="noteContent" key="" class="noteContent" contenteditable="true" @keyup="mn.keyupCheck" @mouseenter2="mouseenter" @mouseleave2="mouseleave"></div>
@@ -85,5 +86,4 @@
             </div>
         </div>
     </body>
-
 </html>

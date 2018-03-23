@@ -181,7 +181,7 @@ body {
     /* 높이 가운데 정렬 */
     position: absolute;
     right: -70px;
-    display: inline-block;
+    /* display: inline-block; */
 }
 
 #btn_edit {
