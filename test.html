@@ -1,0 +1,217 @@
+<html class=" ">
+
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0">
+        <!--Import Google Icon Font-->
+        <link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+        <link rel="icon" type="image/png" href="/favicon.ico">
+        <!-- Compiled and minified CSS -->
+        <link rel="stylesheet" href="ext/materialize.min.css">
+        <link rel="stylesheet" href="ext/nprogress.css">
+        <link rel="stylesheet" href="style.css">
+        <title>miniNote project :)</title>
+        <script type="text/javascript" src="ext/firebase.js"></script>
+        <script type="text/javascript" src="initFirebase.js"></script>
+    </head>
+
+    <body onscroll="">
+        <div id="app">
+            <div class="header"><i id="btnMenu" class="material-icons" style="cursor: pointer;">menu</i>
+                <div class="title">mg.song's 141 notes</div>
+                <div class="state"></div>
+                <div class="message"></div> <i id="btnSearch" class="material-icons">search</i></div>
+            <div>
+                <ul class="menu collection">
+                    <li class="collection-item">
+                        <div class="menuTitle">* nickname</div>
+                        <div class="menuContent"><input id="nickname" type="text"></div>
+                    </li>
+                    <li class="collection-item">
+                        <div class="menuTitle">* fontSize</div>
+                        <div class="menuContent"><input id="fontSize" type="number" onchange="mn.setFontSize(this.value);"></div>
+                    </li>
+                    <li class="collection-item">
+                        <div class="menuTitle">* iconColor</div>
+                        <div class="menuContent"><select id="iconColor"><option value="all">all</option> <option value="red">red</option> <option value="orange">orange</option> <option value="yellow">yellow</option> <option value="green">green</option> <option value="blue">blue</option> <option value="purple">purple</option> <option value="pink">pink</option> <option value="monochrome">monochrome</option></select></div>
+                    </li>
+                    <li class="collection-item">
+                        <div onclick="mn.signOut()" class="menuTitle" style="cursor: pointer;">* LogOut</div>
+                        <div class="menuContent"></div>
+                    </li>
+                </ul>
+            </div>
+            <div>
+                <ul id="list" class="collection">
+                    <li id="-L8FYt5PVqF5P9DBhT_6" class="collection-item avatar"><i class="createDate">Mar 23 2018 10:53</i> <i class="btnContext">&lt;&lt;</i>
+                        <div>
+                            <div class="title">hhhhh</div>
+                        </div>
+                        <div class="content"></div> <i id="btn_delete" class="material-icons">delete</i></li>
+                    <li id="-L8F6bGrLYgAdNImMG23" class="collection-item avatar"><i class="createDate">Mar 23 2018 08:49</i> <i class="btnContext">&lt;&lt;</i>
+                        <div>
+                            <div class="title">03-28 WE Todolist</div>
+                        </div>
+                        <div class="content"> * 기타 2월 경비 영수증 제출 * sd개발&nbsp;로컬에서 createTime, updateTime 갱신 잘되는지 점검하고 서버 반영하기&nbsp;채번 오류는 트랜잭션</div> <i id="btn_delete" class="material-icons">delete</i></li>
+                    <li id="-L8F6Xgtw0Sa9a0ewPUO" class="collection-item avatar"><i class="createDate">Mar 23 2018 08:49</i> <i class="btnContext">&lt;&lt;</i>
+                        <div>
+                            <div class="title" style="left: 0px;">03-27 TU Todolist</div>
+                        </div>
+                        <div class="content"> * 국립국제교육원 정기점검 *&nbsp;</div> <i id="btn_delete" class="material-icons">delete</i></li>
+                    <li id="-L8F6MB5FdDFL35W2zpG" class="collection-item avatar"><i class="createDate">Mar 23 2018 08:48</i> <i class="btnContext">&lt;&lt;</i>
+                        <div>
+                            <div class="title" style="left: 0px;">03-26 MO Todolist</div>
+                        </div>
+                        <div class="content"> * 한전차세대 상훈이랑 점검</div> <i id="btn_delete" class="material-icons">delete</i></li>
+                    <li id="-L84v8WroyMuLdyg8njR" class="collection-item avatar"><i class="createDate">Mar 21 2018 09:19</i> <i class="btnContext">&lt;&lt;</i>
+                        <div>
+                            <div class="title">03-23 FR Todolist<br></div>
+                        </div>
+                        <div class="content">* 연차</div> <i id="btn_delete" class="material-icons">delete</i></li>
+                    <li id="-L84v1x4wsiz4O3POR2c" class="collection-item avatar"><i class="createDate">Mar 21 2018 09:18</i> <i class="btnContext">&lt;&lt;</i>
+                        <div>
+                            <div class="title">03-22 TH Todolist<br></div>
+                        </div>
+                        <div class="content"> * 한전 메모리릭 테스트 데모라이선스 전달* 금호터미널 데이터셋 변경내용 일괄저장 관련 문의* 한국예탁결제원-전자투표 안드로이드 크롬에서 popup.getSize 값 참조 오류*</div> <i id="btn_delete" class="material-icons">delete</i></li>
+                    <li id="-L80GaYI3pbBVfDzUE13" class="collection-item avatar"><i class="createDate">Mar 20 2018 11:39</i> <i class="btnContext">&lt;&lt;</i>
+                        <div>
+                            <div class="title">03-21 WE Todolist<br></div>
+                        </div>
+                        <div class="content"> * 한전 메모리릭 관련 여러가지 테스트 loadMenuPopup 함수 분석* 광주은행 웹스퀘어5 관련 자료 전달* 시설안전공단 UI/UX툴 발주사 요건 충족 여부 확인</div> <i id="btn_delete" class="material-icons">delete</i></li>
+                    <li id="-L7wzTAON56yJp2t88gW" class="collection-item avatar"><i class="createDate">Mar 19 2018 15:41</i> <i class="btnContext">&lt;&lt;</i>
+                        <div>
+                            <div class="title">03-20 TU Todolist<br></div>
+                        </div>
+                        <div class="content"> * 한전 계속 로컬 테스트 inputCalendar 의 월 실렉트 높이 조정 방법 http://172.20.10.3:8080/5_2.180213/websquare/websquar</div> <i id="btn_delete" class="material-icons">delete</i></li>
+                    <li id="-L7wI_k2d3HfuPQ3M_Fd" class="collection-item avatar"><i class="createDate">Mar 19 2018 12:29</i> <i class="btnContext">&lt;&lt;</i>
+                        <div>
+                            <div class="title">03-19 MO Todolist</div>
+                        </div>
+                        <div class="content"> * 한전 로컬 테스트 환경 세팅 완료 (로컬) ASIS 테스트 (로컬) deleteSubmission 추가 후 테스트 </div> <i id="btn_delete" class="material-icons">delete</i></li>
+                    <li id="-L7dxromM2_LK4911sL9" class="collection-item avatar"><i class="createDate">Mar 15 2018 23:01</i> <i class="btnContext">&lt;&lt;</i>
+                        <div>
+                            <div class="title">03-16 FR Todolist</div>
+                        </div>
+                        <div class="content"> * sc은행 방문미팅 * 시설안전공단 웹스퀘어 설치계획서 작성&amp;전달 * SD개발 테이블에 생성일자/마지막수정일 컬럼 추가</div> <i id="btn_delete" class="material-icons">delete</i></li>
+                    <li id="-L7duwkf-y_nOzWAYR0s" class="collection-item avatar"><i class="createDate">Mar 15 2018 22:49</i> <i class="btnContext">&lt;&lt;</i>
+                        <div>
+                            <div class="title">03-15 TH Todolist<br></div>
+                        </div>
+                        <div class="content"> * 한전 &nbsp;숫자아이디 제거 후 테스트 &nbsp;계약종합조회 화면 탭만 바꿔가며 테스트 &nbsp;계약종합조회 화면 관련 화면 1개만 열고 닫고 테스트 * 기타 &amp;nb</div> <i id="btn_delete" class="material-icons">delete</i></li>
+                    <li id="-L7X7WCdop1g3-218Wjb" class="collection-item avatar"><i class="createDate">Mar 14 2018 10:31</i> <i class="btnContext">&lt;&lt;</i>
+                        <div>
+                            <div class="title">03-14 WE Todolist</div>
+                        </div>
+                        <div class="content"> * 한전차세대 &nbsp;개발서버 테스트케이스 정의 현장PC에 robotframework 세팅 &nbsp;ajaxLib.createSubmission 수정사항 테스트 link</div> <i id="btn_delete" class="material-icons">delete</i></li>
+                    <li id="-L7OCXLfTBQ3xVxAuaTM" class="collection-item avatar"><i class="createDate">Mar 12 2018 16:56</i> <i class="btnContext">&lt;&lt;</i>
+                        <div>
+                            <div class="title">03-13 TU Todolist</div>
+                        </div>
+                        <div class="content"> * 한전차세대 &nbsp;현장 테스트 PC에 테스트자동화 도구 세팅 그리드뷰 컬럼 간격 조정시 불편한 문제 windowContainer 의 탭move &nbsp;3개 입력필드</div> <i id="btn_delete" class="material-icons">delete</i></li>
+                    <li id="-L78rv4Wtf97ZgL5fdEK" class="collection-item avatar"><i class="createDate">Mar 09 2018 17:27</i> <i class="btnContext">&lt;&lt;</i>
+                        <div>
+                            <div class="title">03-12 MO Todolist</div>
+                        </div>
+                        <div class="content"> * 한전 https://docs.google.com/spreadsheets/d/1TsY5DW1QozqzHs8pl3mid8o2A979xETxSc_M2VvI0KM/edit#gid=0</div> <i id="btn_delete" class="material-icons">delete</i></li>
+                    <li id="-L7-iHN1sD2lLB7xyfxy" class="collection-item avatar"><i class="createDate">Mar 07 2018 22:49</i> <i class="btnContext">&lt;&lt;</i>
+                        <div>
+                            <div class="title">03-09 FR Todolist</div>
+                        </div>
+                        <div class="content"> * 한전 Private vs Vitual 비교 private 으로 보기로 결론virtual 찍는 방법 모르겠심 공통js 원본소스 다시 요청 &nbsp;(WPF-1417) 엑셀</div> <i id="btn_delete" class="material-icons">delete</i></li>
+                    <li id="-L7-i3-dajvfuo5BHdmw" class="collection-item avatar"><i class="createDate">Mar 07 2018 22:48</i> <i class="btnContext">&lt;&lt;</i>
+                        <div>
+                            <div class="title">03-08 TH Todolist</div>
+                        </div>
+                        <div class="content"> * sd개발 &nbsp;남은작업 리스트업 https://docs.google.com/spreadsheets/d/17IrEkkUMRuTvMk-ML7FfNUvHdFzjmWpDjjF</div> <i id="btn_delete" class="material-icons">delete</i></li>
+                    <li id="-L6xexYWAeUjqDUpeAEM" class="collection-item avatar"><i class="createDate">Mar 07 2018 08:35</i> <i class="btnContext">&lt;&lt;</i>
+                        <div>
+                            <div class="title">03-07 WE Todolist</div>
+                        </div>
+                        <div class="content"> * 한전 &nbsp;테스트결과 https://docs.google.com/spreadsheets/d/1TsY5DW1QozqzHs8pl3mid8o2A979xETxSc_M2VvI0</div> <i id="btn_delete" class="material-icons">delete</i></li>
+                    <li id="-L6bBw22kCLj57SC1Bn2" class="collection-item avatar"><i class="createDate">Mar 02 2018 23:53</i> <i class="btnContext">&lt;&lt;</i>
+                        <div>
+                            <div class="title">03-06 TU Todolist</div>
+                        </div>
+                        <div class="content"> * 한전차세대 &nbsp;로컬 테스트환경에서 접근 제한 메뉴 권한 획득 처리 ie에서 백화현상 이슈 처리 * 해군 라이선스 재발급 필요할꺼 같음 &nbsp;철민이랑&amp;nb</div> <i id="btn_delete" class="material-icons">delete</i></li>
+                    <li id="-L6_fKMm683CqWMNQNZU" class="collection-item avatar"><i class="createDate">Mar 02 2018 16:46</i> <i class="btnContext">&lt;&lt;</i>
+                        <div>
+                            <div class="title">03-05 MO Todolist</div>
+                        </div>
+                        <div class="content"> * sd개발 &nbsp;접수시각 정렬 기능 * 두산정보 데모라이선스 전달 * 한전차세대 로컬 테스트 환경 구성 한전에서 전달받은 파일을 참고하여 proxy.jsp 구현을</div> <i id="btn_delete" class="material-icons">delete</i></li>
+                    <li id="-L6Wv-CBh5tPtSuPnWcH" class="collection-item avatar"><i class="createDate">Mar 01 2018 23:16</i> <i class="btnContext">&lt;&lt;</i>
+                        <div>
+                            <div class="title">03-02 FR Todolist</div>
+                        </div>
+                        <div class="content"> * 해운항만 &nbsp;responsive web design&nbsp;관련 문의 * 한전차세대 테스트결과 https://docs.google.com/spreadsheets</div> <i id="btn_delete" class="material-icons">delete</i></li>
+                    <li id="-L6LXfD-cI_jcJYsjWpg" class="collection-item avatar"><i class="createDate">Feb 27 2018 18:14</i> <i class="btnContext">&lt;&lt;</i>
+                        <div>
+                            <div class="title">02-28 WE Todolist</div>
+                        </div>
+                        <div class="content"> * 한전차세대 자동테스트 스크립트 작성 * GMS 정식라이선스 발급 * 해운항만 &nbsp;responsive web design&nbsp;관련 문의 * 해군 설</div> <i id="btn_delete" class="material-icons">delete</i></li>
+                    <li id="-L6ESkZA8aJRlFCdqNLO" class="collection-item avatar"><i class="createDate">Feb 26 2018 09:15</i> <i class="btnContext">&lt;&lt;</i>
+                        <div>
+                            <div class="title">02-27 TU Todolist</div>
+                        </div>
+                        <div class="content"> * sd개발 파이어폭스도 한글 깨지면 업로드 제한하기 upload.jsp 업로드하기 * 한전차세대 메모리이슈 미팅 * 두산공작기계 &nbsp;데모 라이선스 적용 오류 문</div> <i id="btn_delete" class="material-icons">delete</i></li>
+                    <li id="-L62ECuQOpELFnu5XoqU" class="collection-item avatar"><i class="createDate">Feb 24 2018 00:16</i> <i class="btnContext">&lt;&lt;</i>
+                        <div>
+                            <div class="title">02-26 MO Todolist</div>
+                        </div>
+                        <div class="content"> * 해군c4i &nbsp;운영 웹스퀘어 설치 자원 정리 정식라이선스 발급 * 한전차세대 &nbsp;크롬 프로파일링 분석 http://localhost:8080/w5test/</div> <i id="btn_delete" class="material-icons">delete</i></li>
+                    <li id="-L6-58I-66Smp7kQ3taY" class="collection-item avatar"><i class="createDate">Feb 23 2018 09:38</i> <i class="btnContext">&lt;&lt;</i>
+                        <div>
+                            <div class="title">02-23 FR Todolist</div>
+                        </div>
+                        <div class="content"> * sd개발 로그인 남은시간 표시 기능 추가 100175 계정만 로그인 유지시간 3시간으로 설정 * 한전차세대 테스트 엑셀장표 https://docs.google.com/</div> <i id="btn_delete" class="material-icons">delete</i></li>
+                    <li id="-L5pl_OqWwHbWlfwVM-p" class="collection-item avatar"><i class="createDate">Feb 21 2018 09:32</i> <i class="btnContext">&lt;&lt;</i>
+                        <div>
+                            <div class="title">02-22 TH Todolist</div>
+                        </div>
+                        <div class="content"> * 한전차세대 &nbsp;메모리릭 이슈 방문지원 메모리릭 재현 샘플 작성 http://10.37.129.2:8080/5_161229/websquare/websquare.htm</div> <i id="btn_delete" class="material-icons">delete</i></li>
+                    <li id="-L5m4Sl37VvWH9f33nwy" class="collection-item avatar"><i class="createDate">Feb 20 2018 16:20</i> <i class="btnContext">&lt;&lt;</i>
+                        <div>
+                            <div class="title">02-21 WE Todolist</div>
+                        </div>
+                        <div class="content"> * SD개발 세션 타임아웃. 특정계정만 맥크롬에서 한글파일명은 업로드 예외 처리 입력내용 저장시 서브미션 취소버튼 추가 각 영역별 라벨을 이용한 스크롤이동 기능 추가 </div> <i id="btn_delete" class="material-icons">delete</i></li>
+                    <li id="-L5hJT51EObpViTCD-G3" class="collection-item avatar"><i class="createDate">Feb 19 2018 18:08</i> <i class="btnContext">&lt;&lt;</i>
+                        <div>
+                            <div class="title">02-20 TU Todolist</div>
+                        </div>
+                        <div class="content"> *&nbsp; sd개발 &nbsp;맥에서 한글 깨지는 오류 예외처리 할당자사번,할당자이름 조회후 선택 입력 가능하게&nbsp; 필수입력값 처리 행추가시 상세내역입력란으로 스</div> <i id="btn_delete" class="material-icons">delete</i></li>
+                    <li id="-L5Haef2xrtGsEtv07sk" class="collection-item avatar"><i class="createDate">Feb 14 2018 13:37</i> <i class="btnContext">&lt;&lt;</i>
+                        <div>
+                            <div class="title">02-19 MO Todolist</div>
+                        </div>
+                        <div class="content"> *&nbsp; sd개발 &nbsp;파일업로드 경로를 websquare_home에서 참조하도록 수정 &nbsp;주간보고 자동취합 기능 논의 * 교통안전공단 부모창이 닫힐 때</div> <i id="btn_delete" class="material-icons">delete</i></li>
+                    <li id="-L5BUT02uGcv-xE19bq2" class="collection-item avatar"><i class="createDate">Feb 13 2018 09:08</i> <i class="btnContext">&lt;&lt;</i>
+                        <div>
+                            <div class="title">02-14 WE Todolist</div>
+                        </div>
+                        <div class="content"> *&nbsp; sd개발 reqList에서 삭제할때 관련 assign, res, file정보 모두 지우기 * 기타 주간보고</div> <i id="btn_delete" class="material-icons">delete</i></li>
+                    <li id="-L58Dj9RAkNMo0qCfacG" class="collection-item avatar"><i class="createDate">Feb 12 2018 17:56</i> <i class="btnContext">&lt;&lt;</i>
+                        <div>
+                            <div class="title">02-13 TU Todolist</div>
+                        </div>
+                        <div class="content"> * SD개발 file, res, assign 리스트 취합해서 내려주기 &nbsp;assign 탭 살려서 이관기능 동작하도록 처리 &nbsp;윈도우환경에서라도 잘 동작하는 파일업</div> <i id="btn_delete" class="material-icons">delete</i></li>
+                </ul>
+            </div>
+            <div class="diff"></div>
+            <div id="topBtn" class="fixed-action-btn" style="bottom: 110px; right: 24px;"><a class="btn-floating btn-large waves-effect waves-light" style="opacity: 0.3;"><i id="topNavi" class="navi
+                            material-icons">arrow_upward</i></a></div>
+            <div id="noteDiv" class="dialog" style="display: none;">
+                <div id="div_write">
+                    <div id="noteContent" contenteditable="true" class="noteContent" style="background-color: rgb(255, 255, 255);"></div>
+                </div>
+            </div>
+            <div id="writeBtn" class="fixed-action-btn"><a class="btn-floating btn-large waves-effect waves-light"><i id="addBtn" class="material-icons">새글</i></a></div>
+            <div class="search">
+                <div class="modal"></div>
+                <div id="div_search"><textarea id="input2" placeholder="" class="input"></textarea>
+                    <div class="btn_grp">
+                        <div id="btn_search" class="btn">검색</div>
+                        <div id="btn_cancel" class="btn">취소</div>
+                    </div>
+                </div>
+            </div>
+        </div> <iframe ng-non-bindable="" frameborder="0" hspace="0" marginheight="0" marginwidth="0" scrolling="no" tabindex="0" vspace="0" width="100%" id="I0_1521771279260" name="I0_1521771279260" src="https://mininote-a7060.firebaseapp.com/__/auth/iframe?apiKey=AIzaSyCA7fmVSWpyP0MPpw1QRU6h9OZ7hrr6sGA&amp;appName=%5BDEFAULT%5D&amp;v=4.3.0&amp;usegapi=1&amp;jsh=m%3B%2F_%2Fscs%2Fapps-static%2F_%2Fjs%2Fk%3Doz.gapi.en.XPEp2peZIUU.O%2Fm%3D__features__%2Fam%3DAQE%2Frt%3Dj%2Fd%3D1%2Frs%3DAGLTcCOE0AksaL67dhN65vHylU-abu8oKw#id=I0_1521771279260&amp;_gfid=I0_1521771279260&amp;parent=http%3A%2F%2Flocalhost%3A5000&amp;pfname=&amp;rpctoken=39259756" style="position: absolute; top: -100px; width: 1px; height: 1px;"></iframe></body>
+
+</html>

@@ -357,7 +357,7 @@ select#iconColor {
 
 body {
     background-color: #ffffff;
-    overflow-y: scroll;
+    /* overflow-y: scroll; */
 }
 
 .btn {
