@@ -7,6 +7,8 @@ body {
     font-size: 14px;
     line-height: 1.5;
     color: #24292e;
+    background-color: #ffffff;
+    overflow-x: hidden;
 }
 
 
@@ -355,10 +357,6 @@ select#iconColor {
     font-size: 20px;
 }
 
-body {
-    background-color: #ffffff;
-    overflow-x: hidden;
-}
 
 .btn {
     background-color: var(--main-bg-color);

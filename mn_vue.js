@@ -11,7 +11,6 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
 
     mn.notes = notes;
 
-
     var newManageDiff = function() {
         var that = {},
             timer,
@@ -759,10 +758,16 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
         });
     };
 
-    mn.listClick = function() {
-        $(".menu").animate({
-            left: "-220px"
-        }, 300);
+    mn.listClick = function(e) {
+        if ($m(".menu").css("left") === "0px") {
+            $(".menu").animate({
+                left: "-220px"
+            }, 300);
+
+            // 목록의 특정 글 선택시 menu가 사라지면서 동시에 글이 보여지는 걸 막기 위해
+            e.stopPropagation();
+            e.preventDefault();
+        }
     };
 
     mn.bodyScroll = function() {
