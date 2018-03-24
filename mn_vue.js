@@ -460,10 +460,7 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
         if (userInfo !== null) {
             $m("#nickname").val(userInfo.data.nickname);
             $m("#iconColor").val(userInfo.data.iconColor);
-            $m(".header").css("background-color", $randomcolor({
-                hue: userInfo.data.iconColor,
-                luminosity: "dark"
-            }));
+            mn.iconColor(userInfo.data.iconColor);
         } else {
             //$m(".header .title").html("mininote");
             app.title = "mininote";
@@ -730,15 +727,29 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
     };
 
 
-    mn.setHeaderColor = function(e) {
+    mn.setIconColor = function(e) {
         userInfo.data.iconColor = e.target.value;
         firebase.database().ref("users/" + userInfo.uid).update(userInfo.data);
+        mn.iconColor(userInfo.data.iconColor);
+    };
 
+
+    mn.iconColor = function(color){
         $m(".header").css("background-color", $randomcolor({
-            hue: userInfo.data.iconColor,
+            hue: color,
             luminosity: "dark"
         }));
-    };
+
+        $m("#writeBtn a").css("background-color", $randomcolor({
+            hue: color,
+            luminosity: "dark"
+        }));
+
+        $m("#topBtn a").css("background-color", $randomcolor({
+            hue: color,
+            luminosity: "dark"
+        }));
+    }
 
 
     mn.bodyScroll = function() {
