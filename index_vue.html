@@ -26,15 +26,11 @@
                 <ul class="menu collection">
                     <li class="collection-item">
                         <div class="menuTitle">* nickname</div>
-                        <div class="menuContent"><input id="nickname" type="text" @change="mn.setNickname(this.value)" /></div>
-                    </li>
-                    <li class="collection-item">
-                        <div class="menuTitle">* fontSize</div>
-                        <div class="menuContent"><input id="fontSize" type="number" onchange="mn.setFontSize(this.value);" /></div>
+                        <div class="menuContent"><input id="nickname" type="text" @change="mn.setNickname" /></div>
                     </li>
                     <li class="collection-item">
                         <div class="menuTitle">* iconColor</div>
-                        <div class="menuContent"> <select id="iconColor" @change="mn.setIconColor(this.value)">
+                        <div class="menuContent"> <select id="iconColor" @change="mn.setHeaderColor">
                                 <option value="all">all</option>
                                 <option value="red">red</option>
                                 <option value="orange">orange</option>
@@ -53,8 +49,7 @@
                 </ul>
             </div>
             <div>
-
-                <ul id="list" class="collection" onclick="mn.listClick" ontouchstart="mn.listClick">
+                <ul id="list" class="collection">
                     <li v-for="todo in todos" :id="todo.key" class="collection-item avatar" @click="mn.rowClick(todo.key)" @touchstart="mn.touchstart" @touchmove="mn.touchmove" @touchend="mn.touchend">
                         <i class="createDate" v-html="todo.createDate"></i>
                         <i class="btnContext" @click.stop.prevent="contextClick"><<</i>
@@ -69,9 +64,9 @@
                 <a class="btn-floating btn-large waves-effect waves-light" style="opacity: 0.3" @click="mn.topNavi">
                     <i id="topNavi" class="navi material-icons" v-html="topNavi"></i>
                         </a> </div>
-            <div id="noteDiv" style="display: none;" class="dialog">
+            <div id="noteDiv" style="display: none;" class="dialog" @click="mn.hideMenu">
                 <div id="div_write">
-                    <div id="noteContent" key="" class="noteContent" contenteditable="true" @keyup="mn.keyupCheck" @mouseenter2="mouseenter" @mouseleave2="mouseleave"></div>
+                    <div id="noteContent" key="" class="noteContent" contenteditable="true" @keyup="mn.keyupCheck" @mouseenter="mouseenter" @mouseleave="mouseleave"></div>
                 </div>
             </div>
             <div id="writeBtn" class="fixed-action-btn"> <a class="btn-floating btn-large waves-effect waves-light" @click="mn.writeNote"> <i id="addBtn" class="material-icons" v-html="addBtn"></i> </a></div>

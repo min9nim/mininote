@@ -459,8 +459,11 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
     var setHeader = function() {
         if (userInfo !== null) {
             $m("#nickname").val(userInfo.data.nickname);
-            $m("#fontSize").val(userInfo.data.fontSize.replace("px", ""));
             $m("#iconColor").val(userInfo.data.iconColor);
+            $m(".header").css("background-color", $randomcolor({
+                hue: userInfo.data.iconColor,
+                luminosity: "dark"
+            }));
         } else {
             //$m(".header .title").html("mininote");
             app.title = "mininote";
@@ -711,19 +714,6 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
     };
 
 
-    mn.menuClick = function() {
-        if ($m(".menu").css("left") === "0px") {
-            $(".menu").animate({
-                left: "-220px"
-            }, 300);
-        } else {
-            $(".menu").animate({
-                left: "0px"
-            }, 300);
-        }
-    };
-
-
     mn.signOut = function() {
         firebase.auth().signOut().then(function() {
             // 로그아웃 처리
@@ -733,42 +723,23 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
     };
 
 
-    mn.setNickname = function(nickname) {
-        userInfo.data.nickname = nickname;
+    mn.setNickname = function(e) {
+        userInfo.data.nickname = e.target.value;
         firebase.database().ref("users/" + userInfo.uid).update(userInfo.data);
         $m(".header .title").html(userInfo.data.nickname + "'s " + notes.length + " notes");
     };
 
 
-    mn.setFontSize = function(size) {
-        userInfo.data.fontSize = size + "px";
+    mn.setHeaderColor = function(e) {
+        userInfo.data.iconColor = e.target.value;
         firebase.database().ref("users/" + userInfo.uid).update(userInfo.data);
-        $m(".txt").css("font-size", userInfo.data.fontSize);
+
+        $m(".header").css("background-color", $randomcolor({
+            hue: userInfo.data.iconColor,
+            luminosity: "dark"
+        }));
     };
 
-    mn.setIconColor = function(color) {
-        userInfo.data.iconColor = color;
-        firebase.database().ref("users/" + userInfo.uid).update(userInfo.data);
-        $m("#list i.circle").each(function(val, key, arr) {
-            var bgcolor = $randomcolor({
-                hue: color,
-                luminosity: "dark"
-            });
-            $m(val).css("background-color", bgcolor);
-        });
-    };
-
-    mn.listClick = function(e) {
-        if ($m(".menu").css("left") === "0px") {
-            $(".menu").animate({
-                left: "-220px"
-            }, 300);
-
-            // 목록의 특정 글 선택시 menu가 사라지면서 동시에 글이 보여지는 걸 막기 위해
-            e.stopPropagation();
-            e.preventDefault();
-        }
-    };
 
     mn.bodyScroll = function() {
         if ($m(".state").html() !== "") { // 검색결과 화면일 때
@@ -918,9 +889,39 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
     };
 
     mn.rowClick = function(key) {
-        md.save();
-        mn.showNote(key)
+        if (mn.menuVisible()) {
+            mn.hideMenu();
+        }else{
+            md.save();
+            mn.showNote(key)
+        }
     };
+
+
+    mn.menuClick = function() {
+        if (mn.menuVisible()) {
+            mn.hideMenu();
+        } else {
+            mn.showMenu();
+        }
+    };
+
+
+    mn.menuVisible = function(){
+        return $m(".menu").css("left") === "0px" ? true : false;
+    }
+
+    mn.hideMenu = function(){
+        if(mn.menuVisible()){
+            $(".menu").animate({left: "-220px"}, 300);
+        }
+    }
+
+    mn.showMenu = function(){
+        if(!mn.menuVisible()){
+            $(".menu").animate({left: "0px"}, 300);
+        }
+    }
 
     mn.cancelSearch = function() {
         $m(".search").css("display", "none");

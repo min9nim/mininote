@@ -29,10 +29,12 @@ require(["vue", "mn", "util"], function(Vue, mn, $m) {
         },
         methods: {
             mouseenter : function(){
+                // noteContent 영역 안에서는 뒤에 목록 스크롤이 발생하지 않도록 처리
                 this.top = document.documentElement.scrollTop;
                 $m("body").css("top", -(this.top) + "px").addClass("noscroll");
             },
             mouseleave : function(){
+                // noteContent 영역 밖에서는 목록 스크롤이 가능하도록 처리
                 $m("body").removeClass("noscroll");
                 $(document).scrollTop(this.top);
             },
