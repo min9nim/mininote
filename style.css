@@ -2,13 +2,17 @@
     --main-bg-color: #054e7f;
 }
 
+html, body {
+    /* iOS safari에서 가로스크롤 막기, http://localhost:4000/frontend/2018/03/22/iosXScroll.html  */
+    overflow-x: hidden;
+}
+
 body {
     font-family: -apple-system,BlinkMacSystemFont,"Segoe UI",Helvetica,Arial,sans-serif,"Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol";
     font-size: 14px;
     line-height: 1.5;
     color: #24292e;
     background-color: #ffffff;
-    overflow-x: hidden;
 }
 
 
@@ -182,6 +186,7 @@ body {
     position: absolute;
     right: -70px;
     display: inline-block;
+    /* float: right; */
 }
 
 #btn_edit {
@@ -304,11 +309,12 @@ select#iconColor {
 
 #list li .content {
     font-size: 13px;
-    display: inline;
+    display: block;
     overflow: hidden;
     color: rgba(36,41,46,0.75);
     text-overflow: ellipsis;
     word-wrap: break-word;
+    width: 300px;
 }
 
 #noteContent .title {

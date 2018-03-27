@@ -16,7 +16,7 @@
         <script type="text/javascript" data-main="app_vue" src="ext/require.js"></script>
     </head>
 
-    <body onscroll="mn.bodyScroll();">
+    <body onscroll="mn.bodyScroll(event)">
         <div id="app">
             <div class="header" v-cloak> <i id="btnMenu" class='material-icons' style="cursor: pointer;" @click="mn.menuClick">menu</i>
                 <div class="title" @click="mn.titleClick">{{title}}</div>
@@ -49,7 +49,7 @@
                 </ul>
             </div>
             <div>
-                <ul id="list" class="collection">
+                <ul id="list" class="collection" @touchstart>
                     <li v-for="todo in todos" :id="todo.key" class="collection-item avatar" @click="mn.rowClick(todo.key)" @touchstart="mn.touchstart" @touchmove="mn.touchmove" @touchend="mn.touchend">
                         <i class="createDate" v-html="todo.createDate"></i>
                         <i class="btnContext" @click.stop.prevent="contextClick"><<</i>

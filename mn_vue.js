@@ -752,7 +752,25 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
     }
 
 
-    mn.bodyScroll = function() {
+    mn.bodyScroll = function(e) {
+        console.log("bodyscroll : " + window.scrollX);
+
+/*
+        if(window.scrollX !== 0){
+            console.log("보정..");
+            // 아이폰 사파리에서 전체화면이 좌우로 스크롤 되는 문제 처리
+            // 땡겨지는 모습이 보이기 때문에 불편
+            window.scrollTo(0, window.scrollY);
+            e.preventDefault();
+            e.stopPropagation();
+
+            return;
+
+        }
+
+*/
+
+
         if ($m(".state").html() !== "") { // 검색결과 화면일 때
             return;
         }
