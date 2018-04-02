@@ -39,10 +39,13 @@ body {
     background-color: #fff;
     border: 2px solid #bbb;
     top: 10px;
-    left: 98px;
+    left: 320px;
     resize: both;
     overflow: auto;
 }
+
+
+
 
 
 #dragbar {
@@ -314,8 +317,11 @@ select#iconColor {
     color: rgba(36,41,46,0.75);
     text-overflow: ellipsis;
     word-wrap: break-word;
-    width: 300px;
+    width: 100%;
 }
+
+
+
 
 #noteContent .title {
     font-size: 20px;
@@ -391,4 +397,12 @@ select#iconColor {
 
 [v-cloak] {
   display: none;
+}
+
+
+@media only screen and (max-width: 768px) {
+    /* For mobile phones: */
+    [class*="dialog"] {
+        left: 98px;
+    }
 }
