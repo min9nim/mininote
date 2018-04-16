@@ -29,11 +29,15 @@ require(["vue", "mn", "util"], function(Vue, mn, $m) {
         },
         methods: {
             mouseenter : function(){
+                return; // mac 에서 항상 스크롤 보이기 설정을 해두니 문제가 별로 안되는 것 같아서 일단 막아둠..18/04/16
+
                 // noteContent 영역 안에서는 뒤에 목록 스크롤이 발생하지 않도록 처리
                 this.top = document.documentElement.scrollTop;
                 $m("body").css("top", -(this.top) + "px").addClass("noscroll");
             },
             mouseleave : function(){
+                return; // mac 에서 항상 스크롤 보이기 설정을 해두니 문제가 별로 안되는 것 같아서 일단 막아둠.. 18/04/16
+
                 // noteContent 영역 밖에서는 목록 스크롤이 가능하도록 처리
                 $m("body").removeClass("noscroll");
                 $(document).scrollTop(this.top);
