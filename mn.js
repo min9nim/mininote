@@ -194,12 +194,14 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
         if (app.topNavi === "arrow_upward") {
             app.addBtn = LABEL_ADD;
         }
-
+/*
         $m("#list li").each(function(val) {
             val.style.backgroundColor = "#ffffff";
         });
 
         $m("#noteContent").css("backgroundColor", "#ffffff");
+*/
+
     };
 
     var conOff = function() {
