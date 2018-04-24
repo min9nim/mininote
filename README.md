@@ -17,11 +17,6 @@ mininote 는 가볍고 빠른 일정관리 툴입니다
   * Alt + T : 체크박스 추가
   * Alt + U : 순서없는 목록
 * 예약어 autoReplace
-~~  * mo + "띄어쓰기" :  MO todolist
-  * tu + "띄어쓰기" :  TU todolist
-  * we + "띄어쓰기" :  WE todolist
-  * th + "띄어쓰기" :  TH todolist
-  * fr + "띄어쓰기" :  FR todolist~~
   * !! + "띄어쓰기" : 체크박스 추가
   * @@ + "띄어쓰기" : 순서없는 목록
   * )) + "띄어쓰기" : 들여쓰기
