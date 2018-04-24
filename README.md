@@ -8,6 +8,7 @@ mininote 는 가볍고 빠른 일정관리 툴입니다
 * Front-end : es6, requirejs, babel, vuejs
 
 
+
 ### 기능설명
 * 단축키
   * Alt(or meta) + W : 글쓰기
@@ -16,15 +17,17 @@ mininote 는 가볍고 빠른 일정관리 툴입니다
   * Alt + T : 체크박스 추가
   * Alt + U : 순서없는 목록
 * 예약어 autoReplace
-  * mo + "띄어쓰기" :  MO todolist
+~~  * mo + "띄어쓰기" :  MO todolist
   * tu + "띄어쓰기" :  TU todolist
   * we + "띄어쓰기" :  WE todolist
   * th + "띄어쓰기" :  TH todolist
-  * fr + "띄어쓰기" :  FR todolist
+  * fr + "띄어쓰기" :  FR todolist~~
   * !! + "띄어쓰기" : 체크박스 추가
   * @@ + "띄어쓰기" : 순서없는 목록
   * )) + "띄어쓰기" : 들여쓰기
   * (( + "띄어쓰기" : 내어쓰기
+  * (( + "띄어쓰기" : 내어쓰기
+  * dd + "띄어쓰기" : 한줄삭제
 
 
 ### 이후 추가될 기능

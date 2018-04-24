@@ -262,11 +262,12 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
             document.execCommand("outdent");
         } else if (keymap === "dd") {
             deleteMapKey(sel.anchorOffset, sel.anchorNode.textContent.length - sel.anchorOffset);
-        } else if (["mo", "tu", "we", "th", "fr", "sa", "su"].indexOf(keymap) >= 0) {
-            deleteMapKey(3, 0);
-            sel.getRangeAt(0).insertNode(document.createTextNode(keymap.toUpperCase() + " Todolist"));
-            sel.modify("move", "forward", "word"); // 모바일에서는 이게 안 먹히네..
         }
+        //  else if (["mo", "tu", "we", "th", "fr", "sa", "su"].indexOf(keymap) >= 0) {
+        //     deleteMapKey(3, 0);
+        //     sel.getRangeAt(0).insertNode(document.createTextNode(keymap.toUpperCase() + " Todolist"));
+        //     sel.modify("move", "forward", "word"); // 모바일에서는 이게 안 먹히네..
+        // }
     };
 
 
