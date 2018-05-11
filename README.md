@@ -2,11 +2,14 @@
 mininote 는 가볍고 빠른 일정관리 툴입니다
 에버노트는 무겁고 무료버젼에는 기능상 제약이 많습니다. mininote 는 가장 단순하고 핵심적인 몇가지 기능들만을 제공하되 쉽고 빠르고 어느 기기에서나 사용이 가능합니다
 
+### 서비스 이용방법
+* 접근주소: https://mininote.site
+* 구글계정만 사용 가능
+
 
 ### 개발환경
 * Back-end : [firebase](https://firebase.google.com)
 * Front-end : es6, requirejs, babel, vuejs
-
 
 
 ### 기능설명
