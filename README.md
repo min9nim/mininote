@@ -30,5 +30,13 @@ mininote 는 가볍고 빠른 일정관리 툴입니다
 * 내용 저장시 애니메이션 효과
 
 
+### 스크린샷
+* 글목록  
+![list](https://raw.githubusercontent.com/min9nim/mininote/master/image/list.png)
+* 글쓰기  
+![write](https://raw.githubusercontent.com/min9nim/mininote/master/image/write.png)
+
+
+
 ### 라이선스
 MIT License
