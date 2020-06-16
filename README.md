@@ -26,6 +26,11 @@ firebase login
 firebase projects:list
 ```
 
+### firebase 초기화
+```
+firebase init
+```
+
 ### 로컬 개발환경 시작
 
 현재 localhost 도메인만 구글로그인 가능
