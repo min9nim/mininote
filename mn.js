@@ -247,22 +247,29 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
         var sel = window.getSelection();
         var str = sel.anchorNode.textContent;
         var keymap = str.substr(sel.anchorOffset - 3, 2);
+        console.log('keymap', keymap)
 
         if (keymap === "!!") {
+            console.log('keymapped !!')
             deleteMapKey(3, 0);
             insertChkbox();
         } else if (keymap === "@@") {
+            console.log('keymapped @@')
             deleteMapKey(3, 1);
             document.execCommand("insertunorderedlist");
         } else if (keymap === "))") {
+            console.log('keymapped ))')
             deleteMapKey(3, 0);
             document.execCommand("indent");
         } else if (keymap === "((") {
+            console.log('keymapped ((')
             deleteMapKey(3, 0);
             document.execCommand("outdent");
         } else if (keymap === "dd") {
+            console.log('keymapped dd')
             deleteMapKey(sel.anchorOffset, sel.anchorNode.textContent.length - sel.anchorOffset);
         }
+        console.log('keymapped else')
         //  else if (["mo", "tu", "we", "th", "fr", "sa", "su"].indexOf(keymap) >= 0) {
         //     deleteMapKey(3, 0);
         //     sel.getRangeAt(0).insertNode(document.createTextNode(keymap.toUpperCase() + " Todolist"));
