@@ -11,6 +11,33 @@ mininote 는 가볍고 빠른 일정관리 툴입니다
 * Back-end : [firebase](https://firebase.google.com)
 * Front-end : es6, requirejs, babel, vuejs
 
+### firebase 설치
+```
+curl -sL https://firebase.tools | bash
+```
+
+### firebase 로그인
+```
+firebase login
+```
+
+### firebase 프로젝트 목록
+```
+firebase projects:list
+```
+
+### 로컬 개발환경 시작
+
+현재 localhost 도메인만 구글로그인 가능
+
+```
+firebase serve --only hosting --host 0.0.0.0
+```
+
+### 배포
+```
+firebase deploy
+```
 
 ### 기능설명
 * 단축키
@@ -43,3 +70,7 @@ mininote 는 가볍고 빠른 일정관리 툴입니다
 
 ### 라이선스
 MIT License
+
+
+### Ref.
+https://firebase.google.com/docs/cli?hl=ko#install-cli-mac-linux
