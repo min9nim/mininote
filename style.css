@@ -337,6 +337,11 @@ select#iconColor {
     opacity: 0.9;
 }
 
+#list .today {
+    background-color: #e2f0e2;
+    opacity: 0.9;
+}
+
 #noteContent ul {
     padding-left: 30px;
     margin: 0px;

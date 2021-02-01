@@ -294,6 +294,16 @@ define(["jquery", "nprogress", "randomColor", "isMobile", "util", "shortcut", "a
         var createDate = data.val().createDate;
         var diff = curDate - createDate;
 
+        const value = data.val()
+        const today = new Date()
+        const todayTitle = String(today.getMonth() + 1).padStart(2, '0') + '-' + String(today.getDate()).padStart(2, '0')
+        // console.log('data', value.txt, todayTitle, value.txt.includes(todayTitle))
+        if(new RegExp('.*class="title">' + todayTitle + '.*').test(value.txt)){
+            setTimeout(() => {
+                $m("#" + data.key).addClass("today");
+            }, 500)
+        }
+
         if (diff < 1000) { // 방금 새로 등록한 글인 경우만
             addItem(data.key, data.val());
             if ($m(".state").html() === "") {
