@@ -36,7 +36,7 @@ firebase init
 현재 localhost 도메인만 구글로그인 가능
 
 ```
-firebase serve --only hosting --host 0.0.0.0
+firebase serve --only hosting --host localhost
 ```
 
 ### 배포
